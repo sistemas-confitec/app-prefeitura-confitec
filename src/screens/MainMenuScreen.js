@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ImageBackground, StatusBar } from 'react-native';
 
 import { colors, strings } from '../config/Constants';
 import MenuItem from '../components/MenuItem';
+import api from '../services/api';
 
-export default function MainMenuScreen() {
+export default function MainMenuScreen({ navigation }) {
+    const [townHall, setTownHall] = useState(null);
+    const municipio = async () => {
+        const resp = await api.get('/wp-json/wp/v2/app-prefeitura');
+        setTownHall(resp.data[0]);
+    }
+    useEffect(() => { municipio() }, []);
     return (
         <View style={styles.container}>
             <ImageBackground
@@ -20,7 +27,8 @@ export default function MainMenuScreen() {
                 <View style={{
                     width: '100%',
                     height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    //backgroundColor: 'rgba(0,0,0,0.7)',
+                    backgroundColor: '#FFF',
                 }}>
                 </View>
             </ImageBackground>
@@ -56,7 +64,6 @@ export default function MainMenuScreen() {
                         fontSize: 14,
                         marginBottom: -10,
                         textAlign: 'center',
-                        //color:'#1D5B2D'
                     }}
                 >Prefeitura Municipal de </Text>
                 <Text
@@ -64,7 +71,6 @@ export default function MainMenuScreen() {
                         color: colors.menuText,
                         fontSize: 40,
                         textAlign: 'center',
-                        //color:'#1D5B2D'
                     }}
                 >{strings.townHallName}</Text>
             </View>
@@ -74,7 +80,7 @@ export default function MainMenuScreen() {
                     width: '100%',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
-                    paddingHorizontal:12
+                    paddingHorizontal: 12
                 }}
             >
                 <View style={styles.menuContainer}>
@@ -97,6 +103,9 @@ export default function MainMenuScreen() {
                         iconName={"map-marked-alt"}
                         iconSource={"FontAwesome5"}
                         title={"Município"}
+                        onPress={() => {
+                            navigation.navigate("Município")
+                        }}
                     />
                     <MenuItem
                         iconName={"map"}
@@ -133,8 +142,24 @@ export default function MainMenuScreen() {
                     <MenuItem
                         iconName={"ios-mic"}
                         iconSource={"Ionicons"}
-                        title={"Rádio Prefeitura"} />
+                        title={`Podcast ${strings.townHallName}`} />
                 </View>
+            </View>
+            <View
+                style={{
+                    width: '100%',
+                    padding:10
+                }}
+            >
+                <Text
+                    style={{...styles.footerText, fontWeight: 'bold'}}
+                >{townHall && townHall?.title?.rendered}</Text>
+                <Text
+                    style={styles.footerText}
+                >{townHall && townHall.meta_box?.endereco}</Text>
+                <Text
+                    style={styles.footerText}
+                >{townHall && townHall.meta_box?.horario}</Text>
             </View>
         </View>
     );
@@ -143,7 +168,7 @@ export default function MainMenuScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.primary,
+        backgroundColor: colors.backgroudColor,
         alignItems: 'center',
         justifyContent: 'flex-start',
         paddingHorizontal: 0,
@@ -152,5 +177,8 @@ const styles = StyleSheet.create({
     menuContainer: {
         flexDirection: 'row',
         width: '100%',
+    },
+    footerText: {
+        textAlign: 'center'
     }
 });

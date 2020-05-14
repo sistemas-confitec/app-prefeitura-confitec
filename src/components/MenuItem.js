@@ -4,7 +4,7 @@ import * as Icons from '@expo/vector-icons';
 
 import { colors } from '../config/Constants';
 
-export default function MenuItem({ title, iconName, bgColor, iconSource }) {
+export default function MenuItem({ title, iconName, onPress, iconSource }) {
     const icon = () => {
         switch (iconSource) {
             case 'FontAwesome':
@@ -23,7 +23,8 @@ export default function MenuItem({ title, iconName, bgColor, iconSource }) {
     }
     return (
         <TouchableOpacity
-            style={{ ...styles.menuItem, backgroundColor: bgColor ? bgColor : colors.lightPrimary }}
+            style={styles.menuItem}
+            onPress={onPress}
         >
             {icon()}
             <Text style={styles.text}>{title}</Text>
@@ -35,13 +36,14 @@ const styles = StyleSheet.create({
     menuItem: {
         flex: 1,
         aspectRatio: 1.3,
-        backgroundColor: colors.lightPrimary,
+        backgroundColor: colors.backgroudColor,
         padding: 5,
         margin: 10,
         borderRadius: 5,
+        //borderWidth: ,
         alignItems: 'center',
         justifyContent: 'center',
-        elevation: 5
+        elevation: 2
     },
     text: {
         color: colors.menuText,
