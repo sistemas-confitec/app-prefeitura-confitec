@@ -7,6 +7,7 @@ export default function MenuItem({ title, iconURL, onPress }) {
     return (
         <TouchableOpacity
             onPress={onPress}
+            activeOpacity={0.85}
             style={styles.serviceCardContainer}
         >
             <View

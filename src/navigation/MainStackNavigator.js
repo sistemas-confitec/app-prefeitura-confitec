@@ -5,6 +5,7 @@ import CityScreen from '../screens/CityScreen';
 import PodcastScreen from '../screens/PodcastScreen';
 import ServicesScreen from '../screens/ServicesScreen';
 import ServicesDetailsScreen from '../screens/ServicesDetailsScreen';
+import PDFViewer from '../screens/PDFViewer';
 import { colors } from '../config/Constants';
 
 const Stack = createStackNavigator();
@@ -59,6 +60,15 @@ export default function MainStackNavigator() {
                     }
                 })}
                 name="ServicesDetailsScreen" component={ServicesDetailsScreen} />
+           {/*  <Stack.Screen
+                options={({ navigation }) => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: "Carta de Serviços",
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="PDFViewer" component={PDFViewer} /> */}
         </Stack.Navigator>
     );
 }

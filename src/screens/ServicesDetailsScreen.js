@@ -3,9 +3,10 @@ import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import { parse } from 'himalaya';
 
 import { colors } from '../config/Constants';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-export default function ServicesDetailsScreen({ route }) {
+export default function ServicesDetailsScreen({ route, navigation }) {
     const service = route.params?.service;
     const secData = route.params?.secData.find((sec) => sec.id == service.meta_box.secretaria);
     const infoArray = [];
@@ -61,7 +62,9 @@ export default function ServicesDetailsScreen({ route }) {
                     style={{ ...styles.text, fontWeight: 'bold' }}
                 >Público alvo: </Text>
                 {service.meta_box.publico_alvo.map((item, idx) => {
-                    return <Text key={idx}>{'\u2022'} {item}</Text>
+                    return <Text
+                        style={styles.text}
+                        key={idx}>{'\u2022'} {item}</Text>
                 })}
 
                 <Text
@@ -91,6 +94,76 @@ export default function ServicesDetailsScreen({ route }) {
                     </>
                 }
 
+                <Text
+                    style={styles.title}
+                >Atendimento</Text>
+                <Text
+                    style={{ ...styles.text, fontWeight: 'bold' }}
+                >Horário de atendimento:</Text>
+                <Text
+                    style={styles.text}
+                >{service.meta_box.horario}</Text>
+                <Text
+                    style={{ ...styles.text, fontWeight: 'bold' }}
+                >Tempo médio para atendimento:</Text>
+                {service.meta_box.tipo_atendimento == "Presencial" ? <Text
+                    style={styles.text}
+                >{service.meta_box.atendimento_presencial}</Text> :
+                    <Text
+                        style={styles.text}
+                    >{service.meta_box.atendimento_internet}</Text>}
+
+                <Text
+                    style={{ ...styles.text, fontWeight: 'bold' }}
+                >O serviço é gratuito?</Text>
+                <Text
+                    style={styles.text}
+                >{service.meta_box.gratuito}</Text>
+                {service.meta_box.gratuito == "Não" &&
+                    <><Text
+                        style={{ ...styles.text, fontWeight: 'bold' }}
+                    >Quanto custa?</Text>
+                        <Text
+                            style={styles.text}
+                        >R$ {Number(service.meta_box.valor_servico.replace(',', '.')).toFixed(2).replace('.', ',')}</Text>
+                    </>}
+
+                <Text
+                    style={styles.title}
+                >Requisitos</Text>
+                {service.meta_box.requisitos.map((item, idx) => {
+                    return <Text
+                        style={styles.text}
+                        key={idx}>{'\u2022'} {item}</Text>
+                })}
+                <Text
+                    style={styles.title}
+                >Etapas</Text>
+                {service.meta_box.etapas.map((item, idx) => {
+                    return <Text
+                        style={styles.text}
+                        key={idx}>{'\u2022'} {item}</Text>
+                })}
+
+                <Text
+                    style={styles.title}
+                >Anexos</Text>
+
+                {service.meta_box.anexo.map((item, idx) => {
+                    return <TouchableOpacity
+                        onPress={() => {
+                            //navigation.navigate('PDFViewer', { url: item.url });
+                        }}
+                        style={styles.attachment}
+                        key={idx}>
+                        <Text
+                            style={{ color: '#FFF' }}
+                        >{item.name}</Text>
+                    </TouchableOpacity>
+                })}
+                <View
+                    style={{ marginBottom: 30 }}
+                ></View>
 
             </ScrollView>
         </View>
@@ -121,6 +194,17 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 16,
-        textAlign: 'left'
+        textAlign: 'left',
+        paddingHorizontal: 10
+    },
+    attachment: {
+        width: '100%',
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.primary,
+        elevation: 4,
+        borderRadius: 5,
+        marginVertical: 10
     },
 });

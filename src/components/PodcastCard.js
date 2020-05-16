@@ -9,6 +9,7 @@ export default function MenuItem({ title, description, progress, onPress }) {
     return (
         <TouchableOpacity
             onPress={onPress}
+            activeOpacity={0.85}
             style={styles.podcastCardContainer}
         >
             <View
