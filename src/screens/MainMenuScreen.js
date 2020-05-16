@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Image, StatusBar } from 'react-native';
+import Constants from 'expo-constants';
 
 import { colors, strings } from '../config/Constants';
 import MenuItem from '../components/MenuItem';
@@ -14,7 +15,8 @@ export default function MainMenuScreen({ navigation }) {
     useEffect(() => { municipio() }, []);
     return (
         <View style={styles.container}>
-            <ImageBackground
+            <StatusBar barStyle={"light-content"} translucent={true} backgroundColor={'rgba(0,0,0,0.2)'} />
+            {/* <ImageBackground
                 source={require('../../assets/praca_hidro.png')}
                 resizeMode={'cover'}
                 style={{
@@ -23,7 +25,6 @@ export default function MainMenuScreen({ navigation }) {
                     height: 150,
                 }}
             >
-                <StatusBar barStyle={"light-content"} translucent={true} backgroundColor={'rgba(0,0,0,0.2)'} />
                 <View style={{
                     width: '100%',
                     height: '100%',
@@ -31,17 +32,30 @@ export default function MainMenuScreen({ navigation }) {
                     backgroundColor: '#FFF',
                 }}>
                 </View>
-            </ImageBackground>
+            </ImageBackground> */}
+            <Image
+                source={require('../../assets/brasao-app-confitec.png')}
+                resizeMode={'contain'}
+                style={{
+                    width: '60%',
+                    aspectRatio: 2628 / 882,
+                    height: undefined,
+                    marginTop: Constants.statusBarHeight + 40,
+                    marginBottom: 40,
+                }}
+            />
             <View
                 style={{
                     width: '100%',
                     height: 10,
-                    backgroundColor: colors.dividerColor
+                    backgroundColor: colors.dividerColor,
                     //elevation: 5
                 }}
             >
             </View>
-            <View style={{
+
+
+            {/* <View style={{
                 width: 120,
                 height: 120,
                 borderRadius: 60,
@@ -49,10 +63,11 @@ export default function MainMenuScreen({ navigation }) {
                 position: "absolute",
                 top: 90,
                 elevation: 5
-            }}>
+            }}> 
+        </View>
+            */}
 
-            </View>
-            <View
+            {/* <View
                 style={{
                     marginTop: 70,
                 }}
@@ -73,7 +88,7 @@ export default function MainMenuScreen({ navigation }) {
                         textAlign: 'center',
                     }}
                 >{strings.townHallName}</Text>
-            </View>
+            </View> */}
             <View
                 style={{
                     flex: 1,
@@ -104,7 +119,7 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"FontAwesome5"}
                         title={"Município"}
                         onPress={() => {
-                            navigation.navigate("Município")
+                            navigation.navigate("CityScreen")
                         }}
                     />
                     <MenuItem
@@ -132,6 +147,7 @@ export default function MainMenuScreen({ navigation }) {
                 </View>
                 <View style={styles.menuContainer}>
                     <MenuItem
+                        onPress={()=>{ navigation.navigate('ServicesScreen')  }}
                         iconName={"email-newsletter"}
                         iconSource={"MaterialCommunityIcons"}
                         title={"Carta de Serviços"} />
@@ -140,6 +156,7 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"Ionicons"}
                         title={"Ouvidoria"} />
                     <MenuItem
+                        onPress={() => { navigation.navigate('PodcastScreen') }}
                         iconName={"ios-mic"}
                         iconSource={"Ionicons"}
                         title={`Podcast ${strings.townHallName}`} />
@@ -148,11 +165,11 @@ export default function MainMenuScreen({ navigation }) {
             <View
                 style={{
                     width: '100%',
-                    padding:10
+                    padding: 10
                 }}
             >
                 <Text
-                    style={{...styles.footerText, fontWeight: 'bold'}}
+                    style={{ ...styles.footerText, fontWeight: 'bold' }}
                 >{townHall && townHall?.title?.rendered}</Text>
                 <Text
                     style={styles.footerText}
@@ -161,7 +178,7 @@ export default function MainMenuScreen({ navigation }) {
                     style={styles.footerText}
                 >{townHall && townHall.meta_box?.horario}</Text>
             </View>
-        </View>
+        </View >
     );
 }
 

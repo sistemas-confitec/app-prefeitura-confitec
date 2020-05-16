@@ -19,12 +19,14 @@ export default function MainMenuScreen() {
     return (
         <View style={styles.container}>
             <ScrollView>
-                <Text>{cityName}</Text>
+                <Text
+                    style={styles.cityName}
+                >{cityName}</Text>
                 {cityInfo.map((city1, idx1) => {
                     if (city1.type === 'text') {
                         infoArray.push(<Text style={styles.text} key={'city1-' + idx1}>{city1.content.replace(/^\s+|\s+$/g, '')}</Text>)
                     }
-                    if (!!city1.children && city1.children[0].type==='text') {
+                    if (!!city1.children && city1.children[0].type === 'text') {
                         infoArray.push(<Text style={styles.title} key={'city1-' + idx1}>{city1.children[0].content.replace(/^\s+|\s+$/g, '')}</Text>)
                     }
                 })}
@@ -39,7 +41,7 @@ export default function MainMenuScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.backgroudColor,
+        backgroundColor: colors.backgroudColorContent,
         alignItems: 'center',
         justifyContent: 'flex-start',
         padding: 10,
@@ -52,8 +54,14 @@ const styles = StyleSheet.create({
         textAlign: 'justify'
     },
     title: {
-        fontWeight:'bold',
-        fontSize:14,
-        marginVertical:10
+        fontWeight: 'bold',
+        fontSize: 14,
+        marginVertical: 10
+    },
+    cityName: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginVertical: 10,
+        textAlign: 'center'
     }
 });
