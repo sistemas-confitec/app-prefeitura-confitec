@@ -75,7 +75,7 @@ export default function MainMenuScreen({ navigation }) {
 
                 <Text
                     style={{
-                        color: colors.menuText,
+                        color: colors.secundary,
                         fontSize: 14,
                         marginBottom: -10,
                         textAlign: 'center',
@@ -83,7 +83,7 @@ export default function MainMenuScreen({ navigation }) {
                 >Prefeitura Municipal de </Text>
                 <Text
                     style={{
-                        color: colors.menuText,
+                        color: colors.secundary,
                         fontSize: 40,
                         textAlign: 'center',
                     }}
@@ -100,15 +100,19 @@ export default function MainMenuScreen({ navigation }) {
             >
                 <View style={styles.menuContainer}>
                     <MenuItem
+                        onPress={() => { navigation.navigate('TownHallScreen') }}
                         title={"Prefeitura"}
-                        iconSource={"FontAwesome"}
-                        iconName={"building-o"}
+                        iconSource={"FontAwesome5"}
+                        iconName={"building"}
                     />
                     <MenuItem
                         iconName={"user-tie"}
                         iconSource={"FontAwesome5"}
                         title={"Prefeito"} />
                     <MenuItem
+                        onPress={() => {
+                            navigation.navigate('SecretaryScreen')
+                        }}
                         iconName={"sitemap"}
                         iconSource={"FontAwesome"}
                         title={"Secretarias"} />
@@ -137,6 +141,7 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"Foundation"}
                         title={"Transparência"} />
                     <MenuItem
+                        onPress={() => { navigation.navigate('LRFScreen') }}
                         iconName={"hammer"}
                         iconSource={"FontAwesome5"}
                         title={"LRF"} />
@@ -147,7 +152,7 @@ export default function MainMenuScreen({ navigation }) {
                 </View>
                 <View style={styles.menuContainer}>
                     <MenuItem
-                        onPress={()=>{ navigation.navigate('ServicesScreen')  }}
+                        onPress={() => { navigation.navigate('ServicesScreen') }}
                         iconName={"email-newsletter"}
                         iconSource={"MaterialCommunityIcons"}
                         title={"Carta de Serviços"} />

@@ -24,11 +24,12 @@ export default function PodcastScreen() {
                 contentContainerStyle={{ flexGrow: 1, padding: 10 }}
             >
                 {podcastData.map((podcast) => {
-                    return <PodcastCard
+                    return podcast.meta_box?.audio_podcast[0]?.url ? <PodcastCard
                         key={podcast.id}
                         progress={0.3}
+                        url={podcast.meta_box?.audio_podcast[0]?.url}
                         title={podcast.meta_box.titulo_podcast}
-                        description={podcast.meta_box.descricao_podcast} />
+                        description={podcast.meta_box.descricao_podcast} />:<></>
                 })}
             </ScrollView>
         </View>

@@ -152,7 +152,7 @@ export default function ServicesDetailsScreen({ route, navigation }) {
                 {service.meta_box.anexo.map((item, idx) => {
                     return <TouchableOpacity
                         onPress={() => {
-                            //navigation.navigate('PDFViewer', { url: item.url });
+                            navigation.navigate('PDFViewer', { url: item.url });
                         }}
                         style={styles.attachment}
                         key={idx}>
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: colors.primary,
+        backgroundColor: colors.secundary,
         elevation: 4,
         borderRadius: 5,
         marginVertical: 10

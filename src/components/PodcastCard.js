@@ -1,11 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { ProgressBar } from 'react-native-paper';
+import { Audio } from 'expo-av';
 
 import { colors } from '../config/Constants';
 
-export default function MenuItem({ title, description, progress, onPress }) {
+export default function MenuItem({ title, description, onPress, url }) {
+    const [progress, setProgress] = useState(0);
+    const [paused, setPaused] = useState(true);
+
+    const soundObject = new Audio.Sound();
+
+    /* const getPermision = async () => {
+        const { status } = await Audio.getPermissionsAsync();
+        console.log(status)
+        if(status !== 'granted'){
+            await Audio.requestPermissionsAsync();
+        }
+    } */
+
+    /* useEffect(getPermision(), []); */
+
     return (
         <TouchableOpacity
             onPress={onPress}
@@ -29,13 +45,48 @@ export default function MenuItem({ title, description, progress, onPress }) {
                         marginVertical: 10
                     }}
                 >
-                    <AntDesign name="play" size={35} color={colors.primary} />
+                    <TouchableOpacity
+                        onPress={async () => {
+                            try {
+                                /* const playbackObject = await Audio.Sound.createAsync(
+                                    { uri: url },
+                                    { shouldPlay: true }
+                                ); */
+                                //console.log('entrou', url)
+                                const status = await soundObject.getStatusAsync();
+                                console.log('status', status);
+                                if (!status.isLoaded && !status.isBuffering) {
+                                    await soundObject.loadAsync({ uri: url });
+                                    await soundObject.playAsync();
+                                    setPaused(false)
+                                }
+                                if (!status.isPlaying) {
+                                    await soundObject.playAsync();
+                                    setPaused(false)
+                                } else {
+                                    await soundObject.pauseAsync();
+                                    setPaused(true);
+                                }
+                                if (status.positionMillis && status.playableDurationMillis) {
+                                    setProgress(status.positionMillis / status.playableDurationMillis)
+                                }
+                                // Your sound is playing!
+                            } catch (error) {
+                                // An error occurred!
+                            }
+                        }}
+                    >
+                        {paused ?
+                            <AntDesign name="play" size={35} color={colors.secundary} /> :
+                            <AntDesign name="pausecircle" size={35} color={colors.secundary} />
+                        }
+                    </TouchableOpacity>
                     <Text
                         style={{ marginLeft: 10 }}
                     >15 Mai 2020</Text>
                 </View>
             </View>
-            <ProgressBar style={{ borderBottomEndRadius: 8, borderBottomStartRadius: 8 }} progress={progress} color={colors.primary} />
+            <ProgressBar style={{ borderBottomEndRadius: 8, borderBottomStartRadius: 8 }} progress={progress} color={colors.secundary} />
         </TouchableOpacity>
     );
 }

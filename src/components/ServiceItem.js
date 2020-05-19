@@ -34,7 +34,7 @@ export default function MenuItem({ title, iconURL, onPress }) {
                     >{title}</Text>
                     <Text
                         style={{
-                            color: colors.primary
+                            color: colors.secundary
                         }}
                     >Veja os detalhes</Text>
                 </View>

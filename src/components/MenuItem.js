@@ -8,17 +8,17 @@ export default function MenuItem({ title, iconName, onPress, iconSource }) {
     const icon = () => {
         switch (iconSource) {
             case 'FontAwesome':
-                return <Icons.FontAwesome name={iconName} size={35} color={colors.menuText} />;
+                return <Icons.FontAwesome name={iconName} size={35} color={colors.primary} />;
             case 'FontAwesome5':
-                return <Icons.FontAwesome5 name={iconName} size={35} color={colors.menuText} />;
+                return <Icons.FontAwesome5 name={iconName} size={35} color={colors.primary} />;
             case 'Foundation':
-                return <Icons.Foundation name={iconName} size={35} color={colors.menuText} />;
+                return <Icons.Foundation name={iconName} size={35} color={colors.primary} />;
             case 'MaterialCommunityIcons':
-                return <Icons.MaterialCommunityIcons name={iconName} size={35} color={colors.menuText} />;
+                return <Icons.MaterialCommunityIcons name={iconName} size={35} color={colors.primary} />;
             case 'Ionicons':
-                return <Icons.Ionicons name={iconName} size={35} color={colors.menuText} />;
+                return <Icons.Ionicons name={iconName} size={35} color={colors.primary} />;
             case 'Entypo':
-                return <Icons.Entypo name={iconName} size={35} color={colors.menuText} />;
+                return <Icons.Entypo name={iconName} size={35} color={colors.primary} />;
         }
     }
     return (
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         elevation: 2
     },
     text: {
-        color: colors.menuText,
+        color: colors.primary,
         textAlign: 'center'
     }
 });

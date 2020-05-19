@@ -5,6 +5,9 @@ import CityScreen from '../screens/CityScreen';
 import PodcastScreen from '../screens/PodcastScreen';
 import ServicesScreen from '../screens/ServicesScreen';
 import ServicesDetailsScreen from '../screens/ServicesDetailsScreen';
+import TownHallScreen from '../screens/TownHallScreen';
+import SecretaryScreen from '../screens/SecretaryScreen';
+import LRFScreen from '../screens/LRFScreen';
 import PDFViewer from '../screens/PDFViewer';
 import { colors } from '../config/Constants';
 
@@ -60,7 +63,7 @@ export default function MainStackNavigator() {
                     }
                 })}
                 name="ServicesDetailsScreen" component={ServicesDetailsScreen} />
-           {/*  <Stack.Screen
+            <Stack.Screen
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Carta de Serviços",
@@ -68,7 +71,34 @@ export default function MainStackNavigator() {
                         backgroundColor: colors.primary
                     }
                 })}
-                name="PDFViewer" component={PDFViewer} /> */}
+                name="PDFViewer" component={PDFViewer} />
+            <Stack.Screen
+                options={({ navigation }) => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: "Prefeitura",
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="TownHallScreen" component={TownHallScreen} />
+            <Stack.Screen
+                options={({ navigation }) => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: "LRF",
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="LRFScreen" component={LRFScreen} />
+            <Stack.Screen
+                options={({ navigation }) => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: "Secretarias",
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="SecretaryScreen" component={SecretaryScreen} />
         </Stack.Navigator>
     );
 }

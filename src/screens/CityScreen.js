@@ -26,7 +26,7 @@ export default function MainMenuScreen() {
                     if (city1.type === 'text') {
                         infoArray.push(<Text style={styles.text} key={'city1-' + idx1}>{city1.content.replace(/^\s+|\s+$/g, '')}</Text>)
                     }
-                    if (!!city1.children && city1.children[0].type === 'text') {
+                    if (!!city1.children && city1.children[0]?.type === 'text') {
                         infoArray.push(<Text style={styles.title} key={'city1-' + idx1}>{city1.children[0].content.replace(/^\s+|\s+$/g, '')}</Text>)
                     }
                 })}
