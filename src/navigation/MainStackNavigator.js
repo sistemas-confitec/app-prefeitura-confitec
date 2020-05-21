@@ -8,6 +8,7 @@ import ServicesDetailsScreen from '../screens/ServicesDetailsScreen';
 import TownHallScreen from '../screens/TownHallScreen';
 import SecretaryScreen from '../screens/SecretaryScreen';
 import PrefeitoScreen from '../screens/PrefeitoScreen';
+import LRFDetailsScreen from '../screens/LRFDetailsScreen';
 import LRFScreen from '../screens/LRFScreen';
 import PDFViewer from '../screens/PDFViewer';
 import { colors } from '../config/Constants';
@@ -109,6 +110,15 @@ export default function MainStackNavigator() {
                     }
                 })}
                 name="PrefeitoScreen" component={PrefeitoScreen} />
+            <Stack.Screen
+                options={({ navigation }) => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: "LRF",
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="LRFDetailsScreen" component={LRFDetailsScreen} />
         </Stack.Navigator>
     );
 }

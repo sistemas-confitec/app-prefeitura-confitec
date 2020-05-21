@@ -28,118 +28,117 @@ export default function SecretaryScreen({ navigation }) {
                 style={{ width: '100%' }}
             >
                 {secretaryData && secretaryData.secretarias.map((sec, idx) => {
-                    return <>
-                        <CollapsibleList
-                            numberOfVisibleItems={0}
-                            buttonPosition={'top'}
-                            wrapperStyle={styles.itemContainer}
-                            onToggle={(collap) => {
-                                if (collap) {
-                                    setCollapsed([...collapsed, idx]);
-                                } else {
-                                    setCollapsed(collapsed.filter((c) => c !== idx));
-                                }
-                            }}
-                            buttonContent={
-                                <View key={idx}>
-                                    <Text
-                                        style={styles.title}
-                                        selectable={true}
-                                    >{sec.secretaria}</Text>
-                                    <View style={{ width: '100%', height: 1, backgroundColor: '#F5F5F5', marginTop: 10 }} />
-                                    {!collapsed.includes(idx) ? <Entypo
-                                        name="chevron-small-down"
+                    return <CollapsibleList
+                        key={idx}
+                        numberOfVisibleItems={0}
+                        buttonPosition={'top'}
+                        wrapperStyle={styles.itemContainer}
+                        onToggle={(collap) => {
+                            if (collap) {
+                                setCollapsed([...collapsed, idx]);
+                            } else {
+                                setCollapsed(collapsed.filter((c) => c !== idx));
+                            }
+                        }}
+                        buttonContent={
+                            <View>
+                                <Text
+                                    style={styles.title}
+                                    selectable={true}
+                                >{sec.secretaria}</Text>
+                                <View style={{ width: '100%', height: 1, backgroundColor: '#F5F5F5', marginTop: 10 }} />
+                                {!collapsed.includes(idx) ? <Entypo
+                                    name="chevron-small-down"
+                                    style={{ alignSelf: 'center' }}
+                                    size={35}
+                                    color={colors.primary} /> : <Entypo
+                                        name="chevron-small-up"
                                         style={{ alignSelf: 'center' }}
                                         size={35}
-                                        color={colors.primary} /> : <Entypo
-                                            name="chevron-small-up"
-                                            style={{ alignSelf: 'center' }}
-                                            size={35}
-                                            color={colors.primary} />}
-                                </View>
-                            }
+                                        color={colors.primary} />}
+                            </View>
+                        }
+                    >
+                        {sec.gestor_atual && <Text
+                            style={styles.text}
+                            selectable={true}
+                        ><Text
+                            style={{ ...styles.text, fontWeight: "bold" }}
+                            selectable={true}
+                        >GESTOR:</Text> {sec.gestor_atual}</Text>}
+                        {sec.ordenador_atual && <Text
+                            style={styles.text}
+                            selectable={true}
+                        ><Text
+                            style={{ ...styles.text, fontWeight: "bold" }}
+                            selectable={true}
+                        >ORDENADOR:</Text> {sec.ordenador_atual}</Text>}
+                        {sec.horario && <Text
+                            style={styles.text}
+                            selectable={true}
+                        ><Text
+                            style={{ ...styles.text, fontWeight: "bold" }}
+                            selectable={true}
+                        >HORÁRIO:</Text> {sec.horario}</Text>}
+                        {sec.cnpj && <Text
+                            style={styles.text}
+                            selectable={true}
+                        ><Text
+                            style={{ ...styles.text, fontWeight: "bold" }}
+                            selectable={true}
+                        >CNPJ:</Text> {sec.cnpj}</Text>}
+                        {sec.endereco && <Text
+                            style={styles.text}
+                            selectable={true}
+                        ><Text
+                            style={{ ...styles.text, fontWeight: "bold" }}
+                            selectable={true}
+                        >ENDEREÇO:</Text> {sec.endereco}</Text>}
+
+                        {sec.telefone && <Text
+                            style={styles.text}
+                            selectable={true}
+                        ><Text
+                            style={{ ...styles.text, fontWeight: "bold" }}
+                            selectable={true}
+                        >TELEFONE:</Text> {sec.telefone}</Text>}
+
+
+                        {sec.email ? <Text
+                            style={styles.text}
+                            selectable={true}
                         >
-                            {sec.gestor_atual && <Text
-                                style={styles.text}
-                                selectable={true}
-                            ><Text
+                            <Text
                                 style={{ ...styles.text, fontWeight: "bold" }}
                                 selectable={true}
-                            >GESTOR:</Text> {sec.gestor_atual}</Text>}
-                            {sec.ordenador_atual && <Text
-                                style={styles.text}
-                                selectable={true}
-                            ><Text
-                                style={{ ...styles.text, fontWeight: "bold" }}
-                                selectable={true}
-                            >ORDENADOR:</Text> {sec.ordenador_atual}</Text>}
-                            {sec.horario && <Text
-                                style={styles.text}
-                                selectable={true}
-                            ><Text
-                                style={{ ...styles.text, fontWeight: "bold" }}
-                                selectable={true}
-                            >HORÁRIO:</Text> {sec.horario}</Text>}
-                            {sec.cnpj && <Text
-                                style={styles.text}
-                                selectable={true}
-                            ><Text
-                                style={{ ...styles.text, fontWeight: "bold" }}
-                                selectable={true}
-                            >CNPJ:</Text> {sec.cnpj}</Text>}
-                            {sec.endereco && <Text
-                                style={styles.text}
-                                selectable={true}
-                            ><Text
-                                style={{ ...styles.text, fontWeight: "bold" }}
-                                selectable={true}
-                            >ENDEREÇO:</Text> {sec.endereco}</Text>}
-
-                            {sec.telefone && <Text
-                                style={styles.text}
-                                selectable={true}
-                            ><Text
-                                style={{ ...styles.text, fontWeight: "bold" }}
-                                selectable={true}
-                            >TELEFONE:</Text> {sec.telefone}</Text>}
-
-
-                            {sec.email ? <Text
-                                style={styles.text}
-                                selectable={true}
-                            >
-                                <Text
-                                    style={{ ...styles.text, fontWeight: "bold" }}
-                                    selectable={true}
-                                >EMAIL:
+                            >EMAIL:
                                 </Text> {sec.email}
-                            </Text> : <></>}
-                            {!!sec.whatsapp &&
-                                <TouchableOpacity
+                        </Text> : <></>}
+                        {!!sec.whatsapp &&
+                            <TouchableOpacity
                                 activeOpacity={0.85}
-                                    onPress={() => { Linking.openURL(`whatsapp://send?phone=+55${sec.whatsapp}`) }}
-                                    style={{
-                                        flexDirection:'row',
-                                        width: '100%',
-                                        alignItems: 'center',
-                                        justifyContent:'center',
-                                        alignSelf:'center',
-                                        backgroundColor: colors.secundary,
-                                        marginTop: 15,
-                                        marginBottom: 10,
-                                        padding: 10,
-                                        borderRadius:8,
-                                        elevation:4
-                                    }}
-                                >
-                                    <FontAwesome5 name="whatsapp" size={24} color={"#FFF"} />
-                                    <Text
-                                        style={{ ...styles.text, fontWeight: "bold", textAlign: 'center', color: '#FFF', marginTop:0, marginLeft:10 }}
-                                    >Fale pelo WhatsApp</Text>
-                                </TouchableOpacity>
-                            }
-                        </CollapsibleList>
-                    </>
+                                onPress={() => { Linking.openURL(`whatsapp://send?phone=+55${sec.whatsapp}`) }}
+                                style={{
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center',
+                                    backgroundColor: colors.secundary,
+                                    marginTop: 15,
+                                    marginBottom: 10,
+                                    padding: 10,
+                                    borderRadius: 8,
+                                    elevation: 4
+                                }}
+                            >
+                                <FontAwesome5 name="whatsapp" size={24} color={"#FFF"} />
+                                <Text
+                                    style={{ ...styles.text, fontWeight: "bold", textAlign: 'center', color: '#FFF', marginTop: 0, marginLeft: 10 }}
+                                >Fale pelo WhatsApp</Text>
+                            </TouchableOpacity>
+                        }
+                    </CollapsibleList>
                 })}
             </ScrollView>
         </View>

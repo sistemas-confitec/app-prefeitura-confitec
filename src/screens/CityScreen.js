@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
 import api from '../services/api';
-import { parse } from 'himalaya';
+//import { parse } from 'himalaya';
 import HTML from 'react-native-render-html';
 
 import { colors, strings } from '../config/Constants';
 
 
 export default function MainMenuScreen() {
-    const [cityInfo, setCityInfo] = useState([]);
+    const [cityInfo, setCityInfo] = useState('');
     const [cityName, setCityName] = useState('');
     const infoArray = [];
     const municipio = async () => {
@@ -27,20 +27,9 @@ export default function MainMenuScreen() {
                     style={styles.cityName}
                 >{cityName}</Text>
 
-                <HTML 
+                {!!cityInfo && <HTML 
                 //containerStyle={{alignItems:'center'}}
-                html={cityInfo} imagesMaxWidth={Dimensions.get('window').width} />
-                {/* {cityInfo.map((city1, idx1) => {
-                    if (city1.type === 'text') {
-                        infoArray.push(<Text style={styles.text} key={'city1-' + idx1}>{city1.content.replace(/^\s+|\s+$/g, '')}</Text>)
-                    }
-                    if (!!city1.children && city1.children[0]?.type === 'text') {
-                        infoArray.push(<Text style={styles.title} key={'city1-' + idx1}>{city1.children[0].content.replace(/^\s+|\s+$/g, '')}</Text>)
-                    }
-                })}
-                {
-                    infoArray.map((item) => item)
-                } */}
+                html={cityInfo} imagesMaxWidth={Dimensions.get('window').width} />}
             </ScrollView>
         </View>
     );

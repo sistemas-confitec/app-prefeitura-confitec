@@ -22,11 +22,11 @@ export default function TownHallScreen() {
             resp2.data.forEach(element => {
                 if (element.id == resp.data[0].meta_box.id_prefeito) {
 
-                    return setPrefeito(element.title.rendered)
+                    setPrefeito(element.title.rendered)
                 }
                 if (element.id == resp.data[0].meta_box.id_vice) {
 
-                    return setVice(element.title.rendered)
+                    setVice(element.title.rendered)
                 }
             });
         }
