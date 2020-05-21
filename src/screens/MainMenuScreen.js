@@ -8,31 +8,24 @@ import api from '../services/api';
 
 export default function MainMenuScreen({ navigation }) {
     const [townHall, setTownHall] = useState(null);
+    const [sexoPrefeito, setSexoPrefeito] = useState(null);
     const municipio = async () => {
-        const resp = await api.get('/wp-json/wp/v2/app-prefeitura');
-        setTownHall(resp.data[0]);
+        const resp1 = await api.get('/wp-json/wp/v2/app-prefeitura');
+        setTownHall(resp1.data[0]);
+        const resp = await api.get('/wp-json/wp/v2/app-prefeito-e-vice');
+        if (resp.data) {
+            resp.data.forEach(element => {
+                if ((element.meta_box['sexo-prefeito'] === "Prefeito" || element.meta_box['sexo-prefeito'] === "Prefeita") && !element.meta_box['fim-mandato-prefeito']) {
+
+                    return setSexoPrefeito(element.meta_box['sexo-prefeito']);
+                }
+            });
+        }
     }
     useEffect(() => { municipio() }, []);
     return (
         <View style={styles.container}>
             <StatusBar barStyle={"light-content"} translucent={true} backgroundColor={'rgba(0,0,0,0.2)'} />
-            {/* <ImageBackground
-                source={require('../../assets/praca_hidro.png')}
-                resizeMode={'cover'}
-                style={{
-                    width: '100%',
-                    //aspectRatio: 640 / 426,
-                    height: 150,
-                }}
-            >
-                <View style={{
-                    width: '100%',
-                    height: '100%',
-                    //backgroundColor: 'rgba(0,0,0,0.7)',
-                    backgroundColor: '#FFF',
-                }}>
-                </View>
-            </ImageBackground> */}
             <Image
                 source={require('../../assets/brasao-app-confitec.png')}
                 resizeMode={'contain'}
@@ -54,41 +47,6 @@ export default function MainMenuScreen({ navigation }) {
             >
             </View>
 
-
-            {/* <View style={{
-                width: 120,
-                height: 120,
-                borderRadius: 60,
-                backgroundColor: '#FFF',
-                position: "absolute",
-                top: 90,
-                elevation: 5
-            }}> 
-        </View>
-            */}
-
-            {/* <View
-                style={{
-                    marginTop: 70,
-                }}
-            >
-
-                <Text
-                    style={{
-                        color: colors.secundary,
-                        fontSize: 14,
-                        marginBottom: -10,
-                        textAlign: 'center',
-                    }}
-                >Prefeitura Municipal de </Text>
-                <Text
-                    style={{
-                        color: colors.secundary,
-                        fontSize: 40,
-                        textAlign: 'center',
-                    }}
-                >{strings.townHallName}</Text>
-            </View> */}
             <View
                 style={{
                     flex: 1,
@@ -104,11 +62,12 @@ export default function MainMenuScreen({ navigation }) {
                         title={"Prefeitura"}
                         iconSource={"FontAwesome5"}
                         iconName={"building"}
-                    />
+                        />
                     <MenuItem
-                        iconName={"user-tie"}
-                        iconSource={"FontAwesome5"}
-                        title={"Prefeito"} />
+                        onPress={() => { navigation.navigate('PrefeitoScreen') }}
+                        iconName={sexoPrefeito ==="Prefeita" ?  "user-female": "user-tie" }
+                        iconSource={sexoPrefeito ==="Prefeita" ? "SimpleLineIcons" : "FontAwesome5"}
+                        title={sexoPrefeito ? sexoPrefeito : "Prefeito(a)"} />
                     <MenuItem
                         onPress={() => {
                             navigation.navigate('SecretaryScreen')

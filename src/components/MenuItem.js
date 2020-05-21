@@ -19,6 +19,8 @@ export default function MenuItem({ title, iconName, onPress, iconSource }) {
                 return <Icons.Ionicons name={iconName} size={35} color={colors.primary} />;
             case 'Entypo':
                 return <Icons.Entypo name={iconName} size={35} color={colors.primary} />;
+            case 'SimpleLineIcons':
+                return <Icons.SimpleLineIcons name={iconName} size={35} color={colors.primary} />;
         }
     }
     return (

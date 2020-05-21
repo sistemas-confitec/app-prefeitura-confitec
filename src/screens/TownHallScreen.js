@@ -95,6 +95,10 @@ export default function TownHallScreen() {
                         <Text
                             selectable={true}
                             style={styles.text}
+                        >CNPJ: {townHallData?.meta_box.cnpj}</Text>
+                        <Text
+                            selectable={true}
+                            style={styles.text}
                         >{townHallData?.meta_box.horario}</Text>
                     </View>
 

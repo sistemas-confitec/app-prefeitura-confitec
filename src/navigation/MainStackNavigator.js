@@ -7,6 +7,7 @@ import ServicesScreen from '../screens/ServicesScreen';
 import ServicesDetailsScreen from '../screens/ServicesDetailsScreen';
 import TownHallScreen from '../screens/TownHallScreen';
 import SecretaryScreen from '../screens/SecretaryScreen';
+import PrefeitoScreen from '../screens/PrefeitoScreen';
 import LRFScreen from '../screens/LRFScreen';
 import PDFViewer from '../screens/PDFViewer';
 import { colors } from '../config/Constants';
@@ -99,6 +100,15 @@ export default function MainStackNavigator() {
                     }
                 })}
                 name="SecretaryScreen" component={SecretaryScreen} />
+            <Stack.Screen
+                options={({ navigation }) => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: "Gestores Atuais",
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="PrefeitoScreen" component={PrefeitoScreen} />
         </Stack.Navigator>
     );
 }

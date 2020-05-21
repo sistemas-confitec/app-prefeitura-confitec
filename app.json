@@ -1,28 +1,34 @@
 {
-  "expo": {
-    "name": "prefeitura-confitec",
-    "slug": "prefeitura-confitec",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
+    "expo": {
+        "name": "App Confitec Gov",
+        "slug": "prefeitura-confitec",
+        "platforms": [
+            "ios",
+            "android",
+            "web"
+        ],
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "ios": {
+            "bundleIdentifier": "com.confitec.appconfitecgov",
+            "buildNumber": "1.0.0",
+            "supportsTablet": true
+        },
+        "android": {
+            "package": "com.confitec.appconfitecgov",
+            "versionCode": 1
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ]
     }
-  }
 }

@@ -27,44 +27,9 @@ export default function SecretaryScreen({ navigation }) {
                 contentContainerStyle={{ flexGrow: 1, padding: 10 }}
                 style={{ width: '100%' }}
             >
-
-                {secretaryData && <CollapsibleList
-                    numberOfVisibleItems={0}
-                    buttonPosition={'top'}
-                    wrapperStyle={styles.itemContainer}
-                    onToggle={(collapsed) => { setTownHallCollapsed(collapsed) }}
-                    buttonContent={
-                        <>
-                            <Text
-                                style={styles.title}
-                                selectable={true}
-                            >PREFEITURA</Text>
-                            {!townHallCollapsed ? <Entypo
-                                name="chevron-small-down"
-                                style={{ alignSelf: 'center' }}
-                                size={35}
-                                color={colors.primary} /> : <Entypo
-                                    name="chevron-small-up"
-                                    style={{ alignSelf: 'center' }}
-                                    size={35}
-                                    color={colors.primary} />}
-                        </>
-                    }
-                >
-                    <Text
-                        style={styles.text}
-                        selectable={true}
-                    >Prefeito: {secretaryData.prefeito_nome}</Text>
-                    <Text
-                        style={styles.text}
-                        selectable={true}
-                    >Vice Prefeito: {secretaryData.vice_prefeito_nome}</Text>
-
-                </CollapsibleList>}
                 {secretaryData && secretaryData.secretarias.map((sec, idx) => {
                     return <>
                         <CollapsibleList
-                            key={idx}
                             numberOfVisibleItems={0}
                             buttonPosition={'top'}
                             wrapperStyle={styles.itemContainer}
@@ -76,11 +41,12 @@ export default function SecretaryScreen({ navigation }) {
                                 }
                             }}
                             buttonContent={
-                                <>
+                                <View key={idx}>
                                     <Text
                                         style={styles.title}
                                         selectable={true}
                                     >{sec.secretaria}</Text>
+                                    <View style={{ width: '100%', height: 1, backgroundColor: '#F5F5F5', marginTop: 10 }} />
                                     {!collapsed.includes(idx) ? <Entypo
                                         name="chevron-small-down"
                                         style={{ alignSelf: 'center' }}
@@ -90,7 +56,7 @@ export default function SecretaryScreen({ navigation }) {
                                             style={{ alignSelf: 'center' }}
                                             size={35}
                                             color={colors.primary} />}
-                                </>
+                                </View>
                             }
                         >
                             {sec.gestor_atual && <Text
@@ -153,8 +119,10 @@ export default function SecretaryScreen({ navigation }) {
                                 activeOpacity={0.85}
                                     onPress={() => { Linking.openURL(`whatsapp://send?phone=+55${sec.whatsapp}`) }}
                                     style={{
-                                        width: '95%',
+                                        flexDirection:'row',
+                                        width: '100%',
                                         alignItems: 'center',
+                                        justifyContent:'center',
                                         alignSelf:'center',
                                         backgroundColor: colors.secundary,
                                         marginTop: 15,
@@ -166,8 +134,8 @@ export default function SecretaryScreen({ navigation }) {
                                 >
                                     <FontAwesome5 name="whatsapp" size={24} color={"#FFF"} />
                                     <Text
-                                        style={{ ...styles.text, fontWeight: "bold", textAlign: 'center', color: '#FFF' }}
-                                    >Clique aqui e entre em contato por WhatsApp</Text>
+                                        style={{ ...styles.text, fontWeight: "bold", textAlign: 'center', color: '#FFF', marginTop:0, marginLeft:10 }}
+                                    >Fale pelo WhatsApp</Text>
                                 </TouchableOpacity>
                             }
                         </CollapsibleList>
