@@ -111,9 +111,9 @@ export default function MainStackNavigator() {
                 })}
                 name="PrefeitoScreen" component={PrefeitoScreen} />
             <Stack.Screen
-                options={({ navigation }) => ({
+                options={({ route }) => ({
                     headerTintColor: '#FFF',
-                    headerTitle: "LRF",
+                    headerTitle: route.params?.relatorio,
                     headerStyle:{
                         backgroundColor: colors.primary
                     }

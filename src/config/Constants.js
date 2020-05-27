@@ -1,4 +1,5 @@
 export const baseURL = 'https://prefeitura.sistemasconfitec.com.br';
+//export const baseURL = 'https://erere.ce.gov.br';
 
 export const strings = {
     townHallName: 'Confitec'    //Nome da prefeitura

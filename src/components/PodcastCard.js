@@ -3,23 +3,11 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { ProgressBar } from 'react-native-paper';
 
+
 import { colors } from '../config/Constants';
-import PodcastPlayer from '../components/PodcastPlayer'
+import { pad } from '../util/Functions';
 
-export default function PodcastCard({ title, description, onPress, url }) {
-    const [paused, setPaused] = useState(true);
-    const [showPlayer, setShowPlayer] = useState(false);
-
-
-    /* const getPermision = async () => {
-        const { status } = await Audio.getPermissionsAsync();
-        console.log(status)
-        if(status !== 'granted'){
-            await Audio.requestPermissionsAsync();
-        }
-    } */
-
-    /* useEffect(getPermision(), []); */
+export default function PodcastCard({ title, description, onPress, id, currentPodcast, onPressPlay, playBackStatus }) {
 
     return (
         <TouchableOpacity
@@ -45,13 +33,11 @@ export default function PodcastCard({ title, description, onPress, url }) {
                     }}
                 >
                     <TouchableOpacity
-                        onPress={() => {
-                            setShowPlayer(true);
-                        }}
+                        onPress={() => { onPressPlay() }}
                     >
-                        {paused ?
-                            <AntDesign name="play" size={35} color={colors.secundary} /> :
-                            <AntDesign name="pausecircle" size={35} color={colors.secundary} />
+                        {id===currentPodcast && playBackStatus.isPlaying ?
+                            <AntDesign name="pausecircle" size={35} color={colors.secundary} />:
+                            <AntDesign name="play" size={35} color={colors.secundary} />
                         }
                     </TouchableOpacity>
                     <Text
@@ -59,13 +45,23 @@ export default function PodcastCard({ title, description, onPress, url }) {
                     >15 Mai 2020</Text>
                 </View>
             </View>
-            <PodcastPlayer
-                visible={showPlayer}
-                title={title}
-                description={description}
-                url={url}
-            />
-            <ProgressBar style={{ borderBottomEndRadius: 8, borderBottomStartRadius: 8 }} color={colors.secundary} />
+            <View
+            style={{
+                padding:10
+            }}
+            >
+                {(!!playBackStatus && !!playBackStatus.positionMillis) ? <Text>
+                    {pad(Math.floor(playBackStatus.positionMillis / (1000 * 60)))}:{pad(Math.floor(playBackStatus.positionMillis / 1000 % 60))}/{pad(Math.floor(playBackStatus.durationMillis / (1000 * 60)))}:{pad(Math.floor(playBackStatus.durationMillis / (1000 * 60)))}</Text>
+                    : <Text>00:00/00:00</Text>}
+            </View>
+            {!!playBackStatus && !!playBackStatus.positionMillis ?
+                <ProgressBar
+                    style={{ height: 8 }}
+                    progress={playBackStatus.positionMillis / playBackStatus.durationMillis}
+                    color={colors.secundary} /> :
+                <ProgressBar
+                    style={{ height: 8 }}
+                    progress={0} color={colors.secundary} />}
         </TouchableOpacity>
     );
 }
@@ -82,7 +78,8 @@ const styles = StyleSheet.create({
     podcastCardContainer: {
         width: '100%',
         backgroundColor: '#FFF',
-        borderRadius: 8,
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
         elevation: 5,
         marginBottom: 20
     }

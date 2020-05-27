@@ -11,7 +11,7 @@ export default function LRFTypeButton({ title, subtitle, onPress }) {
             onPress={onPress}
             activeOpacity={0.85}
         >
-            <Text style={{ ...styles.text, fontWeight: 'bold' }}>{title}</Text>
+            <Text style={{ ...styles.text, fontWeight: 'bold', fontSize:18 }}>{title}</Text>
             <Text style={styles.text}>{subtitle}</Text>
         </TouchableOpacity>
     );
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         elevation: 2
     },
     text: {
-        color: colors.secundary,
+        color: colors.primary,
         textAlign: 'center'
     }
 });

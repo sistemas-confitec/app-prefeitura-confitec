@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 import PDFReader from 'rn-pdf-reader-js'
 

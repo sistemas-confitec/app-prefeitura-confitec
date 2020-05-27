@@ -107,7 +107,7 @@ export default function MainMenuScreen({ navigation }) {
                     <MenuItem
                         iconName={"newsletter"}
                         iconSource={"Entypo"}
-                        title={"Publicações"} />
+                        title={"Diário Oficial"} />
                 </View>
                 <View style={styles.menuContainer}>
                     <MenuItem
