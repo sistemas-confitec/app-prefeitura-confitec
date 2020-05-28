@@ -116,6 +116,7 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"MaterialCommunityIcons"}
                         title={"Carta de Serviços"} />
                     <MenuItem
+                        onPress={() => { navigation.navigate('OuvidoriaScreen') }}
                         iconName={"ios-chatbubbles"}
                         iconSource={"Ionicons"}
                         title={"Ouvidoria"} />

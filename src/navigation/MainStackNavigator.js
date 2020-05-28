@@ -10,6 +10,7 @@ import SecretaryScreen from '../screens/SecretaryScreen';
 import PrefeitoScreen from '../screens/PrefeitoScreen';
 import LRFDetailsScreen from '../screens/LRFDetailsScreen';
 import LRFScreen from '../screens/LRFScreen';
+import OuvidoriaScreen from '../screens/OuvidoriaScreen';
 import PDFViewer from '../screens/PDFViewer';
 import { colors } from '../config/Constants';
 
@@ -119,6 +120,15 @@ export default function MainStackNavigator() {
                     }
                 })}
                 name="LRFDetailsScreen" component={LRFDetailsScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Ouvidoria',
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="OuvidoriaScreen" component={OuvidoriaScreen} />
         </Stack.Navigator>
     );
 }
