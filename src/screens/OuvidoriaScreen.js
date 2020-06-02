@@ -9,7 +9,7 @@ import { colors, esicURL } from '../config/Constants';
 import { pad } from '../util/Functions';
 
 export default function OuvidoriaScreen(props) {
-    const [animationAccountSuccess, setAnimationAccountSuccess] = useState(false);
+    /* const [animationAccountSuccess, setAnimationAccountSuccess] = useState(false); */
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [anonimo, setAnonimo] = useState('NÃO');
     const [name, setName] = useState({ value: '' });
@@ -115,15 +115,24 @@ export default function OuvidoriaScreen(props) {
                 setMessage({ ...message, error: "A mensagem deve conter no mínimo 10 caracteres" })
             } else {
                 setMessage({ ...message, error: undefined });
-            return true;
+                return true;
             }
         }
     }
 
     function validate() {
-        return validateName() & validateEmail() & validateTelefone() & validateSexo()
-            & validateInstrucao() & validateNascimento() & validateSecretaria()
-            & validateMessage() & validateSubject();
+        if (anonimo === 'NÃO') {
+            return validateName() & validateEmail() & validateTelefone() & validateSexo()
+                & validateInstrucao() & validateNascimento() & validateSecretaria()
+                & validateMessage() & validateSubject();
+        } else {
+            setName({ value: '', error: undefined });
+            setEmail({ value: '', error: undefined });
+            setTelefone({ value: '', error: undefined });
+            return validateSexo() & validateInstrucao() & validateNascimento() & validateSecretaria()
+                & validateMessage() & validateSubject();
+
+        }
     }
 
 
@@ -133,7 +142,7 @@ export default function OuvidoriaScreen(props) {
         if (valid) {
             try {
                 const birth = new Date(nascimento.value);
-                const nasc = birth.getFullYear()+'-'+ pad(birth.getMonth()+1)+'-'+pad(birth.getDate())
+                const nasc = birth.getFullYear() + '-' + pad(birth.getMonth() + 1) + '-' + pad(birth.getDate())
                 const data = new FormData();
                 data.append('anonimo', anonimo);
                 data.append('instrucao', instrucao.value);
@@ -148,13 +157,13 @@ export default function OuvidoriaScreen(props) {
                 setIsSubmitting(true);
                 const response = await axios.post(`${esicURL}/wp-json/contact-form-7/v1/contact-forms/418/feedback`, data);
                 console.log(response.data);
-                /* if (response.data.success) {
+                if (response.data.status === 'mail_sent') {
                     //setAnimationAccountSuccess(true);
+                    Alert.alert('Enviado com sucesso', `${response.data.message}`, [{ text: 'ok', onPress: () => props.navigation.goBack() }]);
                 } else {
-
-                    Alert.alert('Erro ao cadastrar', 'Parece que o número fornecido já possui um cadastro no nosso sistema.');
-                    setIsSubmitting(false);
-                } */
+                    Alert.alert('Erro ao cadastrar', 'Tivemos um problema no envio do formulário');
+                }
+                setIsSubmitting(false);
             } catch (error) {
                 console.log(error)
                 Alert.alert('Falha na comunicação com o servidor, verifique sua conexão com a Internet.');
@@ -258,31 +267,31 @@ export default function OuvidoriaScreen(props) {
                         >
                             <Picker.Item label="---" value="---" />
                             <Picker.Item label="ANALFABETO, INCLUSIVE O QUE, EMBORA TENHA RECEBIDO INSTRUÇÃO, NÃO SE ALFABETIZOU"
-                            value="ANALFABETO, INCLUSIVE O QUE, EMBORA TENHA RECEBIDO INSTRUÇÃO, NÃO SE ALFABETIZOU" />
+                                value="ANALFABETO, INCLUSIVE O QUE, EMBORA TENHA RECEBIDO INSTRUÇÃO, NÃO SE ALFABETIZOU" />
                             <Picker.Item label="ATÉ O 5º ANO INCOMPLETO DO ENSINO FUNDAMENTAL (ANTIGA 4ª SÉRIE) QUE SE TENHA ALFABETIZADO SEM TER FREQÜENTADO ESCOLA REGULAR"
-                            value="ATÉ O 5º ANO INCOMPLETO DO ENSINO FUNDAMENTAL (ANTIGA 4ª SÉRIE) QUE SE TENHA ALFABETIZADO SEM TER FREQÜENTADO ESCOLA REGULAR" />
+                                value="ATÉ O 5º ANO INCOMPLETO DO ENSINO FUNDAMENTAL (ANTIGA 4ª SÉRIE) QUE SE TENHA ALFABETIZADO SEM TER FREQÜENTADO ESCOLA REGULAR" />
                             <Picker.Item label="5º ANO COMPLETO DO ENSINO FUNDAMENTAL"
-                            value="5º ANO COMPLETO DO ENSINO FUNDAMENTAL" />
+                                value="5º ANO COMPLETO DO ENSINO FUNDAMENTAL" />
                             <Picker.Item label="DO 6º AO 9º ANO DO ENSINO FUNDAMENTAL INCOMPLETO (ANTIGA 5ª À 8ª SÉRIE)"
-                            value="DO 6º AO 9º ANO DO ENSINO FUNDAMENTAL INCOMPLETO (ANTIGA 5ª À 8ª SÉRIE)" />
+                                value="DO 6º AO 9º ANO DO ENSINO FUNDAMENTAL INCOMPLETO (ANTIGA 5ª À 8ª SÉRIE)" />
                             <Picker.Item label="ENSINO FUNDAMENTAL COMPLETO"
-                            value="ENSINO FUNDAMENTAL COMPLETO" />
+                                value="ENSINO FUNDAMENTAL COMPLETO" />
                             <Picker.Item label="ENSINO MÉDIO INCOMPLETO"
-                            value="ENSINO MÉDIO INCOMPLETO" />
+                                value="ENSINO MÉDIO INCOMPLETO" />
                             <Picker.Item label="ENSINO MÉDIO COMPLETO"
-                            value="ENSINO MÉDIO COMPLETO" />
+                                value="ENSINO MÉDIO COMPLETO" />
                             <Picker.Item label="EDUCAÇÃO SUPERIOR INCOMPLETA"
-                            value="EDUCAÇÃO SUPERIOR INCOMPLETA" />
+                                value="EDUCAÇÃO SUPERIOR INCOMPLETA" />
                             <Picker.Item label="EDUCAÇÃO SUPERIOR COMPLETA"
-                            value="EDUCAÇÃO SUPERIOR COMPLETA" />
+                                value="EDUCAÇÃO SUPERIOR COMPLETA" />
                             <Picker.Item label="PÓS GRADUAÇÃO INCOMPLETA"
-                            value="PÓS GRADUAÇÃO INCOMPLETA" />
+                                value="PÓS GRADUAÇÃO INCOMPLETA" />
                             <Picker.Item label="PÓS GRADUAÇÃO COMPLETA"
-                            value="PÓS GRADUAÇÃO COMPLETA" />
+                                value="PÓS GRADUAÇÃO COMPLETA" />
                             <Picker.Item label="MESTRADO COMPLETO"
-                            value="MESTRADO COMPLETO" />
+                                value="MESTRADO COMPLETO" />
                             <Picker.Item label="DOUTORADO COMPLETO"
-                            value="DOUTORADO COMPLETO" />
+                                value="DOUTORADO COMPLETO" />
                         </Picker>
                         <Text style={styles.errorMsg}>{instrucao.error}</Text>
 
