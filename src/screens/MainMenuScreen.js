@@ -116,10 +116,10 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"MaterialCommunityIcons"}
                         title={"Carta de Serviços"} />
                     <MenuItem
-                        onPress={() => { navigation.navigate('OuvidoriaScreen') }}
+                        onPress={() => { navigation.navigate('EsicScreen') }}
                         iconName={"ios-chatbubbles"}
                         iconSource={"Ionicons"}
-                        title={"Ouvidoria"} />
+                        title={"e-SIC"} />
                     <MenuItem
                         onPress={() => { navigation.navigate('PodcastScreen') }}
                         iconName={"ios-mic"}

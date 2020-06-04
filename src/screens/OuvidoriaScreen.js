@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, Picker, View, TextInput, Alert, Keyboard, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Text, AsyncStorage, Image, Picker, View, TextInput, Alert, Keyboard, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { TextInputMask } from 'react-native-masked-text';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
+import * as DocumentPicker from 'expo-document-picker';
+import { FontAwesome } from '@expo/vector-icons';
 
 import { colors, esicURL } from '../config/Constants';
 import { pad } from '../util/Functions';
@@ -22,6 +24,47 @@ export default function OuvidoriaScreen(props) {
     const [email, setEmail] = useState({ value: '' });
     const [telefone, setTelefone] = useState({ value: '' });
     const [message, setMessage] = useState({ value: '' });
+    const [document, setDocument] = useState(null);
+    const [categories, setCategories] = useState([]);
+
+    async function fetchCategories() {
+        const resp = await axios.get(`${esicURL}/wp-json/wp/v2/app-secretaria`);
+        if (resp.data) {
+            setCategories(resp.data);
+        }
+    }
+
+    async function storeProtocol(protocol) {
+
+        const protocols = await AsyncStorage.getItem('protocols');
+        let protocolsArray;
+        if(!protocols){
+            protocolsArray=[];
+            protocolsArray.push(protocol)
+        }else{
+            protocolsArray = JSON.parse(protocols);
+            protocolsArray.push(protocol);
+        }
+        await AsyncStorage.setItem('protocols',JSON.stringify(protocolsArray));
+    }
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const pickDocument = async () => {
+        let result = await DocumentPicker.getDocumentAsync({});
+
+        if (result.type !== 'cancel') {
+            setDocument({ ...result, type: '*/*' });
+            //setDocument(result);
+        }
+    }
+
+    function formatDate(date) {
+        const datetime = new Date(date);
+        return pad(datetime.getDate()) + '/' + pad(datetime.getMonth() + 1) + '/' + datetime.getFullYear();
+    }
 
     function validateName() {
         if (!name.value) {
@@ -147,19 +190,23 @@ export default function OuvidoriaScreen(props) {
                 data.append('anonimo', anonimo);
                 data.append('instrucao', instrucao.value);
                 data.append('message', message.value);
-                data.append('nome', name.value);
+                data.append('nome', anonimo === 'NÃO' ? name.value : 'Anonimo');
                 data.append('nascimento', nasc);
                 data.append('secretaria', secretaria.value);
                 data.append('sexo', sexo.value);
                 data.append('subject', subject.value);
-                data.append('telefone', telefone.value);
-                data.append('email', email.value);
+                if (document) {
+                    data.append('anexo', document);
+                }
+                data.append('telefone', anonimo === 'NÃO' ? telefone.value : 'Anonimo');
+                data.append('email', anonimo === 'NÃO' ? email.value : 'Anonimo@anonimo.com');
                 setIsSubmitting(true);
                 const response = await axios.post(`${esicURL}/wp-json/contact-form-7/v1/contact-forms/418/feedback`, data);
                 console.log(response.data);
                 if (response.data.status === 'mail_sent') {
-                    //setAnimationAccountSuccess(true);
                     Alert.alert('Enviado com sucesso', `${response.data.message}`, [{ text: 'ok', onPress: () => props.navigation.goBack() }]);
+                    //console.log(response.data.message.split(':')[1].trim())
+                    storeProtocol(response.data.message.split(':')[1].trim())
                 } else {
                     Alert.alert('Erro ao cadastrar', 'Tivemos um problema no envio do formulário');
                 }
@@ -184,6 +231,36 @@ export default function OuvidoriaScreen(props) {
             >
                 <View style={{ width: '100%' }}>
                     <View style={styles.formContainer} >
+                        <View
+                            style={{
+                                width: '100%',
+                                flexDirection: 'row'
+                            }}
+                        >
+                            <Image
+                                source={require('../../assets/logo_e_sic.png')}
+                                resizeMode={'contain'}
+                                style={{
+                                    width: 90,
+                                    height: 90,
+                                    marginVertical: 20
+                                }}
+                            />
+                            <View
+                                style={{ flex: 1, justifyContent: 'center', marginLeft: 20 }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 28,
+                                        color: 'green',
+                                        fontWeight: 'bold'
+                                    }}
+                                >E-SIC</Text>
+                                <Text
+                                >Sistema Eletrônico do Serviço de Informações ao Cidadão</Text>
+                            </View>
+                        </View>
+
 
                         <Text style={styles.textForm}>Você deseja se manter em anonimato?</Text>
                         <Picker
@@ -198,7 +275,7 @@ export default function OuvidoriaScreen(props) {
                         </Picker>
 
                         {anonimo === 'NÃO' && <>
-                            <Text style={styles.textForm}>Seu nome (obrigatório)</Text>
+                            <Text style={styles.textForm}>Seu nome*</Text>
                             <TextInput
                                 value={name.value}
                                 style={styles.input}
@@ -211,7 +288,7 @@ export default function OuvidoriaScreen(props) {
                             />
                             <Text style={styles.errorMsg}>{name.error}</Text>
 
-                            <Text style={styles.textForm}>Seu e-mail (obrigatório)</Text>
+                            <Text style={styles.textForm}>Seu e-mail*</Text>
                             <TextInput
                                 value={email.value}
                                 style={styles.input}
@@ -226,7 +303,7 @@ export default function OuvidoriaScreen(props) {
                             />
                             <Text style={styles.errorMsg}>{email.error}</Text>
 
-                            <Text style={styles.textForm}>Seu telefone (obrigatório)</Text>
+                            <Text style={styles.textForm}>Seu telefone*</Text>
                             <TextInputMask
                                 type={'cel-phone'}
                                 options={{
@@ -244,7 +321,7 @@ export default function OuvidoriaScreen(props) {
                             />
                             <Text style={styles.errorMsg}>{telefone.error}</Text>
                         </>}
-                        <Text style={styles.textForm}>Sexo (obrigatório)</Text>
+                        <Text style={styles.textForm}>Sexo*</Text>
                         <Picker
                             selectedValue={sexo.value}
                             mode={'dropdown'}
@@ -257,7 +334,7 @@ export default function OuvidoriaScreen(props) {
                         </Picker>
                         <Text style={styles.errorMsg}>{sexo.error}</Text>
 
-                        <Text style={styles.textForm}>Grau de Instrução (obrigatório)</Text>
+                        <Text style={styles.textForm}>Grau de Instrução*</Text>
                         <Picker
                             selectedValue={instrucao.value}
                             mode={'dropdown'}
@@ -295,7 +372,7 @@ export default function OuvidoriaScreen(props) {
                         </Picker>
                         <Text style={styles.errorMsg}>{instrucao.error}</Text>
 
-                        <Text style={styles.textForm}>Data de Nascimento (obrigatório)</Text>
+                        <Text style={styles.textForm}>Data de Nascimento*</Text>
                         {showNascimento && <DateTimePicker
                             //testID="dateTimePicker"
                             timeZoneOffsetInMinutes={180}
@@ -309,16 +386,18 @@ export default function OuvidoriaScreen(props) {
                             }}
                         />}
                         <TouchableOpacity
+                            style={{ ...styles.input, alignItems: 'center', justifyContent: 'center' }}
                             onPress={() => {
                                 setShowNascimento(true);
                             }}
                         >
-                            <Text>{!nascimento.value ? 'dd/mm/aaaa' : nascimento.value.toLocaleDateString()}</Text>
+                            <Text
+                            >{!nascimento.value ? 'dd/mm/aaaa' : formatDate(nascimento.value)}</Text>
                         </TouchableOpacity>
                         <Text style={styles.errorMsg}>{nascimento.error}</Text>
 
 
-                        <Text style={styles.textForm}>Secretaria (obrigatório)</Text>
+                        <Text style={styles.textForm}>Secretaria*</Text>
                         <Picker
                             selectedValue={secretaria.value}
                             mode={'dropdown'}
@@ -327,19 +406,16 @@ export default function OuvidoriaScreen(props) {
                             onValueChange={(itemValue, itemIndex) => setSecretaria({ ...secretaria, value: itemValue })}
                         >
                             <Picker.Item label="---" value="---" />
-                            <Picker.Item label="SECRETARIA DE SAÚDE" value="SECRETARIA DE SAÚDE" />
-                            <Picker.Item label="SECRETARIA DE INFRA-ESTRUTURA E DESENVOLVIMENTO URBANO" value="SECRETARIA DE INFRA-ESTRUTURA E DESENVOLVIMENTO URBANO" />
-                            <Picker.Item label="SECRETARIA DE EDUCAÇÃO E DESPORTO" value="SECRETARIA DE EDUCAÇÃO E DESPORTO" />
-                            <Picker.Item label="SECRETARIA DE DESENVOLVIMENTO SOCIAL E ECONÔMICO" value="SECRETARIA DE DESENVOLVIMENTO SOCIAL E ECONÔMICO" />
+                            {categories.map((item) => <Picker.Item key={item.id} label={item.title.rendered} value={item.id} />)}
                         </Picker>
                         <Text style={styles.errorMsg}>{secretaria.error}</Text>
 
 
-                        <Text style={styles.textForm}>Assunto (obrigatório)</Text>
+                        <Text style={styles.textForm}>Assunto*</Text>
                         <Picker
                             selectedValue={subject.value}
                             mode={'dropdown'}
-                            style={styles.input}
+                            style={styles.input} co
                             //style={{ height: 50, width: 150, alignSelf:'flex-start' }}
                             onValueChange={(itemValue, itemIndex) => setSubject({ ...subject, value: itemValue })}
                         >
@@ -355,13 +431,37 @@ export default function OuvidoriaScreen(props) {
                         </Picker>
                         <Text style={styles.errorMsg}>{subject.error}</Text>
 
+                        <TouchableOpacity
+                            style={{
+                                width: '100%',
+                                height: 40,
+                                paddingLeft: 10,
+                                borderColor: '#DDD',
+                                fontSize: 14,
+                                backgroundColor: colors.secundary,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                flexDirection: 'row'
+                            }}
+                            onPress={pickDocument}
+                        >
+                            {!document ? <>
+                                <FontAwesome name="paperclip" size={24} color='#FFF' />
+                                <Text
+                                    style={{ alignSelf: 'center', marginLeft: 10, color: '#FFF' }}
+                                >Anexar Arquivo</Text>
+                            </> : <Text>{document.name}</Text>}
+                        </TouchableOpacity>
+                        <Text
+                            style={{ color: '#AAA' }}
+                        >Arquivos permitidos: .doc, .docx, .txt, .pdf, .odt, .jpg, .png</Text>
 
-                        <Text style={styles.textForm}>Sua mensagem (obrigatório)</Text>
+                        <Text style={styles.textForm}>Sua mensagem*</Text>
                         <TextInput
                             value={message.value}
-                            style={styles.input}
+                            style={{ ...styles.input, height: 120, alignItems: 'flex-start', justifyContent: 'flex-start' }}
                             multiline={true}
-                            numberOfLines={4}
+                            numberOfLines={5}
                             autoCapitalize={'sentences'}
                             onEndEditing={validateMessage}
                             onChangeText={(text) => { setMessage({ ...message, value: text }) }}
@@ -371,18 +471,17 @@ export default function OuvidoriaScreen(props) {
 
                         <TouchableOpacity
                             style={{
-                                backgroundColor: colors.secundary,
+                                backgroundColor: colors.primary,
                                 textAlign: 'center',
                                 color: '#663E1D',
-                                borderRadius: 25,
                                 padding: 10,
-                                width: 120,
+                                width: '100%',
                                 marginTop: 20,
                             }}
                             onPress={handleSubmit}
                         >
                             {!isSubmitting ? <Text
-                                style={{ alignSelf: 'center' }}
+                                style={{ alignSelf: 'center', color: '#FFF' }}
                             >Enviar</Text> : <ActivityIndicator />}
                         </TouchableOpacity>
 
@@ -413,10 +512,13 @@ const styles = StyleSheet.create({
     },
     input: {
         width: '100%',
-        paddingVertical: 0,
-        borderBottomWidth: 1,
+        height: 40,
+        paddingLeft: 10,
+        borderLeftWidth: 1,
+        borderTopWidth: 1,
         borderColor: '#DDD',
         fontSize: 14,
+        backgroundColor: '#FFF',
     },
     textForm: {
         color: '#666',
@@ -424,6 +526,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginTop: 5,
         marginBottom: 0,
+        fontWeight: 'bold'
     },
     buttonForm: {
         backgroundColor: colors.secundary,

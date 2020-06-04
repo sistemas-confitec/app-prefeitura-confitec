@@ -12,6 +12,8 @@ import LRFDetailsScreen from '../screens/LRFDetailsScreen';
 import LRFScreen from '../screens/LRFScreen';
 import OuvidoriaScreen from '../screens/OuvidoriaScreen';
 import PDFViewer from '../screens/PDFViewer';
+import EsicScreen from '../screens/EsicScreen';
+import ManifestacoesScreen from '../screens/ManifestacoesScreen';
 import { colors } from '../config/Constants';
 
 const Stack = createStackNavigator();
@@ -129,6 +131,24 @@ export default function MainStackNavigator() {
                     }
                 })}
                 name="OuvidoriaScreen" component={OuvidoriaScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'e-SIC',
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="EsicScreen" component={EsicScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Manifestações',
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="ManifestacoesScreen" component={ManifestacoesScreen} />
         </Stack.Navigator>
     );
 }
