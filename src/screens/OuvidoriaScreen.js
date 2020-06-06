@@ -426,6 +426,7 @@ export default function OuvidoriaScreen(props) {
                             <Picker.Item label="Dúvidas" value="Dúvidas" />
                             <Picker.Item label="Elogios" value="Elogios" />
                             <Picker.Item label="Reclamações" value="Reclamações" />
+                            <Picker.Item label="Solicitação de Documentos" value="Solicitação de Documentos" />
                             <Picker.Item label="Sugestões" value="Sugestões" />
                             <Picker.Item label="Urgências" value="Urgências" />
                         </Picker>
