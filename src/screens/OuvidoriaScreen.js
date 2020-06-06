@@ -11,6 +11,8 @@ import { colors, esicURL } from '../config/Constants';
 import { pad } from '../util/Functions';
 
 export default function OuvidoriaScreen(props) {
+    const title = props.route.params?.title;
+
     /* const [animationAccountSuccess, setAnimationAccountSuccess] = useState(false); */
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [anonimo, setAnonimo] = useState('NÃO');
@@ -38,14 +40,14 @@ export default function OuvidoriaScreen(props) {
 
         const protocols = await AsyncStorage.getItem('protocols');
         let protocolsArray;
-        if(!protocols){
-            protocolsArray=[];
+        if (!protocols) {
+            protocolsArray = [];
             protocolsArray.push(protocol)
-        }else{
+        } else {
             protocolsArray = JSON.parse(protocols);
             protocolsArray.push(protocol);
         }
-        await AsyncStorage.setItem('protocols',JSON.stringify(protocolsArray));
+        await AsyncStorage.setItem('protocols', JSON.stringify(protocolsArray));
     }
 
     useEffect(() => {
@@ -221,6 +223,39 @@ export default function OuvidoriaScreen(props) {
 
     return (
         <View style={styles.container}>
+            <View
+                style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    backgroundColor: '#FFF',
+                    elevation: 4,
+                    paddingHorizontal: 40
+                }}
+            >
+                <Image
+                    source={require('../../assets/logo_ouvidoria.png')}
+                    resizeMode={'contain'}
+                    style={{
+                        width: 70,
+                        height: 70,
+                        marginVertical: 20
+                    }}
+                />
+                <View
+                    style={{flex:1, justifyContent: 'center', marginLeft: 30 }}
+                >
+                    <Text
+                        style={{
+                            fontSize: 28,
+                            color: '#2B5489',
+                            fontWeight: 'bold'
+                        }}
+                    >Ouvidoria</Text>
+                    <Text
+
+                    >{!title ? '' : title}</Text>
+                </View>
+            </View>
             <KeyboardAwareScrollView
                 style={{ width: '100%' }}
                 contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}
@@ -231,36 +266,23 @@ export default function OuvidoriaScreen(props) {
             >
                 <View style={{ width: '100%' }}>
                     <View style={styles.formContainer} >
-                        <View
-                            style={{
-                                width: '100%',
-                                flexDirection: 'row'
-                            }}
-                        >
-                            <Image
-                                source={require('../../assets/logo_e_sic.png')}
-                                resizeMode={'contain'}
-                                style={{
-                                    width: 90,
-                                    height: 90,
-                                    marginVertical: 20
-                                }}
-                            />
-                            <View
-                                style={{ flex: 1, justifyContent: 'center', marginLeft: 20 }}
-                            >
-                                <Text
-                                    style={{
-                                        fontSize: 28,
-                                        color: 'green',
-                                        fontWeight: 'bold'
-                                    }}
-                                >E-SIC</Text>
-                                <Text
-                                >Sistema Eletrônico do Serviço de Informações ao Cidadão</Text>
-                            </View>
-                        </View>
 
+                        <View
+                            style={styles.itemContainer}
+                        >
+
+                            <Text
+                                style={{ textAlign: 'justify' }}
+                            >A ouvidoria é um canal para você apresentar sugestões, elogios, solicitações, reclamações, denúncias, entre outros. No serviço público, a ouvidoria é uma espécie de “ponte” entre você e a Administração Pública.</Text>
+
+                            <Text
+                                style={{ textAlign: 'justify', fontWeight: 'bold' }}
+                            >A ouvidoria recebe as manifestações dos cidadãos, analisa, orienta, encaminha às áreas responsáveis pelo tratamento ou apuração, responde ao manifestante e conclui a manifestação.</Text>
+                        </View>
+                        <Text
+                            style={{ color: '#23A455', textAlign: 'justify', alignSelf: 'center' }}
+                            numberOfLines={1}
+                        >/ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /</Text>
 
                         <Text style={styles.textForm}>Você deseja se manter em anonimato?</Text>
                         <Picker
@@ -415,7 +437,7 @@ export default function OuvidoriaScreen(props) {
                         <Picker
                             selectedValue={subject.value}
                             mode={'dropdown'}
-                            style={styles.input} co
+                            style={styles.input}
                             //style={{ height: 50, width: 150, alignSelf:'flex-start' }}
                             onValueChange={(itemValue, itemIndex) => setSubject({ ...subject, value: itemValue })}
                         >
@@ -542,5 +564,16 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         fontSize: 10,
         color: 'red'
+    },
+    itemContainer: {
+        width: '100%',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        borderBottomWidth: 5,
+        borderColor: '#DDD',
+        borderRadius: 8,
+        padding: 10,
+        backgroundColor: '#FFF',
+        marginBottom: 10
     }
 });

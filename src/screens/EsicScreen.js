@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, Image, Picker, View, TextInput, Alert, Keyboard, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
-import { MaterialIcons, Entypo } from '@expo/vector-icons';
+import { MaterialIcons, Entypo, Feather, FontAwesome5 } from '@expo/vector-icons';
 
 import { colors, esicURL } from '../config/Constants';
 
@@ -35,18 +35,18 @@ export default function EsicScreen(props) {
                     source={require('../../assets/logo_e_sic.png')}
                     resizeMode={'contain'}
                     style={{
-                        width: 90,
-                        height: 90,
+                        width: 70,
+                        height: 70,
                         marginVertical: 20
                     }}
                 />
                 <View
-                    style={{ flex: 1, justifyContent: 'center', marginLeft: 20 }}
+                    style={{ flex: 1, justifyContent: 'center', marginLeft: 30 }}
                 >
                     <Text
                         style={{
                             fontSize: 28,
-                            color: '#23A455',
+                            color: '#008608',
                             fontWeight: 'bold',
                             //textAlign:'right'
                         }}
@@ -68,56 +68,66 @@ export default function EsicScreen(props) {
                 enableOnAndroid={true}
                 enableAutomaticScroll={true}
             >
-                <View style={{ width: '100%' }}>
-                    <Text>BEM VINDO</Text>
-                    <Text>O Sistema Eletrônico do Serviço de Informações ao Cidadão (e-SIC) permite que qualquer pessoa, física ou jurídica, encaminhe pedidos de acesso à informação, acompanhe o prazo e receba a resposta da solicitação realizada.</Text>
-                    <Text
-                        style={{ fontWeight: 'bold' }}
-                    >O cidadão ainda pode entrar com recursos e apresentar reclamações, sem burocracia, apenas adicionando o número do protocolo no corpo mensagem.</Text>
+                <View style={{ width: '100%', paddingTop: 10 }}>
 
                     <View
-                    style={{
-                        flexDirection:'row'
-                    }}
+                        style={styles.itemContainer}
                     >
-                    <TouchableOpacity
-                        style={{
-                            backgroundColor: '#5BC0DE',
-                            color: '#663E1D',
-                            padding: 10,
-                            flex:1,
-                            marginTop: 20,
-                            alignItems:'center',
-                            justifyContent:'center'
-                        }}
-                        onPress={() => {
-                            props.navigation.navigate('ManifestacoesScreen', { ouvidor: atendimento[0].meta_box['nome'] });
-                        }}
-                    >
-                        <MaterialIcons style={{marginRight:10}} name="history" size={24} color="#FFF" />
                         <Text
-                            style={{ textAlign: 'center', color: '#FFF' }}
-                        >MANIFESTAÇÕES SALVAS</Text>
-                    </TouchableOpacity>
+                            style={{ textAlign: 'justify' }}
+                        >O e-SIC permite que qualquer pessoa, física ou jurídica, encaminhe pedidos de acesso à informação, acompanhe o prazo e receba a resposta da solicitação realizada.</Text>
+                        <Text
+                            style={{ fontWeight: 'bold', textAlign: 'justify' }}
+                        >O cidadão ainda pode entrar com recursos e apresentar reclamações, sem burocracia, apenas adicionando o número do protocolo no corpo mensagem.</Text>
+                    </View>
 
-                    <TouchableOpacity
+                    <View
                         style={{
-                            flex:1,
-                            backgroundColor: '#007BFF',
-                            color: '#663E1D',
-                            padding: 10,
-                            width: '100%',
-                            marginTop: 20,
-                            alignItems:'center',
-                            justifyContent:'center'
+                            flexDirection: 'row'
                         }}
-                        onPress={() => { props.navigation.navigate('OuvidoriaScreen') }}
                     >
-                        <Entypo style={{marginRight:10}} name="megaphone" size={24} color="#FFF" />
-                        <Text
-                            style={{ textAlign: 'center', color: '#FFF' }}
-                        >REALIZAR MANIFESTAÇÃO</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: colors.primary,
+                                color: '#663E1D',
+                                padding: 10,
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                elevation: 4,
+                                borderTopLeftRadius: 8,
+                                borderBottomLeftRadius: 8,
+                            }}
+                            onPress={() => {
+                                props.navigation.navigate('ManifestacoesScreen', { ouvidor: atendimento[0].meta_box['nome'] });
+                            }}
+                        >
+                            <MaterialIcons style={{ marginRight: 10 }} name="history" size={24} color="#FFF" />
+                            <Text
+                                style={{ textAlign: 'center', color: '#FFF' }}
+                            >MANIFESTAÇÕES SALVAS</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{
+                                flex: 1,
+                                backgroundColor: colors.secundary,
+                                color: '#663E1D',
+                                padding: 10,
+                                width: '100%',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                elevation: 4,
+                                borderTopRightRadius: 8,
+                                borderBottomRightRadius: 8,
+                            }}
+                            onPress={() => { props.navigation.navigate('OuvidoriaScreen', { title: atendimento[0].title.rendered }) }}
+                        >
+                            <Entypo style={{ marginRight: 10 }} name="megaphone" size={24} color="#FFF" />
+                            <Text
+                                style={{ textAlign: 'center', color: '#FFF' }}
+                            >NOVA MANIFESTAÇÃO</Text>
+                        </TouchableOpacity>
                     </View>
 
                     <View
@@ -137,7 +147,7 @@ export default function EsicScreen(props) {
                         />
                         <TouchableOpacity
                             style={{
-                                backgroundColor: '#23A455',
+                                backgroundColor: '#008608',
                                 textAlign: 'center',
                                 color: '#663E1D',
                                 padding: 10,
@@ -154,50 +164,155 @@ export default function EsicScreen(props) {
                     <Text
                         style={{
                             fontWeight: 'bold',
+                            fontSize: 18,
                             marginVertical: 10,
                             textAlign: 'center',
-                            color: '#27A1D4'
+                            color: colors.primary
                         }}
                     >ATENDIMENTO PRESENCIAL AO CIDADÃO</Text>
-                    <View>
-                        <Text
-                            style={{
-                                fontWeight: 'bold'
-                            }}
-                        >Endereço: </Text>
-                        <Text>{!atendimento ? '' : atendimento[0].meta_box['end-presencial']}</Text>
-                    </View>
-                    <View >
-                        <Text
-                            style={{
-                                fontWeight: 'bold'
-                            }}
-                        >Telefone: </Text>
-                        <Text>{!atendimento ? '' : atendimento[0].meta_box['telefone']}</Text>
-                    </View>
-                    <View>
-                        <Text
-                            style={{
-                                fontWeight: 'bold'
-                            }}
-                        >E-mail: </Text>
-                        <Text>{!atendimento ? '' : atendimento[0].meta_box['email']}</Text>
-                    </View>
-                    <View>
-                        <Text
-                            style={{
-                                fontWeight: 'bold'
-                            }}
-                        >Horário de atendimento: </Text>
-                        <Text>{!atendimento ? '' : atendimento[0].meta_box['horario']}</Text>
-                    </View>
-                    <View>
-                        <Text
-                            style={{
-                                fontWeight: 'bold'
-                            }}
-                        >Ouvidor(a): </Text>
-                        <Text>{!atendimento ? '' : atendimento[0].meta_box['nome']}</Text>
+                    <Text
+                        style={{ color: '#23A455', textAlign: 'justify', alignSelf: 'center', marginBottom: 20 }}
+                        numberOfLines={1}
+                    >/ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /</Text>
+
+                    <View
+                        style={styles.itemContainer}
+                    >
+                        <View
+                            style={{ flexDirection: 'row', alignItems: 'center' }}
+                        >
+                            <View
+                                style={{
+                                    width: 40,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <FontAwesome5 name="map" size={20} color={colors.primary} />
+                            </View>
+                            <View
+                                style={{ marginLeft: 10 }}
+                            >
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >Endereço: </Text>
+                                <Text
+                                    style={{
+                                        textAlign: 'center'
+                                    }}
+                                >{!atendimento ? '' : atendimento[0].meta_box['end-presencial']}</Text>
+                            </View>
+                        </View>
+                        <View
+                            style={{ flexDirection: 'row', alignItems: 'center' }}
+                        >
+                            <View
+                                style={{
+                                    width: 40,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <FontAwesome5 name="clock" size={20} color={colors.primary} />
+                            </View>
+                            <View
+                                style={{ marginLeft: 10 }}
+                            >
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >Horário de atendimento: </Text>
+                                <Text
+                                    style={{
+                                        textAlign: 'center'
+                                    }}
+                                >{!atendimento ? '' : atendimento[0].meta_box['horario']}</Text>
+                            </View>
+                        </View>
+                        <View
+                            style={{ flexDirection: 'row', alignItems: 'center' }}
+                        >
+                            <View
+                                style={{
+                                    width: 40,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <FontAwesome5 name="phone-volume" size={20} color={colors.primary} />
+                            </View>
+                            <View
+                                style={{ marginLeft: 10 }}
+                            >
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >Telefone: </Text>
+                                <Text
+                                    style={{
+                                        textAlign: 'center'
+                                    }}
+                                >{!atendimento ? '' : atendimento[0].meta_box['telefone']}</Text>
+                            </View>
+                        </View>
+                        <View
+                            style={{ flexDirection: 'row', alignItems: 'center' }}
+                        >
+                            <View
+                                style={{
+                                    width: 40,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <FontAwesome5 name="mail-bulk" size={20} color={colors.primary} />
+                            </View>
+                            <View
+                                style={{ marginLeft: 10 }}
+                            >
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >E-mail: </Text>
+                                <Text
+                                    style={{
+                                        textAlign: 'center'
+                                    }}
+                                >{!atendimento ? '' : atendimento[0].meta_box['email']}</Text>
+                            </View>
+                        </View>
+                        <View
+                            style={{ flexDirection: 'row', alignItems: 'center' }}
+                        >
+                            <View
+                                style={{
+                                    width: 40,
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <FontAwesome5 name="user-tie" size={20} color={colors.primary} />
+                            </View>
+                            <View
+                                style={{ marginLeft: 10 }}
+                            >
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >Ouvidor(a): </Text>
+                                <Text
+                                    style={{
+                                        textAlign: 'center'
+                                    }}
+                                >{!atendimento ? '' : atendimento[0].meta_box['nome']}</Text>
+                            </View>
+                        </View>
                     </View>
 
                 </View>
@@ -210,7 +325,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        backgroundColor: colors.backgroudColorContent,
+        backgroundColor: colors.backgroudColor,
         alignItems: 'center',
         justifyContent: 'flex-start',
         //paddingHorizontal: 15
@@ -233,4 +348,15 @@ const styles = StyleSheet.create({
         marginBottom: 0,
         fontWeight: 'bold'
     },
+    itemContainer: {
+        width: '100%',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        borderBottomWidth: 5,
+        borderColor: '#DDD',
+        borderRadius: 8,
+        padding: 10,
+        backgroundColor: '#FFF',
+        marginBottom: 10
+    }
 });
