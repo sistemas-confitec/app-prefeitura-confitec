@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, ScrollView, Image, ActivityIndicator } from 're
 import api from '../services/api';
 import { FontAwesome5, Feather, AntDesign } from '@expo/vector-icons';
 
-import { colors } from '../config/Constants';
+import { colors, strings } from '../config/Constants';
+import Header from '../components/Header';
 
 
 export default function TownHallScreen() {
@@ -36,6 +37,11 @@ export default function TownHallScreen() {
     useEffect(() => { fetchTownHallData() }, []);
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             {loading ?
                 <View
                     style={{
@@ -48,7 +54,7 @@ export default function TownHallScreen() {
                 </View>
                 :
                 <ScrollView
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', padding:10 }}
                     showsVerticalScrollIndicator={false}
                 >
                     {/* <View
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.backgroudColor,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: 10,
+        //padding: 10,
     },
     text: {
         fontSize: 16,

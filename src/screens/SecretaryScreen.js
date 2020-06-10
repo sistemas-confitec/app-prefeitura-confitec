@@ -4,7 +4,8 @@ import CollapsibleList from "react-native-collapsible-list";
 import { Entypo, FontAwesome5 } from '@expo/vector-icons';
 
 import api from '../services/api';
-import { colors } from '../config/Constants';
+import { colors, strings } from '../config/Constants';
+import Header from '../components/Header';
 
 
 export default function SecretaryScreen({ navigation }) {
@@ -21,6 +22,11 @@ export default function SecretaryScreen({ navigation }) {
     useEffect(() => { fetchSecretary() }, []);
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={loadingSecretaryData} onRefresh={fetchSecretary} />}
@@ -124,7 +130,7 @@ export default function SecretaryScreen({ navigation }) {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     alignSelf: 'center',
-                                    backgroundColor: colors.secundary,
+                                    backgroundColor: colors.secondary,
                                     marginTop: 15,
                                     marginBottom: 10,
                                     padding: 10,

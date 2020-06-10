@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, Image, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Image, StatusBar, AsyncStorage } from 'react-native';
 import Constants from 'expo-constants';
 
 import { colors, strings } from '../config/Constants';
@@ -12,6 +12,7 @@ export default function MainMenuScreen({ navigation }) {
     const municipio = async () => {
         const resp1 = await api.get('/wp-json/wp/v2/app-prefeitura');
         setTownHall(resp1.data[0]);
+        await AsyncStorage.setItem('logoUri', resp1.data[0].meta_box['logo-gestao'].sizes.thumbnail.url)
         const resp = await api.get('/wp-json/wp/v2/app-prefeito-e-vice');
         if (resp.data) {
             resp.data.forEach(element => {

@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, ScrollView, Picker, View, TextInput, Alert, Keyboard, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage } from 'react-native';
 import axios from 'axios';
 import CollapsibleList from "react-native-collapsible-list";
-import { Entypo, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo, FontAwesome, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
 
-import { colors, esicURL } from '../config/Constants';
+import { colors, esicURL, strings } from '../config/Constants';
+import Header from '../components/Header';
 import { splitDate, pad } from '../util/Functions';
 
 export default function ManifestacoesScreen(props) {
     const [manifestacoes, setManifestacoes] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [collapsed, setCollapsed] = useState([]);
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [secretarias, setSecretarias] = useState([]);
@@ -44,6 +46,7 @@ export default function ManifestacoesScreen(props) {
         const protocols = JSON.parse(protocolsArray);
         const manifestacoesArray = [];
 
+        setLoading(true)
         for (let i = 0; i < protocols.length; i++) {
 
             const resp = await axios.get(`${esicURL}/wp-json/wp/v2/app-feedback?slug=protocolo-${protocols[i]}`);
@@ -53,6 +56,7 @@ export default function ManifestacoesScreen(props) {
         }
         setManifestacoes(manifestacoesArray.reverse())
         console.log(manifestacoesArray[0].date)
+        setLoading(false)
     }
 
     useEffect(() => { fetchManifestacoes() }, []);
@@ -60,12 +64,17 @@ export default function ManifestacoesScreen(props) {
 
     return (
         <View style={styles.container}>
-            <ScrollView
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
+            {!loading ? <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1, padding: 10 }}
+                contentContainerStyle={{ flexGrow: 1, padding: 20 }}
                 style={{ width: '100%' }}
             >
-                {manifestacoes.map((manifestacao, idx) => {
+                {manifestacoes.length > 0 ? manifestacoes.map((manifestacao, idx) => {
                     return (
                         <CollapsibleList
                             key={idx}
@@ -163,7 +172,7 @@ export default function ManifestacoesScreen(props) {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     alignSelf: 'center',
-                                    backgroundColor: colors.secundary,
+                                    backgroundColor: colors.secondary,
                                     marginTop: 15,
                                     marginBottom: 10,
                                     padding: 10,
@@ -237,8 +246,15 @@ export default function ManifestacoesScreen(props) {
                             }
                         </CollapsibleList>
                     )
-                })}
-            </ScrollView>
+                }) : <View
+                    style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                >
+                        <Feather name="alert-triangle" size={50} color="black" />
+                        <Text
+                            style={{ marginTop: 20 }}
+                        >Você ainda não realizou nenhuma manifestação.</Text>
+                    </View>}
+            </ScrollView> : <ActivityIndicator style={{alignSelf:'center', flex:1}} size={40} />}
         </View>
     );
 }
@@ -250,7 +266,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.backgroudColor,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingHorizontal: 15
+        //paddingHorizontal: 15
     },
     input: {
         width: '100%',

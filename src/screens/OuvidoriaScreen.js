@@ -9,6 +9,8 @@ import { FontAwesome } from '@expo/vector-icons';
 
 import { colors, esicURL } from '../config/Constants';
 import { pad } from '../util/Functions';
+import HeaderDivider from '../components/HeaderDivider';
+import Header from '../components/Header';
 
 export default function OuvidoriaScreen(props) {
     const title = props.route.params?.title;
@@ -223,39 +225,12 @@ export default function OuvidoriaScreen(props) {
 
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    backgroundColor: '#FFF',
-                    elevation: 4,
-                    paddingHorizontal: 40
-                }}
-            >
-                <Image
-                    source={require('../../assets/logo_ouvidoria.png')}
-                    resizeMode={'contain'}
-                    style={{
-                        width: 70,
-                        height: 70,
-                        marginVertical: 20
-                    }}
-                />
-                <View
-                    style={{flex:1, justifyContent: 'center', marginLeft: 30 }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 28,
-                            color: '#2B5489',
-                            fontWeight: 'bold'
-                        }}
-                    >Ouvidoria</Text>
-                    <Text
-
-                    >{!title ? '' : title}</Text>
-                </View>
-            </View>
+            <Header
+                title="Ouvidoria"
+                subtitle={!title ? '' : title}
+                assetName={"logo_ouvidoria"}
+                titleColor={"#2B5489"}
+            />
             <KeyboardAwareScrollView
                 style={{ width: '100%' }}
                 contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}
@@ -279,10 +254,8 @@ export default function OuvidoriaScreen(props) {
                                 style={{ textAlign: 'justify', fontWeight: 'bold' }}
                             >A ouvidoria recebe as manifestações dos cidadãos, analisa, orienta, encaminha às áreas responsáveis pelo tratamento ou apuração, responde ao manifestante e conclui a manifestação.</Text>
                         </View>
-                        <Text
-                            style={{ color: '#23A455', textAlign: 'justify', alignSelf: 'center' }}
-                            numberOfLines={1}
-                        >/ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /</Text>
+
+                        <HeaderDivider />
 
                         <Text style={styles.textForm}>Você deseja se manter em anonimato?</Text>
                         <Picker
@@ -461,7 +434,7 @@ export default function OuvidoriaScreen(props) {
                                 paddingLeft: 10,
                                 borderColor: '#DDD',
                                 fontSize: 14,
-                                backgroundColor: colors.secundary,
+                                backgroundColor: colors.secondary,
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 flexDirection: 'row'
@@ -552,7 +525,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     buttonForm: {
-        backgroundColor: colors.secundary,
+        backgroundColor: colors.secondary,
         textAlign: 'center',
         color: '#663E1D',
         borderRadius: 25,

@@ -7,7 +7,7 @@ import axios from 'axios';
 import api from '../services/api';
 import LRFTypeButton from '../components/LRFTypeButton';
 import { colors, strings } from '../config/Constants';
-
+import Header from '../components/Header';
 
 export default function LRFDetailsScreen({ route, navigation }) {
     const LRFsData = route.params?.LRFsData;
@@ -16,6 +16,11 @@ export default function LRFDetailsScreen({ route, navigation }) {
 
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1, padding: 10 }}
@@ -86,24 +91,24 @@ export default function LRFDetailsScreen({ route, navigation }) {
                                             </View>
                                             {!!LRF._links['wp:attachment'][0].href && <TouchableOpacity
                                                 activeOpacity={0.85}
-                                                onPress={async () => { 
+                                                onPress={async () => {
                                                     const resp = await axios.get(`${LRF._links['wp:attachment'][0].href}`);
-                                                    if(resp.data){
-                                                        const pdfFile = resp.data.find(item=>item.id===competencia.pdf[0]);
-                                                        if(pdfFile){
+                                                    if (resp.data) {
+                                                        const pdfFile = resp.data.find(item => item.id === competencia.pdf[0]);
+                                                        if (pdfFile) {
                                                             console.log(pdfFile.guid.rendered)
                                                             return navigation.navigate('PDFViewer', { url: pdfFile.guid.rendered });
                                                         }
                                                     }
                                                     Alert.alert('Erro ao abrir arquivo')
-                                                 }}
+                                                }}
                                                 style={{
                                                     flexDirection: 'row',
                                                     width: '100%',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
                                                     alignSelf: 'center',
-                                                    backgroundColor: colors.secundary,
+                                                    backgroundColor: colors.secondary,
                                                     marginTop: 15,
                                                     marginBottom: 10,
                                                     padding: 10,

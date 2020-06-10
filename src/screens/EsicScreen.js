@@ -5,6 +5,8 @@ import axios from 'axios';
 import { MaterialIcons, Entypo, Feather, FontAwesome5 } from '@expo/vector-icons';
 
 import { colors, esicURL } from '../config/Constants';
+import HeaderDivider from '../components/HeaderDivider';
+import Header from '../components/Header';
 
 export default function EsicScreen(props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,40 +24,12 @@ export default function EsicScreen(props) {
 
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    backgroundColor: '#FFF',
-                    elevation: 4,
-                    paddingHorizontal: 40
-                }}
-            >
-                <Image
-                    source={require('../../assets/logo_e_sic.png')}
-                    resizeMode={'contain'}
-                    style={{
-                        width: 70,
-                        height: 70,
-                        marginVertical: 20
-                    }}
-                />
-                <View
-                    style={{ flex: 1, justifyContent: 'center', marginLeft: 30 }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 28,
-                            color: '#008608',
-                            fontWeight: 'bold',
-                            //textAlign:'right'
-                        }}
-                    >E-SIC</Text>
-                    <Text
-                    //style={{textAlign:'right'}}
-                    >Sistema Eletrônico do Serviço de Informações ao Cidadão</Text>
-                </View>
-            </View>
+            <Header
+                title="e-SIC"
+                subtitle={'Sistema Eletrônico do Serviço de Informações ao Cidadão'}
+                assetName={"logo_e_sic"}
+                titleColor={"#008608"}
+            />
             <KeyboardAwareScrollView
                 style={{ width: '100%' }}
                 contentContainerStyle={{
@@ -111,7 +85,7 @@ export default function EsicScreen(props) {
                         <TouchableOpacity
                             style={{
                                 flex: 1,
-                                backgroundColor: colors.secundary,
+                                backgroundColor: colors.secondary,
                                 color: '#663E1D',
                                 padding: 10,
                                 width: '100%',
@@ -170,10 +144,8 @@ export default function EsicScreen(props) {
                             color: colors.primary
                         }}
                     >ATENDIMENTO PRESENCIAL AO CIDADÃO</Text>
-                    <Text
-                        style={{ color: '#23A455', textAlign: 'justify', alignSelf: 'center', marginBottom: 20 }}
-                        numberOfLines={1}
-                    >/ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /</Text>
+
+                    <HeaderDivider />
 
                     <View
                         style={styles.itemContainer}

@@ -4,7 +4,7 @@ import { StyleSheet, View, ScrollView, RefreshControl, Text } from 'react-native
 import api from '../services/api';
 import LRFTypeButton from '../components/LRFTypeButton';
 import { colors, strings } from '../config/Constants';
-
+import Header from '../components/Header';
 
 export default function LRFScreen({ navigation }) {
     const [LRFsData, setLRFsData] = useState([]);
@@ -18,6 +18,11 @@ export default function LRFScreen({ navigation }) {
     useEffect(() => { fetchLRFs() }, []);
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchLRFs} />}

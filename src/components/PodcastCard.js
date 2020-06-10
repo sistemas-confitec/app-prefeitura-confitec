@@ -36,8 +36,8 @@ export default function PodcastCard({ title, description, onPress, id, currentPo
                         onPress={() => { onPressPlay() }}
                     >
                         {id===currentPodcast && playBackStatus.isPlaying ?
-                            <AntDesign name="pausecircle" size={35} color={colors.secundary} />:
-                            <AntDesign name="play" size={35} color={colors.secundary} />
+                            <AntDesign name="pausecircle" size={35} color={colors.secondary} />:
+                            <AntDesign name="play" size={35} color={colors.secondary} />
                         }
                     </TouchableOpacity>
                     <Text
@@ -58,10 +58,10 @@ export default function PodcastCard({ title, description, onPress, id, currentPo
                 <ProgressBar
                     style={{ height: 8 }}
                     progress={playBackStatus.positionMillis / playBackStatus.durationMillis}
-                    color={colors.secundary} /> :
+                    color={colors.secondary} /> :
                 <ProgressBar
                     style={{ height: 8 }}
-                    progress={0} color={colors.secundary} />}
+                    progress={0} color={colors.secondary} />}
         </TouchableOpacity>
     );
 }

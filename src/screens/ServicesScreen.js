@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, RefreshControl } from 'react-native';
 
 import api from '../services/api';
-import { colors } from '../config/Constants';
+import { colors, strings } from '../config/Constants';
+import Header from '../components/Header';
 import ServiceItem from '../components/ServiceItem';
 
 
@@ -21,6 +22,11 @@ export default function ServicesScreen({navigation}) {
     useEffect(() => { fetchServices() }, []);
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={loadingServicesData} onRefresh={fetchServices} />}

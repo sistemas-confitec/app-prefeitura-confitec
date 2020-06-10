@@ -5,6 +5,7 @@ import api from '../services/api';
 import HTML from 'react-native-render-html';
 
 import { colors, strings } from '../config/Constants';
+import Header from '../components/Header';
 
 
 export default function MainMenuScreen() {
@@ -19,17 +20,22 @@ export default function MainMenuScreen() {
     useEffect(() => { municipio() }, []);
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={{ flex: 1 }}
+                showsVerticalScrollIndicator={false}
+                style={{ flex: 1, padding:10 }}
             >
                 <Text
                     style={styles.cityName}
                 >{cityName}</Text>
 
-                {!!cityInfo && <HTML 
-                //containerStyle={{alignItems:'center'}}
-                html={cityInfo} imagesMaxWidth={Dimensions.get('window').width} />}
+                {!!cityInfo && <HTML
+                    //containerStyle={{alignItems:'center'}}
+                    html={cityInfo} imagesMaxWidth={Dimensions.get('window').width} />}
             </ScrollView>
         </View>
     );
@@ -41,7 +47,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.backgroudColorContent,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: 10,
+        //padding: 10,
     },
     menuContainer: {
         flexDirection: 'row',

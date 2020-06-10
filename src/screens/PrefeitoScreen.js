@@ -6,7 +6,8 @@ import HTML from 'react-native-render-html';
 import CollapsibleList from "react-native-collapsible-list";
 import { Entypo } from '@expo/vector-icons';
 
-import { colors } from '../config/Constants';
+import { colors, strings } from '../config/Constants';
+import Header from '../components/Header';
 
 
 export default function PrefeitoScreen() {
@@ -42,6 +43,11 @@ export default function PrefeitoScreen() {
     useEffect(() => { fetchPrefeitoData() }, []);
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             {loading ?
                 <View
                     style={{
@@ -54,7 +60,7 @@ export default function PrefeitoScreen() {
                 </View>
                 :
                 <ScrollView
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', padding:10 }}
                     showsVerticalScrollIndicator={false}
                 >
                     {prefeitoData && <CollapsibleList
@@ -254,7 +260,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.backgroudColor,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: 10,
+        //padding: 10,
     },
     title: {
         fontSize: 20,

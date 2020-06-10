@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { parse } from 'himalaya';
 
-import { colors } from '../config/Constants';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { colors, strings } from '../config/Constants';
+import Header from '../components/Header';
 
 
 export default function ServicesDetailsScreen({ route, navigation }) {
@@ -12,6 +12,11 @@ export default function ServicesDetailsScreen({ route, navigation }) {
     const infoArray = [];
     return (
         <View style={styles.container}>
+            {/* <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            /> */}
             <View
                 style={{
                     width: '100%',
@@ -202,7 +207,7 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: colors.secundary,
+        backgroundColor: colors.secondary,
         elevation: 4,
         borderRadius: 5,
         marginVertical: 10

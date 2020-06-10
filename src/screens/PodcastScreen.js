@@ -3,7 +3,8 @@ import { StyleSheet, View, ScrollView, RefreshControl } from 'react-native';
 import { Audio } from 'expo-av';
 
 import api from '../services/api';
-import { colors } from '../config/Constants';
+import { colors, strings } from '../config/Constants';
+import Header from '../components/Header';
 import PodcastCard from '../components/PodcastCard';
 const soundObject = new Audio.Sound();
 
@@ -53,6 +54,11 @@ export default function PodcastScreen() {
     useEffect(() => { fetchPodcasts() }, []);
     return (
         <View style={styles.container}>
+            <Header
+                title={strings.townHallName}
+                subtitle={strings.headerSubtitle}
+                titleColor={colors.primary}
+            />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={loadingPodcastData} onRefresh={fetchPodcasts} />}
