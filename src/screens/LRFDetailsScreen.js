@@ -36,7 +36,7 @@ export default function LRFDetailsScreen({ route, navigation }) {
                     }}
                 >
                     <View style={styles.menuContainer}>
-                        {LRFsData.map((LRF, idx) => {
+                        {LRFsData?.map((LRF, idx) => {
                             if (LRF.meta_box.relatorio.split('-')[0].trim() === relatorio) {
                                 return <CollapsibleList
                                     key={idx}
@@ -69,7 +69,7 @@ export default function LRFDetailsScreen({ route, navigation }) {
                                         </View>
                                     }
                                 >
-                                    {LRF.meta_box.bimestre.map((competencia, idx) => {
+                                    {LRF?.meta_box?.bimestre?.map((competencia, idx) => {
                                         return (<View
                                             key={idx}
                                         >

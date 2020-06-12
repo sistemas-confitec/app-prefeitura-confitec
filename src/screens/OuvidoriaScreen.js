@@ -401,7 +401,7 @@ export default function OuvidoriaScreen(props) {
                             onValueChange={(itemValue, itemIndex) => setSecretaria({ ...secretaria, value: itemValue })}
                         >
                             <Picker.Item label="---" value="---" />
-                            {categories.map((item) => <Picker.Item key={item.id} label={item.title.rendered} value={item.id} />)}
+                            {categories?.map((item) => <Picker.Item key={item.id} label={item.title.rendered} value={item.id} />)}
                         </Picker>
                         <Text style={styles.errorMsg}>{secretaria.error}</Text>
 

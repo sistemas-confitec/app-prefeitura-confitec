@@ -33,7 +33,7 @@ export default function ServicesScreen({navigation}) {
                 contentContainerStyle={{ flexGrow: 1, padding: 10}}
                 style={{width:'100%'}}
             >
-                {servicesData.map((service) => {
+                {servicesData?.map((service) => {
                     return <ServiceItem
                         key={service.id}
                         onPress={()=>{

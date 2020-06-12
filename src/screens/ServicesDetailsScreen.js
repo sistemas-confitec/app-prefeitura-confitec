@@ -66,7 +66,7 @@ export default function ServicesDetailsScreen({ route, navigation }) {
                 <Text
                     style={{ ...styles.text, fontWeight: 'bold' }}
                 >Público alvo: </Text>
-                {service.meta_box.publico_alvo.map((item, idx) => {
+                {service?.meta_box?.publico_alvo?.map((item, idx) => {
                     return <Text
                         style={styles.text}
                         key={idx}>{'\u2022'} {item}</Text>
@@ -136,7 +136,7 @@ export default function ServicesDetailsScreen({ route, navigation }) {
                 <Text
                     style={styles.title}
                 >Requisitos</Text>
-                {service.meta_box.requisitos.map((item, idx) => {
+                {service?.meta_box?.requisitos?.map((item, idx) => {
                     return <Text
                         style={styles.text}
                         key={idx}>{'\u2022'} {item}</Text>
@@ -144,7 +144,7 @@ export default function ServicesDetailsScreen({ route, navigation }) {
                 <Text
                     style={styles.title}
                 >Etapas</Text>
-                {service.meta_box.etapas.map((item, idx) => {
+                {service?.meta_box?.etapas?.map((item, idx) => {
                     return <Text
                         style={styles.text}
                         key={idx}>{'\u2022'} {item}</Text>
@@ -154,7 +154,7 @@ export default function ServicesDetailsScreen({ route, navigation }) {
                     style={styles.title}
                 >Anexos</Text>
 
-                {service.meta_box.anexo.map((item, idx) => {
+                {service?.meta_box?.anexo?.map((item, idx) => {
                     return <TouchableOpacity
                         onPress={() => {
                             navigation.navigate('PDFViewer', { url: item.url });

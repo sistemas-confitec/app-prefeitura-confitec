@@ -33,7 +33,7 @@ export default function SecretaryScreen({ navigation }) {
                 contentContainerStyle={{ flexGrow: 1, padding: 10 }}
                 style={{ width: '100%' }}
             >
-                {secretaryData && secretaryData.secretarias.map((sec, idx) => {
+                {secretaryData && secretaryData?.secretarias?.map((sec, idx) => {
                     return <CollapsibleList
                         key={idx}
                         numberOfVisibleItems={0}

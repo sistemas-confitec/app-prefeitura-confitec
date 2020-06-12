@@ -14,6 +14,8 @@ import OuvidoriaScreen from '../screens/OuvidoriaScreen';
 import PDFViewer from '../screens/PDFViewer';
 import EsicScreen from '../screens/EsicScreen';
 import ManifestacoesScreen from '../screens/ManifestacoesScreen';
+import AcoesScreen from '../screens/AcoesScreen';
+import AcoesDetailsScreen from '../screens/AcoesDetailsScreen';
 import { colors } from '../config/Constants';
 
 const Stack = createStackNavigator();
@@ -149,6 +151,24 @@ export default function MainStackNavigator() {
                     }
                 })}
                 name="ManifestacoesScreen" component={ManifestacoesScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Ações Gov',
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="AcoesScreen" component={AcoesScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Ações Gov',
+                    headerStyle:{
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="AcoesDetailsScreen" component={AcoesDetailsScreen} />
         </Stack.Navigator>
     );
 }

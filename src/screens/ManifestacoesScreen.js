@@ -74,7 +74,7 @@ export default function ManifestacoesScreen(props) {
                 contentContainerStyle={{ flexGrow: 1, padding: 20 }}
                 style={{ width: '100%' }}
             >
-                {manifestacoes.length > 0 ? manifestacoes.map((manifestacao, idx) => {
+                {manifestacoes.length > 0 ? manifestacoes?.map((manifestacao, idx) => {
                     return (
                         <CollapsibleList
                             key={idx}
@@ -190,13 +190,13 @@ export default function ManifestacoesScreen(props) {
 
                             <Text
                                 style={styles.title}
-                            >Hitórico de Atendimentos</Text>
+                            >Histórico de Atendimentos</Text>
                             <Text
                                 style={styles.title}
                             >Ouvidor: {ouvidor}</Text>
                             {manifestacao.meta_box.atendimentos.length > 0 ?
                                 <>
-                                    {manifestacao.meta_box.atendimentos.map((atendimento, idx) => {
+                                    {manifestacao?.meta_box?.atendimentos?.map((atendimento, idx) => {
                                         return <View key={idx}>
                                             {/* <View style={{ width: '100%', height: 1, backgroundColor: '#F5F5F5', marginTop: 10 }} /> */}
                                             <View style={{
@@ -254,7 +254,7 @@ export default function ManifestacoesScreen(props) {
                             style={{ marginTop: 20 }}
                         >Você ainda não realizou nenhuma manifestação.</Text>
                     </View>}
-            </ScrollView> : <ActivityIndicator style={{alignSelf:'center', flex:1}} size={40} />}
+            </ScrollView> : <CustomActivityIndicator />}
         </View>
     );
 }

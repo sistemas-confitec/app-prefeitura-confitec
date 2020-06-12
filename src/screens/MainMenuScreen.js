@@ -97,9 +97,10 @@ export default function MainMenuScreen({ navigation }) {
                 </View>
                 <View style={styles.menuContainer}>
                     <MenuItem
-                        iconName={"graph-pie"}
-                        iconSource={"Foundation"}
-                        title={"Transparência"} />
+                        onPress={() => { navigation.navigate('AcoesScreen') }}
+                        iconName={"worker"}
+                        iconSource={"MaterialCommunityIcons"}
+                        title={"Ações Gov"} />
                     <MenuItem
                         onPress={() => { navigation.navigate('LRFScreen') }}
                         iconName={"hammer"}

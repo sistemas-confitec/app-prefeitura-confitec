@@ -64,7 +64,7 @@ export default function PodcastScreen() {
                 refreshControl={<RefreshControl refreshing={loadingPodcastData} onRefresh={fetchPodcasts} />}
                 contentContainerStyle={{ flexGrow: 1, padding: 10 }}
             >
-                {podcastData.map((podcast) => {
+                {podcastData?.map((podcast) => {
                     if (podcast.meta_box?.audio_podcast[0]?.url) {
                         return <PodcastCard
                             key={podcast.id}
