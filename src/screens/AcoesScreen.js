@@ -10,6 +10,7 @@ import Header from '../components/Header';
 
 export default function AcoesScreen(props) {
     const [acoes, setAcoes] = useState([]);
+    const location = props.route.params?.location;
 
     async function fetchAcoes() {
         const resp = await axios.get(`${baseURL}/wp-json/wp/v2/app-acoes-gov`);
@@ -41,7 +42,7 @@ export default function AcoesScreen(props) {
                         activeOpacity={0.8}
                         key={acao.id}
                         onPress={()=>{
-                            props.navigation.navigate('AcoesDetailsScreen', {acao})
+                            props.navigation.navigate('AcoesDetailsScreen', {acao, location})
                         }}
                         style={styles.itemContainer}
                     >

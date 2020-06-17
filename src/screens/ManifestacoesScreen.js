@@ -7,6 +7,7 @@ import * as FileSystem from 'expo-file-system';
 
 import { colors, esicURL, strings } from '../config/Constants';
 import Header from '../components/Header';
+import CustomActivityIndicator from '../components/CustomActivityIndicator';
 import { splitDate, pad } from '../util/Functions';
 
 export default function ManifestacoesScreen(props) {
@@ -47,15 +48,16 @@ export default function ManifestacoesScreen(props) {
         const manifestacoesArray = [];
 
         setLoading(true)
-        for (let i = 0; i < protocols.length; i++) {
-
-            const resp = await axios.get(`${esicURL}/wp-json/wp/v2/app-feedback?slug=protocolo-${protocols[i]}`);
-            if (resp.data[0]) {
-                manifestacoesArray.push(resp.data[0]);
+        if(protocols && protocols.length>0){
+            for (let i = 0; i < protocols.length; i++) {
+    
+                const resp = await axios.get(`${esicURL}/wp-json/wp/v2/app-feedback?slug=protocolo-${protocols[i]}`);
+                if (resp.data[0]) {
+                    manifestacoesArray.push(resp.data[0]);
+                }
             }
         }
         setManifestacoes(manifestacoesArray.reverse())
-        console.log(manifestacoesArray[0].date)
         setLoading(false)
     }
 

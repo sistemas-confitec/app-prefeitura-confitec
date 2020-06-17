@@ -1,16 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, Image, View, ScrollView, TouchableOpacity, AsyncStorage } from 'react-native';
-import axios from 'axios';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, Text, Image, View, ScrollView, TouchableOpacity, AsyncStorage, Alert, BackHandler } from 'react-native';
+import { MaterialCommunityIcons, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { Modal, Portal, ToggleButton } from 'react-native-paper';
+import { AirbnbRating } from 'react-native-elements';
+import Constants from 'expo-constants';
+import { useFocusEffect } from '@react-navigation/native';
 
-import { colors, strings, baseURL } from '../config/Constants';
+import { colors, strings, idContactForm7Acoes } from '../config/Constants';
 import Header from '../components/Header';
+import api from '../services/api';
 
 export default function AcoesDetailsScreen(props) {
     const [visible, setVisible] = useState(false);
-    const [like, setLike] = useState("like");
+    const [response, setResponse] = useState(null);
+    const [votos, setVotos] = useState(null);
     const acao = props.route.params?.acao;
+    const location = props.route.params?.location;
+
+    useEffect(() => {
+        (async () => {
+            const vot = await AsyncStorage.getItem('votos');
+            setVotos(JSON.parse(vot));
+        })();
+    }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = async () => {
+                if (votos && votos[acao.id] && votos[acao.id] === 'pending') {
+                    setVisible(true);
+                    return true;
+                } else {
+                    if (!votos || !votos[acao.id]) {
+                        const newVotos = !votos ? {} : votos;
+                        newVotos[acao.id] = 'pending';
+                        setVotos(newVotos);
+                        await AsyncStorage.setItem('votos', JSON.stringify(newVotos));
+                        props.navigation.goBack();
+                        return true;
+                    } else {
+                        props.navigation.goBack();
+                        return true;
+                    }
+                }
+            };
+
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () =>
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [votos, setVisible])
+    );
 
     return (
         <View style={styles.container}>
@@ -63,7 +103,7 @@ export default function AcoesDetailsScreen(props) {
                         activeOpacity={0.8}
                         style={styles.itemContainer}
                     >
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             activeOpacity={0.85}
                             onPress={() => { setVisible(true) }}
                             style={{
@@ -71,22 +111,19 @@ export default function AcoesDetailsScreen(props) {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 alignSelf: 'center',
-                                backgroundColor: colors.secondary,
                                 marginBottom: 10,
                                 paddingVertical: 10,
                                 paddingHorizontal: 20,
-                                borderRadius: 8,
-                                elevation:4
                             }}
                         >
-                            <MaterialCommunityIcons name="frequently-asked-questions" size={24} color={"#FFF"} />
+                            <MaterialCommunityIcons name="frequently-asked-questions" size={24} color={colors.secondary} />
                             <Text
-                            style={{
-                                color:'#FFF',
-                                marginLeft:10
-                            }}
-                            >Dê sua opnião</Text>
-                        </TouchableOpacity>
+                                style={{
+                                    color: colors.secondary,
+                                    marginLeft: 10
+                                }}
+                            >Avalie esta ação</Text>
+                        </TouchableOpacity> */}
                         <Text
                             style={styles.title}
                         >{acao.title.rendered}</Text>
@@ -105,7 +142,10 @@ export default function AcoesDetailsScreen(props) {
             <Portal>
                 <Modal
                     visible={visible}
-                    onDismiss={() => { setVisible(false) }}
+                    onDismiss={() => {
+                        Alert.alert("Atenção", "Por favor, avalie.", [{ text: "Ok", onPress: () => { setVisible(true) } }])
+                        //setVisible(false)
+                    }}
                 >
                     <View
                         style={{
@@ -119,31 +159,163 @@ export default function AcoesDetailsScreen(props) {
                         <MaterialCommunityIcons
                             name="frequently-asked-questions"
                             size={60}
-                            color={colors.primary} />
+                            color={colors.secondary} />
                         <Text
                             style={{
                                 fontSize: 22,
-                                color: colors.primary,
+                                color: colors.secondary,
                                 fontWeight: 'bold',
                                 textAlign: 'center'
                             }}
                         >{acao.meta_box.pergunta}</Text>
-                        {acao.meta_box["tipo-pergunta-acoes"] === "Tipo - Ótimo Bom Regular Ruim" && <ToggleButton.Group
-                            onValueChange={value => { setLike(value) }}
-                            value={like}
-                        >
-                            <View
-                                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}
+                        {acao.meta_box["tipo-pergunta-acoes"] === "Tipo - Ótimo Bom Regular Ruim" &&
+                            <ToggleButton.Group
+                                onValueChange={value => { setResponse(value) }}
+                                value={response}
                             >
-                                <ToggleButton icon="heart" color={colors.secondary} value="like" />
-                                <ToggleButton icon="heart-broken" color={colors.secondary} value="dislike" />
-                            </View>
-                        </ToggleButton.Group>}
+                                <ScrollView
+                                    style={{
+                                        flexDirection: 'row',
+                                        marginTop: 20
+                                    }}
+                                    contentContainerStyle={{
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                    horizontal={true}
+                                >
+                                    <ToggleButton icon={() => <MaterialIcons name="sentiment-very-satisfied" size={30} color={colors.secondary} />}
+                                        value="Ótimo" />
+                                    <ToggleButton icon={() => <MaterialIcons name="sentiment-satisfied" size={30} color={colors.secondary} />}
+                                        value="Bom" />
+                                    <ToggleButton icon={() => <MaterialIcons name="sentiment-neutral" size={30} color={colors.secondary} />}
+                                        value="Regular" />
+                                    <ToggleButton icon={() => <MaterialIcons name="sentiment-very-dissatisfied" size={30} color={colors.secondary} />}
+                                        value="Ruim" />
+                                </ScrollView>
+                            </ToggleButton.Group>}
+                        {acao.meta_box["tipo-pergunta-acoes"] === "Tipo - Curti ou Não Curti" &&
+                            <ToggleButton.Group
+                                onValueChange={value => { setResponse(value) }}
+                                value={response}
+                            >
+                                <ScrollView
+                                    style={{
+                                        flexDirection: 'row',
+                                        marginTop: 20
+                                    }}
+                                    contentContainerStyle={{
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                    horizontal={true}
+                                >
+                                    <ToggleButton icon={() => <AntDesign name="like2" size={24} color={colors.secondary} />}
+                                        color={colors.secondary}
+                                        value="Curti" />
+                                    <ToggleButton icon={() => <AntDesign name="dislike2" size={24} color={colors.secondary} />}
+                                        color={colors.secondary}
+                                        value="Não Curti" />
+                                </ScrollView>
+                            </ToggleButton.Group>}
+                        {acao.meta_box["tipo-pergunta-acoes"] === "Tipo - 1 a 5 estrelas" &&
+                            <AirbnbRating
+                                count={5}
+                                showRating={false}
+                                starStyle={{ marginTop: 20 }}
+                                defaultRating={0}
+                                size={30}
+                                onFinishRating={(rating) => setResponse(rating > 1 ? rating + " estrelas" : rating + " estrela")}
+                            />
+                        }
+                        {acao.meta_box["tipo-pergunta-acoes"] === "Tipo - Nota de 1 a 10" &&
+                            <ToggleButton.Group
+                                onValueChange={value => { setResponse(value) }}
+                                value={response}
+                            >
+                                <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
 
-                        <View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical:20 }} />
+                                    <ScrollView
+                                        style={{
+                                            flexDirection: 'row',
+                                            marginTop: 20
+                                        }}
+                                        contentContainerStyle={{
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                        horizontal={true}
+                                    >
+                                        <ToggleButton icon={() => <Text style={styles.number}>1</Text>}
+                                            color={colors.secondary}
+                                            value="1" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>2</Text>}
+                                            color={colors.secondary}
+                                            value="2" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>3</Text>}
+                                            color={colors.secondary}
+                                            value="3" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>4</Text>}
+                                            color={colors.secondary}
+                                            value="4" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>5</Text>}
+                                            color={colors.secondary}
+                                            value="5" />
+                                    </ScrollView>
+                                    <ScrollView
+                                        style={{
+                                            flexDirection: 'row',
+                                            marginTop: 20
+                                        }}
+                                        contentContainerStyle={{
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                        horizontal={true}
+                                    >
+                                        <ToggleButton icon={() => <Text style={styles.number}>6</Text>}
+                                            color={colors.secondary}
+                                            value="6" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>7</Text>}
+                                            color={colors.secondary}
+                                            value="7" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>8</Text>}
+                                            color={colors.secondary}
+                                            value="8" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>9</Text>}
+                                            color={colors.secondary}
+                                            value="9" />
+                                        <ToggleButton icon={() => <Text style={styles.number}>10</Text>}
+                                            color={colors.secondary}
+                                            value="10" />
+                                    </ScrollView>
+                                </View>
+                            </ToggleButton.Group>}
+
+                        <View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical: 20 }} />
                         <TouchableOpacity
                             activeOpacity={0.85}
-                            onPress={() => { }}
+                            onPress={async () => {
+                                if (!response) {
+                                    Alert.alert("Responda a pergunta", "Por favor, avalie a ação antes de enviar.")
+                                } else {
+                                    const data = new FormData;
+                                    data.append('identificador', 'respostas-acoes');
+                                    data.append('email', 'email@email.com');
+                                    data.append('acao_promovida', acao.id);
+                                    data.append('secretaria', acao.meta_box.secretaria);
+                                    data.append('pergunta', acao.meta_box.pergunta);
+                                    data.append('resposta', response);
+                                    data.append('lat', !location ? 'indisponível' : location.coords.latitude);
+                                    data.append('long', !location ? 'indisponível' : location.coords.longitude);
+                                    const resp = await api.post(`/wp-json/contact-form-7/v1/contact-forms/${idContactForm7Acoes}/feedback`, data);
+                                    Alert.alert("Obrigado pela avaliação", "Sua avaliação é muito importante.", [{ text: "Ok", onPress: () => setVisible(false) }])
+                                    const newVotos = !votos ? {} : votos;
+                                    newVotos[acao.id] = response;
+                                    setVotos(newVotos);
+                                    await AsyncStorage.setItem('votos', JSON.stringify(newVotos));
+                                }
+                            }}
                             style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -163,6 +335,25 @@ export default function AcoesDetailsScreen(props) {
                     </View>
                 </Modal>
             </Portal>
+            {votos && votos[acao.id] && votos[acao.id] !== 'pending' && <View
+                style={{
+                    width: '100%',
+                    height: 60,
+                    position: 'absolute',
+                    bottom: 0,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: colors.primary,
+                    elevation: 8
+                }}
+            >
+                <Text
+                    style={{
+                        color: '#FFF',
+                        fontSize: 18
+                    }}
+                >Minha avaliação: {votos[acao.id]}</Text>
+            </View>}
         </View>
     );
 }
@@ -209,5 +400,15 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#FFF',
         marginBottom: 10,
+    },
+    number: {
+        width: 30,
+        height: 30,
+        borderWidth: 1,
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        borderRadius: 4,
+        color: colors.secondary,
+        borderColor: colors.secondary
     }
 });
