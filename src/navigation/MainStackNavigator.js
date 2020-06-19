@@ -1,5 +1,6 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { AsyncStorage } from 'react-native';
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 import MainMenuScreen from '../screens/MainMenuScreen';
 import CityScreen from '../screens/CityScreen';
 import PodcastScreen from '../screens/PodcastScreen';
@@ -16,6 +17,11 @@ import EsicScreen from '../screens/EsicScreen';
 import ManifestacoesScreen from '../screens/ManifestacoesScreen';
 import AcoesScreen from '../screens/AcoesScreen';
 import AcoesDetailsScreen from '../screens/AcoesDetailsScreen';
+import PontosTuristicosScreen from '../screens/PontosTuristicosScreen';
+import PontosTuristicosDetailsScreen from '../screens/PontosTuristicosDetailsScreen';
+import NoticiasScreen from '../screens/NoticiasScreen';
+import NoticiasDetailsScreen from '../screens/NoticiasDetailsScreen';
+import DiarioOficialScreen from '../screens/DiarioOficialScreen';
 import { colors } from '../config/Constants';
 
 const Stack = createStackNavigator();
@@ -28,7 +34,7 @@ export default function MainStackNavigator() {
                     //headerShown: false
                     headerTintColor: '#FFF',
                     headerTitle: 'App Confitec Gov',
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -38,7 +44,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Município",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -47,7 +53,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Podcast",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -56,7 +62,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Carta de Serviços",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -65,7 +71,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Carta de Serviços",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -74,7 +80,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Carta de Serviços",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -83,7 +89,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Prefeitura",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -92,7 +98,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "LRF",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -101,7 +107,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Secretarias",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -110,7 +116,7 @@ export default function MainStackNavigator() {
                 options={({ navigation }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: "Gestores Atuais",
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -119,7 +125,7 @@ export default function MainStackNavigator() {
                 options={({ route }) => ({
                     headerTintColor: '#FFF',
                     headerTitle: route.params?.relatorio,
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -128,7 +134,7 @@ export default function MainStackNavigator() {
                 options={() => ({
                     headerTintColor: '#FFF',
                     headerTitle: 'Ouvidoria',
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -137,7 +143,7 @@ export default function MainStackNavigator() {
                 options={() => ({
                     headerTintColor: '#FFF',
                     headerTitle: 'e-SIC',
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -146,7 +152,7 @@ export default function MainStackNavigator() {
                 options={() => ({
                     headerTintColor: '#FFF',
                     headerTitle: 'Manifestações',
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -155,7 +161,7 @@ export default function MainStackNavigator() {
                 options={() => ({
                     headerTintColor: '#FFF',
                     headerTitle: 'Ações Gov',
-                    headerStyle:{
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
@@ -163,11 +169,71 @@ export default function MainStackNavigator() {
             <Stack.Screen
                 options={() => ({
                     headerTintColor: '#FFF',
-                    headerTitle: 'Ações Gov',
-                    headerStyle:{
+                    headerTitle: 'Pontos Turísticos',
+                    headerStyle: {
                         backgroundColor: colors.primary
                     }
                 })}
+                name="PontosTuristicosScreen" component={PontosTuristicosScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Pontos Turísticos',
+                    headerStyle: {
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="PontosTuristicosDetailsScreen" component={PontosTuristicosDetailsScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Notícias',
+                    headerStyle: {
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="NoticiasScreen" component={NoticiasScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Notícias',
+                    headerStyle: {
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="NoticiasDetailsScreen" component={NoticiasDetailsScreen} />
+            <Stack.Screen
+                options={() => ({
+                    headerTintColor: '#FFF',
+                    headerTitle: 'Diário Oficial',
+                    headerStyle: {
+                        backgroundColor: colors.primary
+                    }
+                })}
+                name="DiarioOficialScreen" component={DiarioOficialScreen} />
+            <Stack.Screen
+                options={({ route, navigation }) => {
+                    const acao = route.params?.acao;
+                    const votos = route.params?.votos;
+                    const setVisible = route.params?.setVisible;
+                    return ({
+                        headerTintColor: '#FFF',
+                        headerTitle: 'Ações Gov',
+                        headerStyle: {
+                            backgroundColor: colors.primary
+                        },
+                        headerLeft: (props) => <HeaderBackButton
+                            {...props}
+                            onPress={() => {
+                                if (!votos || !votos[acao.id] && !!acao.meta_box.pergunta) {
+                                    setVisible(true);
+                                    console.log('Mostra pesquisa')
+                                } else {
+                                   navigation.goBack();
+                                }
+                            }} />
+                    })
+                }}
                 name="AcoesDetailsScreen" component={AcoesDetailsScreen} />
         </Stack.Navigator>
     );

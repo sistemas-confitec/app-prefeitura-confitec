@@ -1,51 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, Image, StatusBar, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Alert, Image, StatusBar, AsyncStorage } from 'react-native';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
+import { useSelector, useDispatch } from 'react-redux';
 
+import prefeituraActions from '../store/ducks/prefeituraDuck';
+import secretariasActions from '../store/ducks/secretariasDuck';
 import { colors, strings } from '../config/Constants';
 import MenuItem from '../components/MenuItem';
-import api from '../services/api';
-import { Alert } from 'react-native';
+import CustomActivityIndicator from '../components/CustomActivityIndicator';
 
 
 export default function MainMenuScreen({ navigation }) {
-    const [townHall, setTownHall] = useState(null);
-    const [sexoPrefeito, setSexoPrefeito] = useState(null);
+    const prefeitura = useSelector(state => state.prefeitura.data);
+    const sexoPrefeito = useSelector(state => state.prefeitura.sexoPrefeito);
+    const loading = useSelector(state => state.prefeitura.loading);
+
+    const dispatch = useDispatch();
+
 
     const [location, setLocation] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
 
-    const municipio = async () => {
-        const resp1 = await api.get('/wp-json/wp/v2/app-prefeitura');
-        setTownHall(resp1.data[0]);
-        await AsyncStorage.setItem('logoUri', resp1.data[0].meta_box['logo-gestao'].url)
-        const resp = await api.get('/wp-json/wp/v2/app-prefeito-e-vice');
-        if (resp.data) {
-            resp.data.forEach(element => {
-                if ((element.meta_box['sexo-prefeito'] === "Prefeito" || element.meta_box['sexo-prefeito'] === "Prefeita") && !element.meta_box['fim-mandato-prefeito']) {
-
-                    return setSexoPrefeito(element.meta_box['sexo-prefeito']);
-                }
-            });
-        }
-    }
-    useEffect(() => { municipio() }, []);
+    useEffect(() => {
+        dispatch(prefeituraActions.fetchPrefeitura())
+        dispatch(secretariasActions.fetchSecretarias())
+    }, []);
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestPermissionsAsync();
             if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
                 Alert.alert("Permissão requerida", "Precisamos de acesso à sua localização.")
             }
 
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
-            console.log(location)
+            //console.log(location)
         })();
-    },[]);
+    }, []);
     return (
-        <View style={styles.container}>
+        loading ? <CustomActivityIndicator /> : <View style={styles.container}>
             <StatusBar barStyle={"light-content"} translucent={true} backgroundColor={'rgba(0,0,0,0.2)'} />
             <Image
                 source={require('../../assets/brasao-app-confitec.png')}
@@ -83,12 +76,12 @@ export default function MainMenuScreen({ navigation }) {
                         title={"Prefeitura"}
                         iconSource={"FontAwesome5"}
                         iconName={"building"}
-                        />
+                    />
                     <MenuItem
                         onPress={() => { navigation.navigate('PrefeitoScreen') }}
-                        iconName={sexoPrefeito ==="Prefeita" ?  "user-female": "user-tie" }
-                        iconSource={sexoPrefeito ==="Prefeita" ? "SimpleLineIcons" : "FontAwesome5"}
-                        title={sexoPrefeito ? sexoPrefeito : "Prefeito(a)"} />
+                        iconName={sexoPrefeito === "Prefeita" ? "user-female" : "user-tie"}
+                        iconSource={sexoPrefeito === "Prefeita" ? "SimpleLineIcons" : "FontAwesome5"}
+                        title={sexoPrefeito} />
                     <MenuItem
                         onPress={() => {
                             navigation.navigate('SecretaryScreen')
@@ -107,17 +100,19 @@ export default function MainMenuScreen({ navigation }) {
                         }}
                     />
                     <MenuItem
+                        onPress={() => { navigation.navigate('PontosTuristicosScreen') }}
                         iconName={"map"}
                         iconSource={"Foundation"}
                         title={"Turismo"} />
                     <MenuItem
+                        onPress={() => { navigation.navigate('NoticiasScreen') }}
                         iconName={"newspaper-o"}
                         iconSource={"FontAwesome"}
                         title={"Notícias"} />
                 </View>
                 <View style={styles.menuContainer}>
                     <MenuItem
-                        onPress={() => { navigation.navigate('AcoesScreen', {location}) }}
+                        onPress={() => { navigation.navigate('AcoesScreen', { location }) }}
                         iconName={"worker"}
                         iconSource={"MaterialCommunityIcons"}
                         title={"Ações Gov"} />
@@ -127,6 +122,7 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"FontAwesome5"}
                         title={"LRF"} />
                     <MenuItem
+                        onPress={() => { navigation.navigate('DiarioOficialScreen') }}
                         iconName={"newsletter"}
                         iconSource={"Entypo"}
                         title={"Diário Oficial"} />
@@ -157,13 +153,13 @@ export default function MainMenuScreen({ navigation }) {
             >
                 <Text
                     style={{ ...styles.footerText, fontWeight: 'bold' }}
-                >{townHall && townHall?.title?.rendered}</Text>
+                >{prefeitura && prefeitura?.title?.rendered}</Text>
                 <Text
                     style={styles.footerText}
-                >{townHall && townHall.meta_box?.endereco}</Text>
+                >{prefeitura && prefeitura.meta_box?.endereco}</Text>
                 <Text
                     style={styles.footerText}
-                >{townHall && townHall.meta_box?.horario}</Text>
+                >{prefeitura && prefeitura.meta_box?.horario}</Text>
             </View>
         </View >
     );

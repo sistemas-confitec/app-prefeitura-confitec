@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, AsyncStorage } from 'react-native';
+import { useSelector } from 'react-redux';
 
 export default function Header({ title, subtitle, assetName, titleColor }) {
-    const [logoUri, setLogoUri] = useState('apagar_e_usar_redux');
-    const getLogo = async ()=>{
-        const logoUriAux = await AsyncStorage.getItem('logoUri');
-        setLogoUri(logoUriAux);
-    };
-
-    useEffect(()=>{
-        getLogo();
-    },[]);
+    const prefeitura = useSelector(state => state.prefeitura.data);
 
     return (
         <View
@@ -27,7 +20,7 @@ export default function Header({ title, subtitle, assetName, titleColor }) {
                     require(`../../assets/logo_ouvidoria.png`) :
                     assetName === 'logo_e_sic' ?
                         require(`../../assets/logo_e_sic.png`) :
-                        {uri: logoUri}//require(`../../assets/icon.png`)
+                        {uri: prefeitura?.meta_box ? prefeitura?.meta_box['logo-gestao']?.url : 'fallback'}
                 }
                 resizeMode={'contain'}
                 style={{

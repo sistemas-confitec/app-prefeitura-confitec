@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
         flex: 1,
         fontWeight: 'bold',
         fontSize: 14,
-        marginVertical: 5
+        marginVertical: 5,
+        color:colors.primary
     },
     serviceCardContainer: {
         width: '100%',

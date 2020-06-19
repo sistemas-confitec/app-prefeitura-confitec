@@ -9,8 +9,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { colors, strings, idContactForm7Acoes } from '../config/Constants';
 import Header from '../components/Header';
 import api from '../services/api';
+import Done from '../animations/Done';
 
 export default function AcoesDetailsScreen(props) {
+    const [animationDone, setAnimationDone] = useState(false);
     const [visible, setVisible] = useState(false);
     const [response, setResponse] = useState(null);
     const [votos, setVotos] = useState(null);
@@ -20,29 +22,20 @@ export default function AcoesDetailsScreen(props) {
     useEffect(() => {
         (async () => {
             const vot = await AsyncStorage.getItem('votos');
+            props.navigation.setParams({ setVisible, votos: JSON.parse(vot) })
             setVotos(JSON.parse(vot));
         })();
     }, [])
 
     useFocusEffect(
         useCallback(() => {
-            const onBackPress = async () => {
-                if (votos && votos[acao.id] && votos[acao.id] === 'pending') {
+            const onBackPress = () => {
+                if ((!votos || !votos[acao.id]) && !!acao.meta_box.pergunta) {
                     setVisible(true);
-                    return true;
                 } else {
-                    if (!votos || !votos[acao.id]) {
-                        const newVotos = !votos ? {} : votos;
-                        newVotos[acao.id] = 'pending';
-                        setVotos(newVotos);
-                        await AsyncStorage.setItem('votos', JSON.stringify(newVotos));
-                        props.navigation.goBack();
-                        return true;
-                    } else {
-                        props.navigation.goBack();
-                        return true;
-                    }
+                    props.navigation.goBack();
                 }
+                return true;
             };
 
             BackHandler.addEventListener('hardwareBackPress', onBackPress);
@@ -103,27 +96,6 @@ export default function AcoesDetailsScreen(props) {
                         activeOpacity={0.8}
                         style={styles.itemContainer}
                     >
-                        {/* <TouchableOpacity
-                            activeOpacity={0.85}
-                            onPress={() => { setVisible(true) }}
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                alignSelf: 'center',
-                                marginBottom: 10,
-                                paddingVertical: 10,
-                                paddingHorizontal: 20,
-                            }}
-                        >
-                            <MaterialCommunityIcons name="frequently-asked-questions" size={24} color={colors.secondary} />
-                            <Text
-                                style={{
-                                    color: colors.secondary,
-                                    marginLeft: 10
-                                }}
-                            >Avalie esta ação</Text>
-                        </TouchableOpacity> */}
                         <Text
                             style={styles.title}
                         >{acao.title.rendered}</Text>
@@ -136,26 +108,32 @@ export default function AcoesDetailsScreen(props) {
                             style={{ flex: 1 }}
                         >{acao.meta_box["descricao"]}</Text>
                     </View>
-
+                    <TouchableOpacity
+                        onPress={() => {
+                            setAnimationDone(true);
+                        }}
+                    >
+                        <Text>Funciona desgraça</Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
             <Portal>
                 <Modal
                     visible={visible}
+                    contentContainerStyle={{ position: 'absolute', bottom: 0, width: '100%' }}
                     onDismiss={() => {
-                        Alert.alert("Atenção", "Por favor, avalie.", [{ text: "Ok", onPress: () => { setVisible(true) } }])
-                        //setVisible(false)
+                        //Alert.alert("Atenção", "Por favor, avalie.", [{ text: "Ok", onPress: () => { setVisible(true) } }])
+                        setVisible(false)
                     }}
                 >
                     <View
                         style={{
-                            width: '90%',
+                            width: '100%',
                             backgroundColor: '#FFF',
-                            alignSelf: 'center',
-                            borderRadius: 4,
-                            padding: 20,
+                            marginBottom: -1,
                             alignItems: 'center'
                         }}>
+                        <View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical: 20 }} />
                         <MaterialCommunityIcons
                             name="frequently-asked-questions"
                             size={60}
@@ -299,6 +277,8 @@ export default function AcoesDetailsScreen(props) {
                                 if (!response) {
                                     Alert.alert("Responda a pergunta", "Por favor, avalie a ação antes de enviar.")
                                 } else {
+                                    setVisible(false);
+                                    setAnimationDone(true);
                                     const data = new FormData;
                                     data.append('identificador', 'respostas-acoes');
                                     data.append('email', 'email@email.com');
@@ -309,7 +289,6 @@ export default function AcoesDetailsScreen(props) {
                                     data.append('lat', !location ? 'indisponível' : location.coords.latitude);
                                     data.append('long', !location ? 'indisponível' : location.coords.longitude);
                                     const resp = await api.post(`/wp-json/contact-form-7/v1/contact-forms/${idContactForm7Acoes}/feedback`, data);
-                                    Alert.alert("Obrigado pela avaliação", "Sua avaliação é muito importante.", [{ text: "Ok", onPress: () => setVisible(false) }])
                                     const newVotos = !votos ? {} : votos;
                                     newVotos[acao.id] = response;
                                     setVotos(newVotos);
@@ -317,25 +296,22 @@ export default function AcoesDetailsScreen(props) {
                                 }
                             }}
                             style={{
+                                width: '100%',
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                alignSelf: 'center',
                                 backgroundColor: colors.secondary,
-                                marginBottom: 10,
-                                paddingVertical: 10,
-                                paddingHorizontal: 20,
-                                borderRadius: 8,
+                                height: 50
                             }}
                         >
                             <Text
-                                style={{ ...styles.text, fontWeight: "bold", textAlign: 'center', color: '#FFF', marginTop: 0 }}
-                            >Enviar</Text>
+                                style={{ ...styles.text, fontWeight: "bold", textAlign: 'center', color: '#FFF' }}
+                            >ENVIAR</Text>
                         </TouchableOpacity>
                     </View>
                 </Modal>
             </Portal>
-            {votos && votos[acao.id] && votos[acao.id] !== 'pending' && <View
+            {votos && votos[acao.id] && <View
                 style={{
                     width: '100%',
                     height: 60,
@@ -354,6 +330,7 @@ export default function AcoesDetailsScreen(props) {
                     }}
                 >Minha avaliação: {votos[acao.id]}</Text>
             </View>}
+            {animationDone && <Done setAnimation={setAnimationDone} />}
         </View>
     );
 }
