@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
@@ -15,6 +15,7 @@ import { secretariasReducer } from './src/store/ducks/secretariasDuck';
 import { diarioOficialReducer } from './src/store/ducks/diarioOficialDuck';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import CustomActivityIndicator from './src/components/CustomActivityIndicator';
+import { colors } from './src/config/Constants';
 
 
 
@@ -45,11 +46,26 @@ export default function App() {
 
     if (!fontsLoaded) {
         return <CustomActivityIndicator />;
-    }
+	}
+	
+	const theme = {
+		...DefaultTheme,
+		colors: {
+		  ...DefaultTheme.colors,
+		  primary: colors.primary,
+		  accent: colors.secondary,
+		},
+		/* fonts:{
+			regular: 'Montserrat_400Regular',
+			medium: 'Montserrat_400Regular',
+			light: 'Montserrat_400Regular',
+			thin: 'Montserrat_400Regular'
+		} */
+	  };
 
     return (
         <Provider store={store}>
-            <PaperProvider>
+            <PaperProvider theme={theme}>
                 <NavigationContainer>
                     <MainStackNavigator />
                 </NavigationContainer>

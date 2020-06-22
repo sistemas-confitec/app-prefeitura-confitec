@@ -1,6 +1,8 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
-import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
+import { createStackNavigator, HeaderBackButton, TransitionPresets } from '@react-navigation/stack';
+import { Ionicons } from '@expo/vector-icons';
+
 import MainMenuScreen from '../screens/MainMenuScreen';
 import CityScreen from '../screens/CityScreen';
 import PodcastScreen from '../screens/PodcastScreen';
@@ -22,219 +24,247 @@ import PontosTuristicosDetailsScreen from '../screens/PontosTuristicosDetailsScr
 import NoticiasScreen from '../screens/NoticiasScreen';
 import NoticiasDetailsScreen from '../screens/NoticiasDetailsScreen';
 import DiarioOficialScreen from '../screens/DiarioOficialScreen';
+import ServicosScreen from '../screens/ServicosScreen';
+import CNDScreen from '../screens/CNDScreen';
 import { colors } from '../config/Constants';
 
 const Stack = createStackNavigator();
 
 export default function MainStackNavigator() {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    //headerShown: false
-                    headerTintColor: '#FFF',
-                    headerTitle: 'App Confitec Gov',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="MainMenuScreen" component={MainMenuScreen} />
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				options={({ navigation }) => ({
+					//headerShown: false
+					headerTintColor: '#FFF',
+					headerTitle: 'App Confitec Gov',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="MainMenuScreen" component={MainMenuScreen} />
 
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Município",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="CityScreen" component={CityScreen} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Podcast",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="PodcastScreen" component={PodcastScreen} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Carta de Serviços",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="ServicesScreen" component={ServicesScreen} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Carta de Serviços",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="ServicesDetailsScreen" component={ServicesDetailsScreen} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Carta de Serviços",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="PDFViewer" component={PDFViewer} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Prefeitura",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="TownHallScreen" component={TownHallScreen} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "LRF",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="LRFScreen" component={LRFScreen} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Secretarias",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="SecretaryScreen" component={SecretaryScreen} />
-            <Stack.Screen
-                options={({ navigation }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: "Gestores Atuais",
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="PrefeitoScreen" component={PrefeitoScreen} />
-            <Stack.Screen
-                options={({ route }) => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: route.params?.relatorio,
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="LRFDetailsScreen" component={LRFDetailsScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Ouvidoria',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="OuvidoriaScreen" component={OuvidoriaScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'e-SIC',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="EsicScreen" component={EsicScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Manifestações',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="ManifestacoesScreen" component={ManifestacoesScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Ações Gov',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="AcoesScreen" component={AcoesScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Pontos Turísticos',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="PontosTuristicosScreen" component={PontosTuristicosScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Pontos Turísticos',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="PontosTuristicosDetailsScreen" component={PontosTuristicosDetailsScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Notícias',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="NoticiasScreen" component={NoticiasScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Notícias',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="NoticiasDetailsScreen" component={NoticiasDetailsScreen} />
-            <Stack.Screen
-                options={() => ({
-                    headerTintColor: '#FFF',
-                    headerTitle: 'Diário Oficial',
-                    headerStyle: {
-                        backgroundColor: colors.primary
-                    }
-                })}
-                name="DiarioOficialScreen" component={DiarioOficialScreen} />
-            <Stack.Screen
-                options={({ route, navigation }) => {
-                    const acao = route.params?.acao;
-                    const votos = route.params?.votos;
-                    const setVisible = route.params?.setVisible;
-                    return ({
-                        headerTintColor: '#FFF',
-                        headerTitle: 'Ações Gov',
-                        headerStyle: {
-                            backgroundColor: colors.primary
-                        },
-                        headerLeft: (props) => <HeaderBackButton
-                            {...props}
-                            onPress={() => {
-                                if (!votos || !votos[acao.id] && !!acao.meta_box.pergunta) {
-                                    setVisible(true);
-                                    console.log('Mostra pesquisa')
-                                } else {
-                                   navigation.goBack();
-                                }
-                            }} />
-                    })
-                }}
-                name="AcoesDetailsScreen" component={AcoesDetailsScreen} />
-        </Stack.Navigator>
-    );
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Município",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="CityScreen" component={CityScreen} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Podcast",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="PodcastScreen" component={PodcastScreen} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Carta de Serviços",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="ServicesScreen" component={ServicesScreen} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Carta de Serviços",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="ServicesDetailsScreen" component={ServicesDetailsScreen} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Carta de Serviços",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="PDFViewer" component={PDFViewer} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Prefeitura",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="TownHallScreen" component={TownHallScreen} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "LRF",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="LRFScreen" component={LRFScreen} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Secretarias",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="SecretaryScreen" component={SecretaryScreen} />
+			<Stack.Screen
+				options={({ navigation }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: "Gestores Atuais",
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="PrefeitoScreen" component={PrefeitoScreen} />
+			<Stack.Screen
+				options={({ route }) => ({
+					headerTintColor: '#FFF',
+					headerTitle: route.params?.relatorio,
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="LRFDetailsScreen" component={LRFDetailsScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Ouvidoria',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="OuvidoriaScreen" component={OuvidoriaScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'e-SIC',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="EsicScreen" component={EsicScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Manifestações',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="ManifestacoesScreen" component={ManifestacoesScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Ações Gov',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="AcoesScreen" component={AcoesScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Pontos Turísticos',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="PontosTuristicosScreen" component={PontosTuristicosScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Pontos Turísticos',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="PontosTuristicosDetailsScreen" component={PontosTuristicosDetailsScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Notícias',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="NoticiasScreen" component={NoticiasScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Notícias',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="NoticiasDetailsScreen" component={NoticiasDetailsScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Diário Oficial',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="DiarioOficialScreen" component={DiarioOficialScreen} />
+			<Stack.Screen
+				options={() => ({
+					headerTintColor: '#FFF',
+					headerTitle: 'Serviços',
+					headerStyle: {
+						backgroundColor: colors.primary
+					}
+				})}
+				name="ServicosScreen" component={ServicosScreen} />
+			<Stack.Screen
+				options={({ route, navigation }) => {
+					const acao = route.params?.acao;
+					const votos = route.params?.votos;
+					const setVisible = route.params?.setVisible;
+					return ({
+						headerTintColor: '#FFF',
+						headerTitle: 'Ações Gov',
+						headerStyle: {
+							backgroundColor: colors.primary
+						},
+						headerLeft: (props) => <HeaderBackButton
+							{...props}
+							onPress={() => {
+								if (!votos || !votos[acao.id] && !!acao.meta_box.pergunta) {
+									setVisible(true);
+									console.log('Mostra pesquisa')
+								} else {
+									navigation.goBack();
+								}
+							}} />
+					})
+				}}
+				name="AcoesDetailsScreen" component={AcoesDetailsScreen} />
+			<Stack.Screen
+				options={({ route, navigation }) => {
+					const acao = route.params?.acao;
+					const votos = route.params?.votos;
+					const setVisible = route.params?.setVisible;
+					return ({
+						headerTintColor: '#FFF',
+						headerTitle: 'Emissão de CND',
+						headerStyle: {
+							backgroundColor: colors.primary
+						},
+						headerLeft: null,
+						cardOverlayEnabled:true,
+						...TransitionPresets.ModalSlideFromBottomIOS
+					})
+				}}
+				name="CNDScreen" component={CNDScreen} />
+		</Stack.Navigator>
+	);
 }
