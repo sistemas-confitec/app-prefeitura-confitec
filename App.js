@@ -5,7 +5,7 @@ import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
-import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold_Italic } from '@expo-google-fonts/montserrat';
+import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold_Italic, Montserrat_600SemiBold } from '@expo-google-fonts/montserrat';
 
 import rootSaga from './src/store/sagas';
 import { prefeituraReducer } from './src/store/ducks/prefeituraDuck';
@@ -40,8 +40,8 @@ sagaMiddleware.run(rootSaga);
 
 export default function App() {
     let [fontsLoaded] = useFonts({
-        Montserrat_400Regular,
-        Montserrat_600SemiBold_Italic
+		Montserrat_400Regular,
+		Montserrat_600SemiBold_Italic
     });
 
     if (!fontsLoaded) {

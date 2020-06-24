@@ -1,14 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Dimensions, Keyboard, Alert, AsyncStorage, ActivityIndicator } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
 import { Divider } from 'react-native-elements'
 import { RadioButton } from 'react-native-paper';
-import { colors, strings } from '../config/Constants';
-import Header from '../components/Header';
+import { colors, idContactForm7CND } from '../config/Constants';
 import { AntDesign } from '@expo/vector-icons';
+import api from '../services/api';
 
 
 export default function CNDScreen({ route, navigation }) {
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [nome, setNome] = useState({ value: '' });
 	const [razaoSocial, setRazaoSocial] = useState({ value: '' });
 	const [pessoa, setPessoa] = useState('fisica');
@@ -123,6 +124,74 @@ export default function CNDScreen({ route, navigation }) {
 			} else {
 				setEmail({ ...email, error: undefined });
 				return true;
+			}
+		}
+	}
+
+	function validate() {
+		if (pessoa === 'fisica') {
+			setCNPJ({ value: '', error: undefined });
+			setRazaoSocial({ value: '', error: undefined });
+			setInsc({ value: '', error: undefined });
+			return validateNome() & validateCPF() & validateEmail() & validateEndereco()
+				& validateBairro() & validateCidade();
+		} else {
+			setNome({ value: '', error: undefined });
+			setCPF({ value: '', error: undefined });
+			return validateRazaoSocial() & validateCNPJ() & validateEmail() & validateEndereco()
+				& validateBairro() & validateCidade();
+
+		}
+	}
+
+	async function storeProtocol(protocol) {
+
+        const protocols = await AsyncStorage.getItem('CND_protocols');
+        let protocolsArray;
+        if (!protocols) {
+            protocolsArray = [];
+            protocolsArray.push(protocol)
+        } else {
+            protocolsArray = JSON.parse(protocols);
+            protocolsArray.push(protocol);
+        }
+        await AsyncStorage.setItem('CND_protocols', JSON.stringify(protocolsArray));
+    }
+
+	async function handleSubmit() {
+		const valid = validate();
+		Keyboard.dismiss();
+		if (valid) {
+			try {
+				const data = new FormData();
+				data.append('identificador', 'requisitar-CND');
+				data.append('tipo', pessoa === 'fisica' ? 'Pessoa Física' : 'Pessoa Jurídica');
+				data.append('nome', pessoa === 'fisica' ? nome.value : '*');
+				data.append('cpf', pessoa === 'fisica' ? CPF.value : '*');
+				data.append('razao-social', pessoa === 'juridica' ? razaoSocial.value : '*');
+				data.append('cnpj', pessoa === 'juridica' ? CNPJ.value : '*');
+				if (insc) {
+					data.append('insc', pessoa === 'juridica' ? insc.value : '');
+				}
+				data.append('your-email', email.value);
+				data.append('endereco', endereco.value);
+				data.append('cidade', cidade.value);
+				data.append('bairro', bairro.value);
+				setIsSubmitting(true);
+				const response = await api.post(`/wp-json/contact-form-7/v1/contact-forms/${idContactForm7CND}/feedback`, data);
+				console.log(response.data);
+				if (response.data.status === 'mail_sent') {
+					Alert.alert('Enviado com sucesso', `Pressione o `, [{ text: 'ok', onPress: () => navigation.goBack() }]);
+					//console.log(response.data.message.split(':')[1].trim())
+					storeProtocol(response.data.message.split(':')[1].trim())
+				} else {
+					Alert.alert('Erro ao cadastrar', 'Tivemos um problema no envio do formulário');
+				}
+				setIsSubmitting(false);
+			} catch (error) {
+				console.log(error)
+				Alert.alert('Falha na comunicação com o servidor, verifique sua conexão com a Internet.');
+				setIsSubmitting(false);
 			}
 		}
 	}
@@ -300,22 +369,25 @@ export default function CNDScreen({ route, navigation }) {
 
 			</ScrollView>
 			<TouchableOpacity
+				onPress={() => {
+					handleSubmit();
+				}}
 				style={{
-					width: Dimensions.get('window').width-20,
+					width: Dimensions.get('window').width - 20,
 					alignItems: 'center',
 					justifyContent: 'center',
 					borderWidth: 1.5,
 					height: 60,
 					borderColor: colors.primary,
-					margin:10,
+					margin: 10,
 				}}
 			>
-				<Text
+				{!isSubmitting ? <Text
 					style={{
 						color: colors.primary,
 						fontFamily: 'Montserrat_400Regular'
 					}}
-				>REQUISITAR CND</Text>
+				>REQUISITAR CND</Text> : <ActivityIndicator />}
 			</TouchableOpacity>
 		</View>
 	);

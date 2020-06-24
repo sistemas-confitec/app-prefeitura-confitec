@@ -7,7 +7,7 @@ import axios from 'axios';
 import * as DocumentPicker from 'expo-document-picker';
 import { FontAwesome } from '@expo/vector-icons';
 
-import { colors, esicURL } from '../config/Constants';
+import { colors, esicURL, idContactForm7Ouvidoria } from '../config/Constants';
 import { pad } from '../util/Functions';
 import HeaderDivider from '../components/HeaderDivider';
 import Header from '../components/Header';
@@ -205,7 +205,7 @@ export default function OuvidoriaScreen(props) {
                 data.append('telefone', anonimo === 'NÃO' ? telefone.value : 'Anonimo');
                 data.append('email', anonimo === 'NÃO' ? email.value : 'Anonimo@anonimo.com');
                 setIsSubmitting(true);
-                const response = await axios.post(`${esicURL}/wp-json/contact-form-7/v1/contact-forms/418/feedback`, data);
+                const response = await axios.post(`${esicURL}/wp-json/contact-form-7/v1/contact-forms/${idContactForm7Ouvidoria}/feedback`, data);
                 console.log(response.data);
                 if (response.data.status === 'mail_sent') {
                     Alert.alert('Enviado com sucesso', `${response.data.message}`, [{ text: 'ok', onPress: () => props.navigation.goBack() }]);

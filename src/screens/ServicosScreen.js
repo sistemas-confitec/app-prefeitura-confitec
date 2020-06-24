@@ -51,7 +51,7 @@ export default function ServicosScreen({ route, navigation }) {
 						>
 							<TouchableOpacity
 								onPress={() => {
-									//navigation.navigate("CNDScreen")
+									navigation.navigate("CNDsScreen")
 								}}
 								style={styles.listItem}
 							>

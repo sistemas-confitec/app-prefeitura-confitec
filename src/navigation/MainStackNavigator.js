@@ -26,6 +26,7 @@ import NoticiasDetailsScreen from '../screens/NoticiasDetailsScreen';
 import DiarioOficialScreen from '../screens/DiarioOficialScreen';
 import ServicosScreen from '../screens/ServicosScreen';
 import CNDScreen from '../screens/CNDScreen';
+import CNDsScreen from '../screens/CNDsScreen';
 import { colors } from '../config/Constants';
 
 const Stack = createStackNavigator();
@@ -250,9 +251,6 @@ export default function MainStackNavigator() {
 				name="AcoesDetailsScreen" component={AcoesDetailsScreen} />
 			<Stack.Screen
 				options={({ route, navigation }) => {
-					const acao = route.params?.acao;
-					const votos = route.params?.votos;
-					const setVisible = route.params?.setVisible;
 					return ({
 						headerTintColor: '#FFF',
 						headerTitle: 'Emissão de CND',
@@ -260,11 +258,25 @@ export default function MainStackNavigator() {
 							backgroundColor: colors.primary
 						},
 						headerLeft: null,
-						cardOverlayEnabled:true,
+						cardOverlayEnabled: true,
 						...TransitionPresets.ModalSlideFromBottomIOS
 					})
 				}}
 				name="CNDScreen" component={CNDScreen} />
+			<Stack.Screen
+				options={({ route, navigation }) => {
+					return ({
+						headerTintColor: '#FFF',
+						headerTitle: 'Status da CND',
+						headerStyle: {
+							backgroundColor: colors.primary
+						},
+						headerLeft: null,
+						cardOverlayEnabled: true,
+						...TransitionPresets.ModalSlideFromBottomIOS
+					})
+				}}
+				name="CNDsScreen" component={CNDsScreen} />
 		</Stack.Navigator>
 	);
 }

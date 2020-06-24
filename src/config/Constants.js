@@ -5,6 +5,8 @@ export const esicURL = 'https://esic.sistemasconfitec.com.br';
 //export const baseURL = 'https://alcantaras.ce.gov.br';
 
 export const idContactForm7Acoes = 100053;
+export const idContactForm7CND = 99611;
+export const idContactForm7Ouvidoria = 418;
 
 export const strings = {
     townHallName: 'Confitec',                           //Nome da prefeitura
