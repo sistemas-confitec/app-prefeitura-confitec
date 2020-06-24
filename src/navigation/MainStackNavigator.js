@@ -257,6 +257,7 @@ export default function MainStackNavigator() {
 						headerStyle: {
 							backgroundColor: colors.primary
 						},
+						gestureEnabled:false,
 						headerLeft: null,
 						cardOverlayEnabled: true,
 						...TransitionPresets.ModalSlideFromBottomIOS

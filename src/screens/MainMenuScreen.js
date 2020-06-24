@@ -32,7 +32,7 @@ export default function MainMenuScreen({ navigation }) {
                 Alert.alert("Permissão requerida", "Precisamos de acesso à sua localização.")
             }
 
-            let location = await Location.getCurrentPositionAsync({});
+            let location = await Location.getCurrentPositionAsync({accuracy:5});
             setLocation(location);
             //console.log(location)
         })();
