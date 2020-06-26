@@ -25,7 +25,8 @@ import NoticiasScreen from '../screens/NoticiasScreen';
 import NoticiasDetailsScreen from '../screens/NoticiasDetailsScreen';
 import DiarioOficialScreen from '../screens/DiarioOficialScreen';
 import ServicosScreen from '../screens/ServicosScreen';
-import CNDScreen from '../screens/CNDScreen';
+import RequisitarCNDScreen from '../screens/RequisitarCNDScreen';
+import VerificarCNDScreen from '../screens/VerificarCNDScreen';
 import CNDsScreen from '../screens/CNDsScreen';
 import { colors } from '../config/Constants';
 
@@ -263,7 +264,22 @@ export default function MainStackNavigator() {
 						...TransitionPresets.ModalSlideFromBottomIOS
 					})
 				}}
-				name="CNDScreen" component={CNDScreen} />
+				name="RequisitarCNDScreen" component={RequisitarCNDScreen} />
+			<Stack.Screen
+				options={({ route, navigation }) => {
+					return ({
+						headerTintColor: '#FFF',
+						headerTitle: 'Emissão de CND',
+						headerStyle: {
+							backgroundColor: colors.primary
+						},
+						gestureEnabled:false,
+						headerLeft: null,
+						cardOverlayEnabled: true,
+						...TransitionPresets.ModalSlideFromBottomIOS
+					})
+				}}
+				name="VerificarCNDScreen" component={VerificarCNDScreen} />
 			<Stack.Screen
 				options={({ route, navigation }) => {
 					return ({

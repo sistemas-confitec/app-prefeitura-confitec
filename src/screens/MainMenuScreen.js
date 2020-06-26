@@ -127,6 +127,23 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"Entypo"}
                         title={"Diário Oficial"} />
                 </View>
+				<View style={styles.menuContainer}>
+                    <MenuItem
+                        onPress={() => { navigation.navigate('ServicosScreen') }}
+                        iconName={"email-newsletter"}
+                        iconSource={"MaterialCommunityIcons"}
+                        title={"Serviços"} />
+                    <MenuItem
+                        onPress={() => { navigation.navigate('ServicosScreen') }}
+                        iconName={"email-newsletter"}
+                        iconSource={"MaterialCommunityIcons"}
+                        title={"Serviços"} />
+                    <MenuItem
+                        onPress={() => { navigation.navigate('ServicosScreen') }}
+                        iconName={"email-newsletter"}
+                        iconSource={"MaterialCommunityIcons"}
+                        title={"Serviços"} />
+                </View>
                 <View style={styles.menuContainer}>
                     <MenuItem
                         onPress={() => { navigation.navigate('ServicesScreen') }}
@@ -144,23 +161,7 @@ export default function MainMenuScreen({ navigation }) {
                         iconSource={"Ionicons"}
                         title={`Podcast ${strings.townHallName}`} />
                 </View>
-                <View style={styles.menuContainer}>
-                    <MenuItem
-                        onPress={() => { navigation.navigate('ServicosScreen') }}
-                        iconName={"email-newsletter"}
-                        iconSource={"MaterialCommunityIcons"}
-                        title={"Serviços"} />
-                    <MenuItem
-                        onPress={() => { navigation.navigate('ServicosScreen') }}
-                        iconName={"email-newsletter"}
-                        iconSource={"MaterialCommunityIcons"}
-                        title={"Serviços"} />
-                    <MenuItem
-                        onPress={() => { navigation.navigate('ServicosScreen') }}
-                        iconName={"email-newsletter"}
-                        iconSource={"MaterialCommunityIcons"}
-                        title={"Serviços"} />
-                </View>
+                
             </View>
             <View
                 style={{

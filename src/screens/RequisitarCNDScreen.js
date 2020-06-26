@@ -8,7 +8,7 @@ import { AntDesign } from '@expo/vector-icons';
 import api from '../services/api';
 
 
-export default function CNDScreen({ route, navigation }) {
+export default function RequisitarCNDScreen({ route, navigation }) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [nome, setNome] = useState({ value: '' });
 	const [razaoSocial, setRazaoSocial] = useState({ value: '' });
@@ -166,10 +166,10 @@ export default function CNDScreen({ route, navigation }) {
 				const data = new FormData();
 				data.append('identificador', 'requisitar-CND');
 				data.append('tipo', pessoa === 'fisica' ? 'Pessoa Física' : 'Pessoa Jurídica');
-				data.append('nome', pessoa === 'fisica' ? nome.value : '*');
-				data.append('cpf', pessoa === 'fisica' ? CPF.value : '*');
-				data.append('razao-social', pessoa === 'juridica' ? razaoSocial.value : '*');
-				data.append('cnpj', pessoa === 'juridica' ? CNPJ.value : '*');
+				data.append('nome', pessoa === 'fisica' ? nome.value : 'vazio');
+				data.append('cpf', pessoa === 'fisica' ? CPF.value : 'vazio');
+				data.append('razao-social', pessoa === 'juridica' ? razaoSocial.value : 'vazio');
+				data.append('cnpj', pessoa === 'juridica' ? CNPJ.value : 'vazio');
 				if (insc) {
 					data.append('insc', pessoa === 'juridica' ? insc.value : '');
 				}

@@ -38,11 +38,11 @@ export default function ServicosScreen({ route, navigation }) {
 						>
 							<TouchableOpacity
 								onPress={() => {
-									navigation.navigate("CNDScreen")
+									navigation.navigate("RequisitarCNDScreen")
 								}}
 								style={styles.listItem}
 							>
-								<Text style={styles.text}>REQUISITAR CND</Text>
+								<Text style={styles.text}>REQUISITAR</Text>
 							</TouchableOpacity>
 							<Divider />
 						</View>
@@ -55,7 +55,7 @@ export default function ServicosScreen({ route, navigation }) {
 								}}
 								style={styles.listItem}
 							>
-								<Text style={styles.text}>VERIFICAR STATUS DA CND</Text>
+								<Text style={styles.text}>VERIFICAR STATUS</Text>
 							</TouchableOpacity>
 							<Divider />
 						</View>
@@ -64,7 +64,7 @@ export default function ServicosScreen({ route, navigation }) {
 						>
 							<TouchableOpacity
 								onPress={() => {
-									navigation.navigate("CNDScreen")
+									navigation.navigate("VerificarCNDScreen")
 								}}
 								style={styles.listItem}
 							>

@@ -13,6 +13,7 @@ import { pontosTuristicosReducer } from './src/store/ducks/pontosTuristicosDuck'
 import { noticiasReducer } from './src/store/ducks/noticiasDuck';
 import { secretariasReducer } from './src/store/ducks/secretariasDuck';
 import { diarioOficialReducer } from './src/store/ducks/diarioOficialDuck';
+import { CNDsReducer } from './src/store/ducks/CNDsDuck';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import CustomActivityIndicator from './src/components/CustomActivityIndicator';
 import { colors } from './src/config/Constants';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
     noticias: noticiasReducer,
     secretarias: secretariasReducer,
     diarioOficial: diarioOficialReducer,
+    CNDs: CNDsReducer,
 });
 
 

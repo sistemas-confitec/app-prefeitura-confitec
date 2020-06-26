@@ -1,59 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Clipboard, ToastAndroid, Alert, AsyncStorage, ActivityIndicator } from 'react-native';
-import { TextInputMask } from 'react-native-masked-text';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Clipboard, ToastAndroid, Alert, Linking } from 'react-native';
 import { Divider } from 'react-native-elements'
 import { Modal, Portal } from 'react-native-paper';
 import { AntDesign, Feather, EvilIcons, Entypo } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { colors, idContactForm7EnvioComprovanteCND } from '../config/Constants';
+import { colors, idContactForm7EnvioComprovanteCND, baseURL, strings } from '../config/Constants';
 import api from '../services/api';
 import CustomActivityIndicator from '../components/CustomActivityIndicator';
 import { splitDate, pad } from '../util/Functions';
-import { END } from 'redux-saga';
+import CNDsActions from '../store/ducks/CNDsDuck';
 
 
 export default function CNDsScreen({ route, navigation }) {
-	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const [document, setDocument] = useState(null);
 	const [sendingComprovante, setSendingComprovante] = useState(false);
 	const [selectedProtocolo, setSelectedProtocolo] = useState(null);
-	const [CNDs, setCNDs] = useState([]);
+	const CNDs = useSelector(state => state.CNDs.data);
+	const loading = useSelector(state => state.CNDs.loading);
+	const prefeitura = useSelector(state => state.prefeitura.data);
+
+	const dispatch = useDispatch();
 
 	const pickDocument = async () => {
 		let result = await DocumentPicker.getDocumentAsync({});
 
 		if (result.type !== 'cancel') {
-			console.log({ ...result, type: '*/*' });
 			setDocument({ ...result, type: '*/*' });
-			//setDocument(result);
 		}
 	}
 
-	async function fetchStoredCNDs() {
-		const protocolsArray = await AsyncStorage.getItem('CND_protocols');
-		const protocols = JSON.parse(protocolsArray);
-		const CNDsArray = [];
 
-		setLoading(true)
-		if (protocols && protocols.length > 0) {
-			for (let i = 0; i < protocols.length; i++) {
-
-				const resp = await api.get(`/wp-json/wp/v2/app-emissao-de-cnd?slug=protocolo-${protocols[i]}`);
-				if (resp.data[0]) {
-					CNDsArray.push(resp.data[0]);
-				}
-			}
-		}
-		setCNDs(CNDsArray.reverse())
-		setLoading(false)
-	}
 
 	useEffect(() => {
-		fetchStoredCNDs();
+		dispatch(CNDsActions.fetchCNDs())
 	}, [])
 
 	useEffect(() => {
@@ -125,17 +109,74 @@ export default function CNDsScreen({ route, navigation }) {
 								style={styles.text}
 							>Nome do Requerente: {CND.meta_box.tipo === 'Pessoa Física' ? CND.meta_box.nome : CND.meta_box['razao-social']}
 							</Text>
-							{/* <Text
-								style={styles.text}
-							>Email do Requerente: {CND.meta_box.email.split('@')[0].substring(0,3)}****@{CND.meta_box.email.split('@')[1]}
-							</Text> */}
 							<Text
 								style={styles.text}
 							>Status: {CND.meta_box.status}
 							</Text>
 
+							{CND.meta_box.status === 'Comprovante Enviado' && <View
+								style={{
+									width: '100%',
+									padding: 10,
+									alignItems: 'center',
+									justifyContent: 'center'
+								}}
+							>
+								<Feather name="alert-triangle" size={50} color={colors.primary} />
+								<Text
+									style={{ ...styles.title, color: colors.primary, fontFamily: 'Montserrat_600SemiBold_Italic' }}
+								>AGUARDE A CONFIRMAÇÃO DO PAGAMENTO</Text>
+							</View>}
+
+							{CND.meta_box.status === 'O Requerente possui débitos' && <View
+								style={{
+									width: '100%',
+									padding: 10,
+									alignItems: 'center',
+									justifyContent: 'center'
+								}}
+							>
+								<Feather name="alert-triangle" size={50} color={colors.primary} />
+								<Text
+									style={{ ...styles.title, color: colors.primary, fontFamily: 'Montserrat_600SemiBold_Italic' }}
+								>ENTRE EM CONTATO COM A {prefeitura.title.rendered.toUpperCase()} PARA REGULARIZAR DÉBITOS.</Text>
+							</View>}
+
+							{CND.meta_box.status === 'Emitido via internet' && <TouchableOpacity
+								onPress={async () => {
+									/* if (CND.meta_box.boleto[0]) {
+										Linking.openURL(CND.meta_box.boleto[0].url);
+									} */
+									const resp = await api.get(`/wp-json/wp/v2/app-gerar-link-cnd?protocolo=${CND.meta_box.protocolo}`);
+									console.log(resp.data)
+									if (resp.data && resp.data.link) {
+										Linking.openURL(`${baseURL}${resp.data.link}`);
+									} else {
+										Alert.alert("Erro ao buscar CND", "Tivemos um problema ao verificar esta CND, verifique se o protocolo está correto e tente novamente")
+									}
+								}}
+								style={{
+									width: '100%',
+									padding: 15,
+									borderWidth: 1,
+									borderColor: colors.primary,
+									justifyContent: 'center',
+									alignItems: 'center',
+									marginVertical: 10
+								}}
+							>
+								<Text
+									style={{ ...styles.text, color: colors.primary }}
+								>ABRIR CND</Text>
+							</TouchableOpacity>}
+
 							{CND.meta_box.status === 'Aguardando pagamento' && <>
 								<TouchableOpacity
+									onPress={() => {
+										if (CND.meta_box.boleto[0]) {
+											Linking.openURL(CND.meta_box.boleto[0].url);
+										}
+									}}
 									style={{
 										width: '100%',
 										padding: 15,
@@ -148,7 +189,7 @@ export default function CNDsScreen({ route, navigation }) {
 								>
 									<Text
 										style={{ ...styles.text, color: colors.primary }}
-									>BAIXAR BOLETO</Text>
+									>ABRIR BOLETO</Text>
 								</TouchableOpacity>
 								{CND.meta_box['codigo-boleto'] &&
 									<>
@@ -198,7 +239,7 @@ export default function CNDsScreen({ route, navigation }) {
 							<Feather name="alert-triangle" size={50} color="black" />
 							<Text
 								style={{ marginTop: 20 }}
-							>Você ainda não realizou nenhuma manifestação.</Text>
+							>Você ainda não realizou nenhuma requisição.</Text>
 						</View>
 				}
 
