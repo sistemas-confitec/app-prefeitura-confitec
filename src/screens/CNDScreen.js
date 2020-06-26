@@ -181,7 +181,7 @@ export default function CNDScreen({ route, navigation }) {
 				const response = await api.post(`/wp-json/contact-form-7/v1/contact-forms/${idContactForm7CND}/feedback`, data);
 				console.log(response.data);
 				if (response.data.status === 'mail_sent') {
-					Alert.alert('Enviado com sucesso', `Pressione o `, [{ text: 'ok', onPress: () => navigation.goBack() }]);
+					Alert.alert('Enviado com sucesso', `Verificar status da sua CND`, [{ text: 'ok', onPress: () => navigation.navigate('CNDsScreen') }]);
 					//console.log(response.data.message.split(':')[1].trim())
 					storeProtocol(response.data.message.split(':')[1].trim())
 				} else {

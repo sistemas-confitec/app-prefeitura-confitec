@@ -3,27 +3,31 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Clipboard,
 import { TextInputMask } from 'react-native-masked-text';
 import { Divider } from 'react-native-elements'
 import { Modal, Portal } from 'react-native-paper';
-import { AntDesign, Feather,EvilIcons, Entypo } from '@expo/vector-icons';
+import { AntDesign, Feather, EvilIcons, Entypo } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
-import { colors, idContactForm7CND } from '../config/Constants';
+import { colors, idContactForm7EnvioComprovanteCND } from '../config/Constants';
 import api from '../services/api';
 import CustomActivityIndicator from '../components/CustomActivityIndicator';
 import { splitDate, pad } from '../util/Functions';
+import { END } from 'redux-saga';
 
 
 export default function CNDsScreen({ route, navigation }) {
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const [document, setDocument] = useState(null);
+	const [sendingComprovante, setSendingComprovante] = useState(false);
+	const [selectedProtocolo, setSelectedProtocolo] = useState(null);
 	const [CNDs, setCNDs] = useState([]);
 
 	const pickDocument = async () => {
 		let result = await DocumentPicker.getDocumentAsync({});
 
 		if (result.type !== 'cancel') {
+			console.log({ ...result, type: '*/*' });
 			setDocument({ ...result, type: '*/*' });
 			//setDocument(result);
 		}
@@ -71,10 +75,10 @@ export default function CNDsScreen({ route, navigation }) {
 			quality: 1,
 		});
 
-		console.log(result);
+		console.log({ ...result, type: '*/*', name: result.uri.split('/')[result.uri.split('/').length - 1] });
 
 		if (!result.cancelled) {
-			setDocument(result);
+			setDocument({ ...result, type: '*/*', name: result.uri.split('/')[result.uri.split('/').length - 1], preview: true });
 		}
 	};
 	return (
@@ -165,6 +169,7 @@ export default function CNDsScreen({ route, navigation }) {
 										</TouchableOpacity>
 										<TouchableOpacity
 											onPress={() => {
+												setSelectedProtocolo(CND.meta_box.protocolo)
 												setVisible(true);
 											}}
 											style={{
@@ -255,7 +260,7 @@ export default function CNDsScreen({ route, navigation }) {
 								<Entypo name="attachment" size={30} color={colors.primary} />
 							</TouchableOpacity>
 						</View> : <>
-								{document && !document.name ? <View
+								{!sendingComprovante ? document && document.preview ? <View
 									style={{
 										width: '100%',
 										padding: 50
@@ -267,8 +272,8 @@ export default function CNDsScreen({ route, navigation }) {
 											aspectRatio: 1.33,
 										}}
 										source={{ uri: document.uri }}
-									/></View> : <Text>Arquivo: {document.name}</Text>}
-								<Divider style={{ backgroundColor:colors.primary, width:'100%'}} />
+									/></View> : <Text>Arquivo: {document.name}</Text> : <CustomActivityIndicator />}
+								<Divider style={{ backgroundColor: colors.primary, width: '100%' }} />
 								<View
 									style={{
 										width: '100%',
@@ -297,7 +302,26 @@ export default function CNDsScreen({ route, navigation }) {
 									</TouchableOpacity>
 									<TouchableOpacity
 										//activeOpacity={0.85}
-										onPress={() => { }}
+										onPress={async () => {
+											setSendingComprovante(true);
+											try {
+												const data = new FormData();
+												data.append('identificador', 'comprovante-pg-CND');
+												data.append('protocolo', `${selectedProtocolo}`);
+												data.append('comprovante', document);
+												const resp = await api.post(`/wp-json/contact-form-7/v1/contact-forms/${idContactForm7EnvioComprovanteCND}/feedback`, data);
+												if (resp.data.status === 'mail_sent') {
+													Alert.alert("Enviado com sucesso", `${resp.data.message}`);
+												} else {
+													Alert.alert("Falha ao enviar comprovante", `${resp.data.message}`);
+												}
+												setSendingComprovante(false);
+											} catch (error) {
+												console.log(error.message)
+												Alert.alert("Falha ao enviar comprovante", 'Tivemos um problema ao enviar seu comprovante.');
+												setSendingComprovante(false);
+											}
+										}}
 										style={{
 											flex: 1,
 											flexDirection: 'row',

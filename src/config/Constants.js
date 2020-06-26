@@ -6,6 +6,7 @@ export const esicURL = 'https://esic.sistemasconfitec.com.br';
 
 export const idContactForm7Acoes = 100053;
 export const idContactForm7CND = 99611;
+export const idContactForm7EnvioComprovanteCND = 100353;
 export const idContactForm7Ouvidoria = 418;
 
 export const strings = {
