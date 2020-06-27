@@ -34,15 +34,15 @@ const Stack = createStackNavigator();
 
 export default function MainStackNavigator() {
 	return (
-		<Stack.Navigator>
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false
+			}}
+		>
 			<Stack.Screen
 				options={({ navigation }) => ({
-					//headerShown: false
 					headerTintColor: '#FFF',
-					headerTitle: 'App Confitec Gov',
-					headerStyle: {
-						backgroundColor: colors.primary
-					}
+					headerTitle: 'App Confitec Gov'
 				})}
 				name="MainMenuScreen" component={MainMenuScreen} />
 
@@ -258,7 +258,7 @@ export default function MainStackNavigator() {
 						headerStyle: {
 							backgroundColor: colors.primary
 						},
-						gestureEnabled:false,
+						gestureEnabled: false,
 						headerLeft: null,
 						cardOverlayEnabled: true,
 						...TransitionPresets.ModalSlideFromBottomIOS
@@ -273,7 +273,7 @@ export default function MainStackNavigator() {
 						headerStyle: {
 							backgroundColor: colors.primary
 						},
-						gestureEnabled:false,
+						gestureEnabled: false,
 						headerLeft: null,
 						cardOverlayEnabled: true,
 						...TransitionPresets.ModalSlideFromBottomIOS

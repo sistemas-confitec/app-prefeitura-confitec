@@ -15,6 +15,7 @@ export const strings = {
 }
 export const colors = {
     primary: '#1D5B2D',       //Cor primária do App '#1D5B2D'
+    darkPrimary: '#093B15',   //Versão escura da cor primária do App
     lightPrimary: '#951E21',  //Versão mais clara da cor primária (usada em botões, etc)
     backgroudColor: '#F5F5F5', //A Cor do backgroud padrão do app
     backgroudColorContent: '#FFF', //A Cor do backgroud em telas de conteudo
