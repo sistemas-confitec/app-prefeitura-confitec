@@ -17,7 +17,7 @@ export default Creators;
 
 const initalState = {
     data: [],
-    loading: false,
+    loading: true,
     error: false
 };
 

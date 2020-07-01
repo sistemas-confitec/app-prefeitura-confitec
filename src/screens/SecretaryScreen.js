@@ -52,7 +52,7 @@ export default function SecretaryScreen({ navigation }) {
 								key={idx}
 								numberOfVisibleItems={0}
 								buttonPosition={'top'}
-								wrapperStyle={{...globalStyles.itemContainer, width: undefined, alignItems: undefined}}
+								wrapperStyle={{ ...globalStyles.itemContainer, width: undefined, alignItems: undefined }}
 								onToggle={(collap) => {
 									if (collap) {
 										setCollapsed([...collapsed, idx]);
@@ -68,28 +68,22 @@ export default function SecretaryScreen({ navigation }) {
 										>{sec.secretaria}</Text>
 										<View style={{ width: '100%', height: 1, backgroundColor: '#F5F5F5', marginTop: 10 }} />
 										{!collapsed.includes(idx) ? <View
-												/* onPress={() => {
-													//handleSubmit();
-												}} */
-												style={{ ...globalStyles.button, width: '100%' }}
-											>
+											/* onPress={() => {
+												//handleSubmit();
+											}} */
+											style={globalStyles.button}
+										>
+											<Text
+												style={globalStyles.buttonText}
+											>ABRIR DETALHES</Text>
+										</View> : <View
+											/* onPress={() => {
+												//handleSubmit();
+											}} */
+											style={globalStyles.button}
+										>
 												<Text
-													style={{
-														color: colors.primary,
-														fontFamily: 'Montserrat_400Regular'
-													}}
-												>ABRIR DETALHES</Text>
-											</View> : <View
-												/* onPress={() => {
-													//handleSubmit();
-												}} */
-												style={{ ...globalStyles.button, width: '100%' }}
-											>
-												<Text
-													style={{
-														color: colors.primary,
-														fontFamily: 'Montserrat_400Regular'
-													}}
+													style={globalStyles.buttonText}
 												>FECHAR DETALHES</Text>
 											</View>}
 									</View>
@@ -154,11 +148,11 @@ export default function SecretaryScreen({ navigation }) {
 									<TouchableOpacity
 										activeOpacity={0.85}
 										onPress={() => { Linking.openURL(`whatsapp://send?phone=+55${sec.whatsapp}`) }}
-										style={{ ...globalStyles.button, flexDirection: 'row', alignSelf: 'center', width: '100%' }}
+										style={{ ...globalStyles.button, flexDirection: 'row', alignSelf: 'center', width: '100%', backgroundColor: '#FFF', borderWidth: 1, borderColor: 'green', marginBottom: 4 }}
 									>
-										<FontAwesome5 name="whatsapp" size={24} color={colors.primary} />
+										<FontAwesome5 name="whatsapp" size={24} color={'green'} />
 										<Text
-											style={{ ...globalStyles.text, textAlign: 'center', color: colors.primary, marginTop: 0, marginLeft: 10 }}
+											style={{ ...globalStyles.buttonText, marginLeft: 10, color: 'green' }}
 										>FALE PELO WHATSAPP</Text>
 									</TouchableOpacity>
 								}
@@ -193,8 +187,8 @@ const styles = StyleSheet.create({
 	},
 	itemContainer: {
 		justifyContent: 'center',
-		borderWidth:1,
-		borderColor:colors.secondary,
+		borderWidth: 1,
+		borderColor: colors.secondary,
 		padding: 30,
 		marginBottom: 10
 	}

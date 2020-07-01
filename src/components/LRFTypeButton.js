@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import * as Icons from '@expo/vector-icons';
 
 import { colors } from '../config/Constants';
+import globalStyles from '../screens/globalStyles';
 
 export default function LRFTypeButton({ title, subtitle, onPress }) {
     return (
@@ -11,8 +12,8 @@ export default function LRFTypeButton({ title, subtitle, onPress }) {
             onPress={onPress}
             activeOpacity={0.85}
         >
-            <Text style={{ ...styles.text, fontWeight: 'bold', fontSize:18 }}>{title}</Text>
-            <Text style={styles.text}>{subtitle}</Text>
+            <Text style={{ ...globalStyles.title, color: colors.primary, fontSize:18 }}>{title}</Text>
+            <Text style={{...globalStyles.text, color:colors.primary}}>{subtitle}</Text>
         </TouchableOpacity>
     );
 }
@@ -23,7 +24,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         padding: 5,
         marginVertical: 10,
-        borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 2

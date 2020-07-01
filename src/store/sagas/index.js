@@ -5,6 +5,8 @@ import { Types as noticiasTypes } from '../ducks/noticiasDuck';
 import { Types as secretariasTypes } from '../ducks/secretariasDuck';
 import { Types as diarioOficialTypes } from '../ducks/diarioOficialDuck';
 import { Types as CNDsTypes } from '../ducks/CNDsDuck';
+import { Types as municipioTypes } from '../ducks/municipioDuck';
+import { Types as acoesTypes } from '../ducks/acoesDuck';
 
 import { fetchPrefeituraSaga } from '../sagas/prefeituraSaga';
 import { fetchPontosTuristicosSaga } from '../sagas/pontosTuristicosSaga';
@@ -12,6 +14,8 @@ import { fetchNoticiasSaga } from '../sagas/noticiasSaga';
 import { fetchSecretariasSaga } from '../sagas/secretariasSaga';
 import { fetchDiarioOficialSaga } from '../sagas/diarioOficialSaga';
 import { fetchCNDsSaga } from '../sagas/CNDsSaga';
+import { fetchMunicipioSaga } from '../sagas/municipioSaga';
+import { fetchAcoesSaga, getVotosSaga } from '../sagas/acoesSaga';
 
 
 
@@ -23,5 +27,8 @@ export default function* root() {
         takeLatest(secretariasTypes.FETCH_SECRETARIAS_SAGA, fetchSecretariasSaga),
         takeLatest(diarioOficialTypes.FETCH_DIARIO_OFICIAL_SAGA, fetchDiarioOficialSaga),
         takeLatest(CNDsTypes.FETCH_CNDs_SAGA, fetchCNDsSaga),
+        takeLatest(municipioTypes.FETCH_MUNICIPIO_SAGA, fetchMunicipioSaga),
+        takeLatest(acoesTypes.FETCH_ACOES_SAGA, fetchAcoesSaga),
+        takeLatest(acoesTypes.GET_VOTOS_SAGA, getVotosSaga),
     ]);
 }

@@ -63,9 +63,14 @@ export default function NoticiasDetailsScreen(props) {
 								<Text
 									style={{ ...globalStyles.title, textAlign: 'left', fontSize: 20, color: colors.primary }}
 								>{noticia.title.rendered}</Text>
+							</View>
+							<View
+								activeOpacity={0.8}
+								style={globalStyles.itemContainer}
+							>
 								{noticia.meta_box.id_secretaria.map((secId) => <Text
 									key={secId}
-									style={{ ...globalStyles.text, textAlign: 'left', fontSize: 14 }}
+									style={{ ...globalStyles.title, textAlign: 'left', fontSize: 14 }}
 								>
 									{getSecretariaName(secId)}
 								</Text>)}

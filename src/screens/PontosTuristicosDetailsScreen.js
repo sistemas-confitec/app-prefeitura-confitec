@@ -90,7 +90,7 @@ export default function PontosTuristicosDetailsScreen(props) {
 							}
 						}}
 					>
-						<Entypo name="location" size={24} color={colors.primary} />
+						<Entypo name="location" size={24} color={globalStyles.buttonText.color} />
 					</TouchableOpacity>
 				</View>
 			</ImageBackground>

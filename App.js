@@ -14,6 +14,8 @@ import { noticiasReducer } from './src/store/ducks/noticiasDuck';
 import { secretariasReducer } from './src/store/ducks/secretariasDuck';
 import { diarioOficialReducer } from './src/store/ducks/diarioOficialDuck';
 import { CNDsReducer } from './src/store/ducks/CNDsDuck';
+import { municipioReducer } from './src/store/ducks/municipioDuck';
+import { acoesReducer } from './src/store/ducks/acoesDuck';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import CustomActivityIndicator from './src/components/CustomActivityIndicator';
 import { colors } from './src/config/Constants';
@@ -29,6 +31,8 @@ const rootReducer = combineReducers({
     secretarias: secretariasReducer,
     diarioOficial: diarioOficialReducer,
     CNDs: CNDsReducer,
+    municipio: municipioReducer,
+    acoes: acoesReducer,
 });
 
 

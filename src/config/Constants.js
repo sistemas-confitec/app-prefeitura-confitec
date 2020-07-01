@@ -14,11 +14,11 @@ export const strings = {
     headerSubtitle: 'Prefeitura Municipal de Confitec'  //Subtitulo do cabeçalho padrão 
 }
 export const colors = {
-    primary: '#1D5B2D',       //Cor primária do App '#1D5B2D'
-    darkPrimary: '#093B15',   //Versão escura da cor primária do App
+	primary: '#1D5B2D',       //Cor primária do App '#1D5B2D'
+    darkPrimary: '#093B15',   //Versão escura da cor primária do App #093B15
     lightPrimary: '#951E21',  //Versão mais clara da cor primária (usada em botões, etc)
     backgroudColor: '#F5F5F5', //A Cor do backgroud padrão do app
     backgroudColorContent: '#FFF', //A Cor do backgroud em telas de conteudo
     contentText: '#000',    //Cor principal dos textos
-    secondary: '#F9A219',       //Cor dos textos no menu
+    secondary: '#F9A219',       //Cor dos textos no menu #F9A219
 }

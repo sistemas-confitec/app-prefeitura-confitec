@@ -228,16 +228,16 @@ export default function MainStackNavigator() {
 				name="ServicosScreen" component={ServicosScreen} />
 			<Stack.Screen
 				options={({ route, navigation }) => {
-					const acao = route.params?.acao;
+					/* const acao = route.params?.acao;
 					const votos = route.params?.votos;
-					const setVisible = route.params?.setVisible;
+					const setVisible = route.params?.setVisible; */
 					return ({
 						headerTintColor: '#FFF',
 						headerTitle: 'Ações Gov',
 						headerStyle: {
 							backgroundColor: colors.primary
 						},
-						headerLeft: (props) => <HeaderBackButton
+						/* headerLeft: (props) => <HeaderBackButton
 							{...props}
 							onPress={() => {
 								if (!votos || !votos[acao.id] && !!acao.meta_box.pergunta) {
@@ -246,7 +246,7 @@ export default function MainStackNavigator() {
 								} else {
 									navigation.goBack();
 								}
-							}} />
+							}} /> */
 					})
 				}}
 				name="AcoesDetailsScreen" component={AcoesDetailsScreen} />

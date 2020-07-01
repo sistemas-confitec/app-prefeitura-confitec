@@ -149,26 +149,20 @@ export default function PrefeitoScreen({ navigation }) {
 												/* onPress={() => {
 													//handleSubmit();
 												}} */
-												style={{ ...globalStyles.button, width: '100%' }}
+												style={globalStyles.button}
 											>
 												<Text
-													style={{
-														color: colors.primary,
-														fontFamily: 'Montserrat_400Regular'
-													}}
+													style={globalStyles.buttonText}
 												>ABRIR BIOGRAFIA</Text>
 											</View>
 											: <View
 												/* onPress={() => {
 													//handleSubmit();
 												}} */
-												style={{ ...globalStyles.button, width: '100%' }}
+												style={globalStyles.button}
 											>
 												<Text
-													style={{
-														color: colors.primary,
-														fontFamily: 'Montserrat_400Regular'
-													}}
+													style={globalStyles.buttonText}
 												>FECHAR BIOGRAFIA</Text>
 											</View>
 										}
@@ -264,26 +258,20 @@ export default function PrefeitoScreen({ navigation }) {
 											/* onPress={() => {
 												//handleSubmit();
 											}} */
-											style={{ ...globalStyles.button, width: '100%' }}
+											style={globalStyles.button}
 										>
 											<Text
-												style={{
-													color: colors.primary,
-													fontFamily: 'Montserrat_400Regular'
-												}}
+												style={globalStyles.buttonText}
 											>ABRIR BIOGRAFIA</Text>
 										</View>
 											: <View
 												/* onPress={() => {
 													//handleSubmit();
 												}} */
-												style={{ ...globalStyles.button, width: '100%' }}
+												style={globalStyles.button}
 											>
 												<Text
-													style={{
-														color: colors.primary,
-														fontFamily: 'Montserrat_400Regular'
-													}}
+													style={globalStyles.buttonText}
 												>FECHAR BIOGRAFIA</Text>
 											</View>}
 									</View>

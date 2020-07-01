@@ -21,7 +21,7 @@ const initalState = {
     total: 0,
     currentPage: 0,
     totalPages: 0,
-    loading: false,
+    loading: true,
     error: false
 };
 

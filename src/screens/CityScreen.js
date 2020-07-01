@@ -1,32 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Dimensions, ImageBackground, Linking } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Dimensions, ImageBackground, Linking, TouchableOpacity } from 'react-native';
 import api from '../services/api';
 import HTML from 'react-native-render-html';
 import { Entypo } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { colors, strings } from '../config/Constants';
 import Header from '../components/Header';
 import CloseSubheader from '../components/CloseSubheader';
 import CustomActivityIndicator from '../components/CustomActivityIndicator';
 import globalStyles from './globalStyles';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import municipioActions from '../store/ducks/municipioDuck';
 
 
 export default function MainMenuScreen({ navigation }) {
-	const [loading, setLoading] = useState(true);
-	const [cityInfo, setCityInfo] = useState('');
-	const [cityName, setCityName] = useState('');
-	const [cityLocation, setCityLocation] = useState(null);
-	const infoArray = [];
-	const municipio = async () => {
-		setLoading(true);
-		const resp = await api.get('/wp-json/wp/v2/app-municipio');
-		setCityName(resp.data[0].title.rendered);
-		setCityInfo(resp.data[0].meta_box['gr-municipio'].municipio_historia);
-		setCityLocation(resp.data[0].meta_box['gr-municipio'].googlemaps);
-		setLoading(false);
-	}
-	useEffect(() => { municipio() }, []);
+	const municipio = useSelector(state => state.municipio.data);
+	const loading = useSelector(state => state.municipio.loading);
+	const error = useSelector(state => state.municipio.error);
+	const dispatch = useDispatch();
+
+	
+	useEffect(() => { dispatch(municipioActions.fetchMunicipio()) }, []);
 	return (
 		<View style={globalStyles.container}>
 			<Header
@@ -50,32 +44,32 @@ export default function MainMenuScreen({ navigation }) {
 						showsVerticalScrollIndicator={false}
 						style={{ flex: 1, padding: 10 }}
 					>
-						<View
+						{!error && <View
 							style={globalStyles.itemContainer}
 						>
 							<Text
 								style={{ ...globalStyles.title, fontSize: 20 }}
-							>{cityName}</Text>
+							>{municipio?.title?.rendered}</Text>
 
 							<TouchableOpacity
 								onPress={() => {
-									if(cityLocation){
-										Linking.openURL(cityLocation)
+									if(municipio?.meta_box['gr-municipio'].googlemaps){
+										Linking.openURL(municipio?.meta_box['gr-municipio'].googlemaps)
 									}
 								}}
 								style={{ ...globalStyles.button, marginTop: 15 }}
 							>
-								<Entypo name="location" size={24} color={colors.primary} />
+								<Entypo name="location" size={24} color={globalStyles.buttonText.color} />
 							</TouchableOpacity>
 
-							{!!cityInfo && <HTML
+							{!!municipio?.meta_box['gr-municipio'].municipio_historia && <HTML
 								tagsStyles={{
 									p: { fontFamily: 'Montserrat_400Regular', textAlign: 'justify', marginBottom: 10 },
 									b: { fontFamily: 'Montserrat_600SemiBold_Italic' },
 								}}
-								html={cityInfo}
+								html={municipio?.meta_box['gr-municipio'].municipio_historia}
 								imagesMaxWidth={Dimensions.get('window').width} />}
-						</View>
+						</View>}
 					</ScrollView> : <CustomActivityIndicator />}
 				</View>
 			</ImageBackground>
