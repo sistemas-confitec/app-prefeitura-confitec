@@ -15,7 +15,7 @@ export default function ServicesScreen({ navigation }) {
 	const [secData, setSecData] = useState([]);
 	const fetchServices = async () => {
 		setLoadingServicesData(true);
-		const resp = await api.get('/wp-json/wp/v2/app-servico');
+		const resp = await api.get('/wp-json/wp/v2/app-servico?');
 		const resp2 = await api.get('/wp-json/wp/v2/app-secretaria');
 		setServicesData(resp.data);
 		setSecData(resp2.data);
@@ -44,7 +44,7 @@ export default function ServicesScreen({ navigation }) {
 					<ScrollView
 						showsVerticalScrollIndicator={false}
 						refreshControl={<RefreshControl refreshing={loadingServicesData} onRefresh={fetchServices} />}
-						contentContainerStyle={{ flexGrow: 1, padding: 10 }}
+						contentContainerStyle={{ flexGrow: 1, padding: 10, paddingTop:0 }}
 						style={{ width: '100%' }}
 					>
 						{servicesData?.map((service) => {

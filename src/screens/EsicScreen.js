@@ -7,8 +7,10 @@ import { MaterialIcons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { colors, esicURL } from '../config/Constants';
 import HeaderDivider from '../components/HeaderDivider';
 import Header from '../components/Header';
+import CloseSubheader from '../components/CloseSubheader';
 import CustomActivityIndicator from '../components/CustomActivityIndicator';
 import globalStyles from './globalStyles';
+import api from '../services/api';
 
 export default function EsicScreen(props) {
 	const [loading, setLoading] = useState(true);
@@ -24,6 +26,25 @@ export default function EsicScreen(props) {
 		setLoading(false)
 	}
 
+	/* useEffect(() => {
+		(async () =>{
+			await AsyncStorage.setItem('protocols', JSON.stringify({}))
+		})();
+	}, []) */
+
+	async function storeProtocol(protocol) {
+		const protocols = await AsyncStorage.getItem('protocols');
+		let protocolsAux;
+		if (!protocols) {
+			protocolsAux = {};
+			protocolsAux[`${protocol}`] = "buscado";
+		} else {
+			protocolsAux = JSON.parse(protocols);
+			protocolsAux[`${protocol}`] = "buscado";
+		}
+		await AsyncStorage.setItem('protocols', JSON.stringify(protocolsAux));
+	}
+
 	useEffect(() => { fetchAtendimento() }, []);
 
 	return (
@@ -33,6 +54,11 @@ export default function EsicScreen(props) {
 				subtitle={'Sistema Eletrônico do Serviço de Informações ao Cidadão'}
 				assetName={"logo_e_sic"}
 				titleColor={"#008608"}
+			/>
+			<CloseSubheader
+				onPress={() => {
+					props.navigation.goBack();
+				}}
 			/>
 			<KeyboardAwareScrollView
 				style={{ width: '100%' }}
@@ -46,7 +72,7 @@ export default function EsicScreen(props) {
 				enableOnAndroid={true}
 				enableAutomaticScroll={true}
 			>
-				{loading ? <CustomActivityIndicator /> : <View style={{ width: '100%', paddingTop: 10 }}>
+				{loading ? <CustomActivityIndicator /> : <View style={{ width: '100%' }}>
 
 					<View
 						style={globalStyles.itemContainer}
@@ -76,7 +102,7 @@ export default function EsicScreen(props) {
 								elevation: 4,
 							}}
 							onPress={() => {
-								props.navigation.navigate('ManifestacoesScreen', { ouvidor: atendimento[0].meta_box['nome'] });
+								props.navigation.navigate('ManifestacoesScreen', { ouvidor: atendimento[0].meta_box['nome'], title: atendimento[0].title.rendered });
 							}}
 						>
 							<MaterialIcons style={{ marginRight: 10 }} name="history" size={24} color="#FFF" />
@@ -117,6 +143,7 @@ export default function EsicScreen(props) {
 							value={protocolo}
 							style={{ ...styles.input, width: undefined, flex: 1, fontFamily: 'Montserrat_400Regular' }}
 							placeholder={'Buscar por número do protocolo'}
+							maxLength={10}
 							placeholderTextColor={'#CCC'}
 							keyboardType={'numeric'}
 							onChangeText={(text) => { setProtocolo(text) }}
@@ -130,7 +157,17 @@ export default function EsicScreen(props) {
 								padding: 10,
 								marginVertical: 10,
 							}}
-							onPress={() => { }}
+							onPress={async () => {
+								const resp = await axios.get(`${esicURL}/wp-json/wp/v2/app-feedback?slug=protocolo-${protocolo}`)
+								if (resp.data[0]) {
+									console.log(resp.data[0].meta_box.protocolo + '')
+									await storeProtocol(resp.data[0].meta_box.protocolo + '');
+									props.navigation.navigate('ManifestacoesScreen', { ouvidor: atendimento[0].meta_box['nome'], title: atendimento[0].title.rendered });
+									setProtocolo('')
+								} else {
+									Alert.alert("Manifestação não encontrada", "Verifique o número do protocolo e tente novamente.")
+								}
+							}}
 						>
 							<AntDesign style={{ transform: [{ rotateY: '180deg' }] }} name="search1" size={20} color="#FFF" />
 						</TouchableOpacity>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, Image, View, ScrollView, TouchableOpacity, AsyncStorage, Alert, BackHandler, ImageBackground, Picker } from 'react-native';
-import { MaterialCommunityIcons, AntDesign, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { Entypo, AntDesign, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { Modal, Portal, ToggleButton } from 'react-native-paper';
 import { AirbnbRating, Input } from 'react-native-elements';
 import Constants from 'expo-constants';
@@ -189,8 +189,8 @@ export default function AcoesDetailsScreen(props) {
 							style={{ ...globalStyles.text, color: colors.primary, fontSize: 20 }}
 						>Colabore com a tomada de decisões da gestão municipal.</Text>}
 						<View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical: 20 }} />
-						<MaterialCommunityIcons
-							name="frequently-asked-questions"
+						<Entypo
+							name="quote"
 							size={60}
 							color={colors.secondary} />
 						{!identificationScreen && <><Text
