@@ -10,8 +10,8 @@ export const idContactForm7EnvioComprovanteCND = 100353;
 export const idContactForm7Ouvidoria = 418;
 
 export const strings = {
-    townHallName: 'Confitec',                           //Nome da prefeitura
-    headerSubtitle: 'Prefeitura Municipal de Confitec'  //Subtitulo do cabeçalho padrão 
+    townHallName: 'Confitec',                   //Nome da prefeitura
+    headerSubtitle: 'Prefeitura Municipal de',  //Subtitulo do cabeçalho padrão
 }
 export const colors = {
 	primary: '#1D5B2D',       //Cor primária do App '#1D5B2D'

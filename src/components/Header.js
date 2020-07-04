@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { colors } from '../config/Constants';
+import globalStyles from '../screens/globalStyles';
 
 export default function Header({ title, subtitle, assetName, titleColor }) {
 	const prefeitura = useSelector(state => state.prefeitura.data);
@@ -14,12 +14,9 @@ export default function Header({ title, subtitle, assetName, titleColor }) {
 			style={{
 				width: '100%',
 				flexDirection: 'row',
-				//backgroundColor: colors.primary,
-				//elevation: 4,
 				paddingHorizontal: 40,
 				paddingTop: Constants.statusBarHeight
 			}}
-			//colors={[colors.primary, colors.darkPrimary]}
 			colors={['#FFF', '#FFF']}
 			start={{ x: 0, y: 1 }}
 			end={{ x: 1, y: 1 }}
@@ -42,14 +39,16 @@ export default function Header({ title, subtitle, assetName, titleColor }) {
 				style={{ flex: 1, justifyContent: 'center', marginLeft: 30 }}
 			>
 				<Text
+					style={{ ...globalStyles.text, fontSize: 14, textAlign: 'left' }}
+				>{subtitle}</Text>
+				<Text
 					style={{
+						...globalStyles.title,
+						textAlign: 'left',
 						fontSize: 28,
 						color: titleColor,
-						fontWeight: 'bold'
 					}}
 				>{title}</Text>
-				<Text
-				>{subtitle}</Text>
 			</View>
 		</LinearGradient>
 	)

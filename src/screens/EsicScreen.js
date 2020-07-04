@@ -3,6 +3,7 @@ import { StyleSheet, Text, Image, Picker, View, TextInput, Alert, Keyboard, Acti
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
 import { MaterialIcons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { colors, esicURL } from '../config/Constants';
 import HeaderDivider from '../components/HeaderDivider';
@@ -10,20 +11,17 @@ import Header from '../components/Header';
 import CloseSubheader from '../components/CloseSubheader';
 import CustomActivityIndicator from '../components/CustomActivityIndicator';
 import globalStyles from './globalStyles';
-import api from '../services/api';
+import ouvidoriaActions from '../store/ducks/ouvidoriaDuck';
 
 export default function EsicScreen(props) {
-	const [loading, setLoading] = useState(true);
 	const [protocolo, setProtocolo] = useState('');
-	const [atendimento, setAtendimento] = useState('');
+	const ouvidoria = useSelector(state => state.ouvidoria.data);
+	const loading = useSelector(state => state.ouvidoria.loading);
 
-	async function fetchAtendimento() {
-		setLoading(true)
-		const resp = await axios.get(`${esicURL}/wp-json/wp/v2/app-ouvidoria`);
-		if (resp.data) {
-			setAtendimento(resp.data);
-		}
-		setLoading(false)
+	const dispatch = useDispatch();
+
+	async function fetchOuvidoriaInfo() {
+		dispatch(ouvidoriaActions.fetchOuvidoria())
 	}
 
 	/* useEffect(() => {
@@ -45,7 +43,7 @@ export default function EsicScreen(props) {
 		await AsyncStorage.setItem('protocols', JSON.stringify(protocolsAux));
 	}
 
-	useEffect(() => { fetchAtendimento() }, []);
+	useEffect(() => { fetchOuvidoriaInfo() }, []);
 
 	return (
 		<View style={styles.container}>
@@ -102,7 +100,7 @@ export default function EsicScreen(props) {
 								elevation: 4,
 							}}
 							onPress={() => {
-								props.navigation.navigate('ManifestacoesScreen', { ouvidor: atendimento[0].meta_box['nome'], title: atendimento[0].title.rendered });
+								props.navigation.navigate('ManifestacoesScreen', { ouvidor: ouvidoria.meta_box['nome'], title: ouvidoria.title.rendered });
 							}}
 						>
 							<MaterialIcons style={{ marginRight: 10 }} name="history" size={24} color="#FFF" />
@@ -123,7 +121,7 @@ export default function EsicScreen(props) {
 								justifyContent: 'center',
 								elevation: 4
 							}}
-							onPress={() => { props.navigation.navigate('OuvidoriaScreen', { title: atendimento[0].title.rendered }) }}
+							onPress={() => { props.navigation.navigate('OuvidoriaScreen', { title: ouvidoria.title.rendered }) }}
 						>
 							<AntDesign style={{ marginRight: 10, transform: [{ rotateY: '180deg' }] }} name="notification" size={24} color="#FFF" />
 							<Text
@@ -162,7 +160,7 @@ export default function EsicScreen(props) {
 								if (resp.data[0]) {
 									console.log(resp.data[0].meta_box.protocolo + '')
 									await storeProtocol(resp.data[0].meta_box.protocolo + '');
-									props.navigation.navigate('ManifestacoesScreen', { ouvidor: atendimento[0].meta_box['nome'], title: atendimento[0].title.rendered });
+									props.navigation.navigate('ManifestacoesScreen', { ouvidor: ouvidoria.meta_box['nome'], title: ouvidoria.title.rendered });
 									setProtocolo('')
 								} else {
 									Alert.alert("Manifestação não encontrada", "Verifique o número do protocolo e tente novamente.")
@@ -209,7 +207,7 @@ export default function EsicScreen(props) {
 								>Endereço: </Text>
 								<Text
 									style={{ ...globalStyles.text, textAlign: 'left', fontSize: 14 }}
-								>{!atendimento ? '' : atendimento[0].meta_box['end-presencial']}</Text>
+								>{ouvidoria.meta_box['end-presencial']}</Text>
 							</View>
 						</View>
 						<View
@@ -232,7 +230,7 @@ export default function EsicScreen(props) {
 								>Horário de atendimento: </Text>
 								<Text
 									style={{ ...globalStyles.text, textAlign: 'left', fontSize: 14 }}
-								>{!atendimento ? '' : atendimento[0].meta_box['horario']}</Text>
+								>{ouvidoria.meta_box['horario']}</Text>
 							</View>
 						</View>
 						<View
@@ -255,7 +253,7 @@ export default function EsicScreen(props) {
 								>Telefone: </Text>
 								<Text
 									style={{ ...globalStyles.text, textAlign: 'left', fontSize: 14 }}
-								>{!atendimento ? '' : atendimento[0].meta_box['telefone']}</Text>
+								>{ouvidoria.meta_box['telefone']}</Text>
 							</View>
 						</View>
 						<View
@@ -278,7 +276,7 @@ export default function EsicScreen(props) {
 								>E-mail: </Text>
 								<Text
 									style={{ ...globalStyles.text, textAlign: 'left', fontSize: 14 }}
-								>{!atendimento ? '' : atendimento[0].meta_box['email']}</Text>
+								>{ouvidoria.meta_box['email']}</Text>
 							</View>
 						</View>
 						<View
@@ -301,7 +299,7 @@ export default function EsicScreen(props) {
 								>Ouvidor(a): </Text>
 								<Text
 									style={{ ...globalStyles.text, textAlign: 'left', fontSize: 14 }}
-								>{!atendimento ? '' : atendimento[0].meta_box['nome']}</Text>
+								>{ouvidoria.meta_box['nome']}</Text>
 							</View>
 						</View>
 					</View>

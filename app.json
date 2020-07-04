@@ -24,6 +24,11 @@
             "package": "com.confitec.appconfitecgov",
             "versionCode": 1
         },
+        "androidStatusBar": {
+            "backgroundColor": "#00000033",
+            "translucent": true,
+            "barStyle": "light-content"
+        },
         "updates": {
             "fallbackToCacheTimeout": 0
         },
