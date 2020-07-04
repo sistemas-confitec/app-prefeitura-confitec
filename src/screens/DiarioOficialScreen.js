@@ -56,7 +56,7 @@ export default function DiarioOficialScreen(props) {
 								onPress={() => {
 									//props.navigation.navigate('DiarioOficialDetailsScreen', { diarioOficial })
 								}}
-								style={styles.itemContainer}
+								style={globalStyles.itemContainer}
 							>
 								<View
 									style={{
@@ -67,32 +67,50 @@ export default function DiarioOficialScreen(props) {
 									}}
 								>
 									<Text
-										style={styles.title}
+										style={{ ...globalStyles.title, textAlign: 'left', color: colors.primary }}
 									>{diarioOficial.title.rendered.replace('&#8211;', '-').replace('&#8211;', '-')}</Text>
 								</View>
 							</TouchableOpacity>)}
-							<View
-								style={{ flexDirection: 'row', width: '100%', height: 50, alignItems: 'center', justifyContent: 'center' }}
-							>
-								{pages.map((page) => <TouchableOpacity
+							{totalPages > 1 && <>
+								<View
+									style={{ flexDirection: 'row', width: '100%', height: 50, alignItems: 'center', justifyContent: 'center' }}
+								>
+									{pages.map((page) => <TouchableOpacity
+										style={{
+											flexDirection: 'row',
+											width: 50,
+											height: 50,
+											alignItems: 'center',
+											justifyContent: 'center',
+											elevation: 2,
+											backgroundColor: page == currentPage ? colors.primary : colors.secondary,
+										}}
+										onPress={() => {
+											dispatch(diarioOficialActions.fetchDiarioOficial(page))
+										}}
+									>
+										<Text
+											style={globalStyles.buttonText}
+										>{page}</Text>
+									</TouchableOpacity>)}
+								</View>
+								<View
 									style={{
+										flex: 1,
 										flexDirection: 'row',
-										width: 50,
-										height: 50,
 										alignItems: 'center',
-										justifyContent: 'center',
-										backgroundColor: page == currentPage ? '#DDD' : undefined,
-										borderWidth: 1,
-									}}
-									onPress={() => {
-										dispatch(diarioOficialActions.fetchDiarioOficial(page))
+										justifyContent: 'space-between',
+										paddingVertical: 10
 									}}
 								>
-									<Text>{page}</Text>
-								</TouchableOpacity>)}
-							</View>
-							<Text>Número de páginas: {totalPages}</Text>
-							<Text>Número de diários: {total}</Text>
+									<Text
+										style={globalStyles.text}
+									>Nº de páginas: {totalPages}</Text>
+									<Text
+										style={globalStyles.text}
+									>Nº de diários: {total}</Text>
+								</View>
+							</>}
 						</View>
 					</ScrollView> : <CustomActivityIndicator />}
 				</View>

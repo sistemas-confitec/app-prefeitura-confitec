@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Clipboard, ToastAndroid, Alert, Linking } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, ImageBackground, Image, Clipboard, ToastAndroid, Alert, Linking } from 'react-native';
 import { Divider } from 'react-native-elements'
 import { Modal, Portal } from 'react-native-paper';
-import { AntDesign, Feather, EvilIcons, Entypo } from '@expo/vector-icons';
+import { AntDesign, Feather, EvilIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -11,12 +11,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { colors, idContactForm7EnvioComprovanteCND, baseURL, strings } from '../config/Constants';
 import api from '../services/api';
 import CustomActivityIndicator from '../components/CustomActivityIndicator';
+import Header from '../components/Header';
+import CloseSubheader from '../components/CloseSubheader';
 import { splitDate, pad } from '../util/Functions';
 import CNDsActions from '../store/ducks/CNDsDuck';
+import globalStyles from './globalStyles';
 
 
 export default function CNDsScreen({ route, navigation }) {
 	const [visible, setVisible] = useState(false);
+	const [infoVisible, setInfoVisible] = useState(false);
 	const [document, setDocument] = useState(null);
 	const [sendingComprovante, setSendingComprovante] = useState(false);
 	const [selectedProtocolo, setSelectedProtocolo] = useState(null);
@@ -66,185 +70,181 @@ export default function CNDsScreen({ route, navigation }) {
 		}
 	};
 	return (
-		loading ? <CustomActivityIndicator /> : <View style={styles.container}>
-			<TouchableOpacity
-				onPress={() => {
-					navigation.goBack();
-				}}
-				style={{
-					alignSelf: 'flex-start',
-					padding: 15
-				}}
+		loading ? <CustomActivityIndicator /> : <View style={globalStyles.container}>
+			<Header
+				title={strings.townHallName}
+				subtitle={strings.headerSubtitle}
+				titleColor={colors.primary}
+			/>
+			<ImageBackground
+				style={globalStyles.elevatedContent}
+				source={require('../../assets/background_image.png')}
 			>
-				<AntDesign name="close" size={24} color="black" />
-			</TouchableOpacity>
-			<ScrollView
-				style={{ width: '100%' }}
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ flexGrow: 1, padding: 10 }}
-			>
-				<Text style={styles.title}>VERIFICAR STATUS DA CERTIDÃO NEGATIVA DE DÉBITOS MUNICIPAIS</Text>
-				<Divider style={{ marginTop: 5, marginBottom: 15 }} />
-
-				{
-					CNDs.length > 0 ? CNDs.map((CND) => {
-						return <View
-							key={CND.id}
-							style={{
-								width: '100%',
-								padding: 10,
-								borderWidth: 0.5,
-								borderColor: '#CCC',
-								marginVertical: 5
+				<View
+					style={globalStyles.backgroundImageTransparency}
+				>
+					<View
+						style={{
+							width: '100%',
+							flexDirection: 'row',
+							alignItems: 'center',
+							justifyContent: 'space-between'
+						}}>
+						<CloseSubheader
+							onPress={() => {
+								navigation.goBack();
+							}}
+						/>
+						<TouchableOpacity
+							onPress={() => {
+								setInfoVisible(true);
 							}}
 						>
-							<Text
-								style={{ ...styles.text, fontFamily: 'Montserrat_600SemiBold_Italic' }}
-							>Requisição de CND - {pad(splitDate(CND.date_gmt).day)}/{pad(splitDate(CND.date_gmt).month)}/{splitDate(CND.date_gmt).year} - {pad(splitDate(CND.date_gmt).hour)}:{pad(splitDate(CND.date_gmt).minute)}</Text>
-							<Text
-								style={styles.text}
-							>Protocolo: {CND.meta_box.protocolo}
-							</Text>
-							<Text
-								style={styles.text}
-							>Nome do Requerente: {CND.meta_box.tipo === 'Pessoa Física' ? CND.meta_box.nome : CND.meta_box['razao-social']}
-							</Text>
-							<Text
-								style={styles.text}
-							>Status: {CND.meta_box.status}
-							</Text>
+							<Entypo
+								style={{ padding: 15 }}
+								name="info-with-circle" size={30} color={colors.primary} />
+						</TouchableOpacity>
+					</View>
+					<ScrollView
+						style={{ width: '100%' }}
+						showsVerticalScrollIndicator={false}
+						contentContainerStyle={{ flexGrow: 1, padding: 10 }}
+					>
+						<Text style={globalStyles.title}>VERIFICAR STATUS DA CERTIDÃO NEGATIVA DE DÉBITOS MUNICIPAIS</Text>
+						<Divider style={{ marginTop: 5, marginBottom: 15 }} />
 
-							{CND.meta_box.status === 'Comprovante Enviado' && <View
-								style={{
-									width: '100%',
-									padding: 10,
-									alignItems: 'center',
-									justifyContent: 'center'
-								}}
-							>
-								<Feather name="alert-triangle" size={50} color={colors.primary} />
-								<Text
-									style={{ ...styles.title, color: colors.primary, fontFamily: 'Montserrat_600SemiBold_Italic' }}
-								>AGUARDE A CONFIRMAÇÃO DO PAGAMENTO</Text>
-							</View>}
-
-							{CND.meta_box.status === 'O Requerente possui débitos' && <View
-								style={{
-									width: '100%',
-									padding: 10,
-									alignItems: 'center',
-									justifyContent: 'center'
-								}}
-							>
-								<Feather name="alert-triangle" size={50} color={colors.primary} />
-								<Text
-									style={{ ...styles.title, color: colors.primary, fontFamily: 'Montserrat_600SemiBold_Italic' }}
-								>ENTRE EM CONTATO COM A {prefeitura.title.rendered.toUpperCase()} PARA REGULARIZAR DÉBITOS.</Text>
-							</View>}
-
-							{CND.meta_box.status === 'Emitido via internet' && <TouchableOpacity
-								onPress={async () => {
-									/* if (CND.meta_box.boleto[0]) {
-										Linking.openURL(CND.meta_box.boleto[0].url);
-									} */
-									const resp = await api.get(`/wp-json/wp/v2/app-gerar-link-cnd?protocolo=${CND.meta_box.protocolo}`);
-									console.log(resp.data)
-									if (resp.data && resp.data.link) {
-										Linking.openURL(`${baseURL}${resp.data.link}`);
-									} else {
-										Alert.alert("Erro ao buscar CND", "Tivemos um problema ao verificar esta CND, verifique se o protocolo está correto e tente novamente")
-									}
-								}}
-								style={{
-									width: '100%',
-									padding: 15,
-									borderWidth: 1,
-									borderColor: colors.primary,
-									justifyContent: 'center',
-									alignItems: 'center',
-									marginVertical: 10
-								}}
-							>
-								<Text
-									style={{ ...styles.text, color: colors.primary }}
-								>ABRIR CND</Text>
-							</TouchableOpacity>}
-
-							{CND.meta_box.status === 'Aguardando pagamento' && <>
-								<TouchableOpacity
-									onPress={() => {
-										if (CND.meta_box.boleto[0]) {
-											Linking.openURL(CND.meta_box.boleto[0].url);
-										}
-									}}
-									style={{
-										width: '100%',
-										padding: 15,
-										borderWidth: 1,
-										borderColor: colors.primary,
-										justifyContent: 'center',
-										alignItems: 'center',
-										marginVertical: 10
-									}}
+						{
+							CNDs.length > 0 ? CNDs.map((CND) => {
+								return <View
+									key={CND.id}
+									style={globalStyles.itemContainer}
 								>
 									<Text
-										style={{ ...styles.text, color: colors.primary }}
-									>ABRIR BOLETO</Text>
-								</TouchableOpacity>
-								{CND.meta_box['codigo-boleto'] &&
-									<>
+										style={{ ...styles.text, fontFamily: 'Montserrat_600SemiBold_Italic' }}
+									>Requisição de CND - {pad(splitDate(CND.date_gmt).day)}/{pad(splitDate(CND.date_gmt).month)}/{splitDate(CND.date_gmt).year} - {pad(splitDate(CND.date_gmt).hour)}:{pad(splitDate(CND.date_gmt).minute)}</Text>
+									<Text
+										style={styles.text}
+									>Protocolo: {CND.meta_box.protocolo}
+									</Text>
+									<Text
+										style={styles.text}
+									>Nome do Requerente: {CND.meta_box.tipo === 'Pessoa Física' ? CND.meta_box.nome : CND.meta_box['razao-social']}
+									</Text>
+									<Text
+										style={styles.text}
+									>Status: {CND.meta_box.status}
+									</Text>
+
+									{CND.meta_box.status === 'Comprovante Enviado' && <View
+										style={{
+											width: '100%',
+											padding: 10,
+											alignItems: 'center',
+											justifyContent: 'center'
+										}}
+									>
+										<Feather name="alert-triangle" size={50} color={colors.primary} />
 										<Text
-											style={{ ...styles.text, textAlign: 'center' }}
-										>Código de barras:
+											style={{ ...styles.title, color: colors.primary, fontFamily: 'Montserrat_600SemiBold_Italic' }}
+										>AGUARDE A CONFIRMAÇÃO DO PAGAMENTO</Text>
+									</View>}
+
+									{CND.meta_box.status === 'O Requerente possui débitos' && <View
+										style={{
+											width: '100%',
+											padding: 10,
+											alignItems: 'center',
+											justifyContent: 'center'
+										}}
+									>
+										<Feather name="alert-triangle" size={50} color={colors.primary} />
+										<Text
+											style={{ ...styles.title, color: colors.primary, fontFamily: 'Montserrat_600SemiBold_Italic' }}
+										>ENTRE EM CONTATO COM A {prefeitura.title.rendered.toUpperCase()} PARA REGULARIZAR DÉBITOS.</Text>
+									</View>}
+
+									{CND.meta_box.status === 'Emitido via internet' && <TouchableOpacity
+										onPress={async () => {
+											/* if (CND.meta_box.boleto[0]) {
+												Linking.openURL(CND.meta_box.boleto[0].url);
+											} */
+											const resp = await api.get(`/wp-json/wp/v2/app-gerar-link-cnd?protocolo=${CND.meta_box.protocolo}`);
+											console.log(resp.data)
+											if (resp.data && resp.data.link) {
+												Linking.openURL(`${baseURL}${resp.data.link}`);
+											} else {
+												Alert.alert("Erro ao buscar CND", "Tivemos um problema ao verificar esta CND, verifique se o protocolo está correto e tente novamente")
+											}
+										}}
+										style={{ ...globalStyles.button, marginVertical: 10 }}
+									>
+										<Text
+											style={globalStyles.buttonText}
+										>ABRIR CND</Text>
+									</TouchableOpacity>}
+
+									{CND.meta_box.status === 'Aguardando pagamento' && <>
+										<TouchableOpacity
+											onPress={() => {
+												if (CND.meta_box.boleto[0]) {
+													console.log(CND.meta_box.boleto[0].url)
+													Linking.openURL(CND.meta_box.boleto[0].url);
+												}
+											}}
+											style={{ ...globalStyles.button, marginVertical: 10 }}
+										>
+											<Text
+												style={globalStyles.buttonText}
+											>ABRIR BOLETO</Text>
+										</TouchableOpacity>
+										{CND.meta_box['codigo-boleto'] &&
+											<>
+												<Text
+													style={{ ...styles.text, textAlign: 'center' }}
+												>Código de barras:
 										</Text>
-										<TouchableOpacity
-											onPress={() => {
-												Clipboard.setString(CND.meta_box['codigo-boleto']);
-												ToastAndroid.showWithGravity("Copiado", ToastAndroid.SHORT, ToastAndroid.TOP);
-											}}
-										>
-											<Text
-												selectable={true}
-												style={{ ...styles.text, textAlign: 'center' }}
-											>{CND.meta_box['codigo-boleto']}</Text>
-										</TouchableOpacity>
-										<TouchableOpacity
-											onPress={() => {
-												setSelectedProtocolo(CND.meta_box.protocolo)
-												setVisible(true);
-											}}
-											style={{
-												width: '100%',
-												padding: 15,
-												borderWidth: 1,
-												borderColor: colors.primary,
-												justifyContent: 'center',
-												alignItems: 'center',
-												marginVertical: 10
-											}}
-										>
-											<Text
-												style={{ ...styles.text, color: colors.primary }}
-											>ENVIAR COMPROVANTE</Text>
-										</TouchableOpacity>
-									</>
-								}
-							</>}
+												<TouchableOpacity
+													onPress={() => {
+														Clipboard.setString(CND.meta_box['codigo-boleto']);
+														ToastAndroid.showWithGravity("Copiado", ToastAndroid.SHORT, ToastAndroid.TOP);
+													}}
+												>
+													<Text
+														selectable={true}
+														style={{ ...styles.text, textAlign: 'center' }}
+													>{CND.meta_box['codigo-boleto']}</Text>
+												</TouchableOpacity>
+												<TouchableOpacity
+													onPress={() => {
+														setSelectedProtocolo(CND.meta_box.protocolo)
+														setVisible(true);
+													}}
+													style={{ ...globalStyles.button, marginVertical: 10 }}
+												>
+													<Text
+														style={globalStyles.buttonText}
+													>ENVIAR COMPROVANTE</Text>
+												</TouchableOpacity>
+											</>
+										}
+									</>}
 
 
-						</View>
-					}) : <View
-						style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-					>
-							<Feather name="alert-triangle" size={50} color="black" />
-							<Text
-								style={{ marginTop: 20 }}
-							>Você ainda não realizou nenhuma requisição.</Text>
-						</View>
-				}
+								</View>
+							}) : <View
+								style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+							>
+									<MaterialCommunityIcons name="alert-box-outline" size={50} color="black" />
+									<Text
+										style={{ ...globalStyles.text, marginTop: 20 }}
+									>Você ainda não realizou nenhuma requisição.</Text>
+								</View>
+						}
 
 
-			</ScrollView>
+					</ScrollView>
+				</View>
+			</ImageBackground>
 			<Portal>
 				<Modal
 					visible={visible}
@@ -357,6 +357,8 @@ export default function CNDsScreen({ route, navigation }) {
 													Alert.alert("Falha ao enviar comprovante", `${resp.data.message}`);
 												}
 												setSendingComprovante(false);
+												setDocument(null);
+												setVisible(false);
 											} catch (error) {
 												console.log(error.message)
 												Alert.alert("Falha ao enviar comprovante", 'Tivemos um problema ao enviar seu comprovante.');
@@ -375,6 +377,37 @@ export default function CNDsScreen({ route, navigation }) {
 										<AntDesign name="check" size={30} color="green" />
 									</TouchableOpacity>
 								</View></>}
+					</View>
+				</Modal>
+				<Modal
+					visible={infoVisible}
+					contentContainerStyle={{ position: 'absolute', bottom: 0, width: '100%' }}
+					onDismiss={() => {
+						setInfoVisible(false)
+					}}
+				>
+					<View
+						style={{
+							width: '100%',
+							backgroundColor: '#FFF',
+							marginBottom: -1,
+							alignItems: 'center',
+							padding: 20
+						}}>
+						<Entypo
+							style={{ padding: 10 }}
+							name="info-with-circle" size={30} color={colors.primary} />
+						<View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical: 20 }} />
+						<Text
+							style={{ ...globalStyles.title, color: colors.primary, marginBottom: 10 }}
+						>Aqui sua Certidão tem validade Eletrônica!</Text>
+						<Text
+							style={{ ...globalStyles.text, color: colors.primary, textAlign: 'justify', marginBottom: 5 }}
+						>Somente será emitida quando for verificada a regularidade fiscal do contribuinte quanto aos tributos administrados pela Secretaria competente deste Município.</Text>
+						<Text
+							style={{ ...globalStyles.text, color: colors.primary, textAlign: 'justify' }}
+						>Portanto, realize os procedimentos exigidos para emissão da certidão.</Text>
+						<View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical: 20 }} />
 					</View>
 				</Modal>
 			</Portal>

@@ -15,8 +15,8 @@ export default function ServicesScreen({ navigation }) {
 	const [secData, setSecData] = useState([]);
 	const fetchServices = async () => {
 		setLoadingServicesData(true);
-		const resp = await api.get('/wp-json/wp/v2/app-servico?');
-		const resp2 = await api.get('/wp-json/wp/v2/app-secretaria');
+		const resp = await api.get('/wp-json/wp/v2/app-servico?per_page=100');
+		const resp2 = await api.get('/wp-json/wp/v2/app-secretaria?per_page=100');
 		setServicesData(resp.data);
 		setSecData(resp2.data);
 		setLoadingServicesData(false);

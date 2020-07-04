@@ -5,7 +5,7 @@ import { Types } from '../ducks/pontosTuristicosDuck';
 
 export function* fetchPontosTuristicosSaga(action) {
     try {
-        const response = yield call(api.get, '/wp-json/wp/v2/app-ponto-turistico??per_page=100&_embed');        
+        const response = yield call(api.get, '/wp-json/wp/v2/app-ponto-turistico?per_page=100&_embed');        
 
         yield put({
             type: Types.FETCH_PONTOS_TURISTICOS_SUCCEEDED, payload: {

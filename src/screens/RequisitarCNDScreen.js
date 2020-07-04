@@ -1,12 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Dimensions, Keyboard, Alert, AsyncStorage, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Dimensions, Keyboard, Alert, AsyncStorage, ActivityIndicator, ImageBackground } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
 import { Divider } from 'react-native-elements'
 import { RadioButton } from 'react-native-paper';
-import { colors, idContactForm7CND } from '../config/Constants';
-import { AntDesign } from '@expo/vector-icons';
-import api from '../services/api';
+import { Entypo } from '@expo/vector-icons';
+import { Modal, Portal } from 'react-native-paper';
 
+import api from '../services/api';
+import globalStyles from './globalStyles';
+import Header from '../components/Header';
+import CloseSubheader from '../components/CloseSubheader';
+import { colors, idContactForm7CND, strings } from '../config/Constants';
 
 export default function RequisitarCNDScreen({ route, navigation }) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,6 +26,7 @@ export default function RequisitarCNDScreen({ route, navigation }) {
 	const [endereco, setEndereco] = useState({ value: '' });
 	const [bairro, setBairro] = useState({ value: '' });
 	const [cidade, setCidade] = useState({ value: '' });
+	const [visible, setVisible] = useState(false);
 
 	function validateNome() {
 		if (!nome.value) {
@@ -146,17 +151,17 @@ export default function RequisitarCNDScreen({ route, navigation }) {
 
 	async function storeProtocol(protocol) {
 
-        const protocols = await AsyncStorage.getItem('CND_protocols');
-        let protocolsArray;
-        if (!protocols) {
-            protocolsArray = [];
-            protocolsArray.push(protocol)
-        } else {
-            protocolsArray = JSON.parse(protocols);
-            protocolsArray.push(protocol);
-        }
-        await AsyncStorage.setItem('CND_protocols', JSON.stringify(protocolsArray));
-    }
+		const protocols = await AsyncStorage.getItem('CND_protocols');
+		let protocolsArray;
+		if (!protocols) {
+			protocolsArray = [];
+			protocolsArray.push(protocol)
+		} else {
+			protocolsArray = JSON.parse(protocols);
+			protocolsArray.push(protocol);
+		}
+		await AsyncStorage.setItem('CND_protocols', JSON.stringify(protocolsArray));
+	}
 
 	async function handleSubmit() {
 		const valid = validate();
@@ -197,198 +202,257 @@ export default function RequisitarCNDScreen({ route, navigation }) {
 	}
 
 	return (
-		<View style={styles.container}>
-			<TouchableOpacity
-				onPress={() => {
-					navigation.goBack();
-				}}
-				style={{
-					alignSelf: 'flex-start',
-					padding: 15
-				}}
+		<View style={globalStyles.container}>
+			<Header
+				title={strings.townHallName}
+				subtitle={strings.headerSubtitle}
+				titleColor={colors.primary}
+			/>
+			<ImageBackground
+				style={globalStyles.elevatedContent}
+				source={require('../../assets/background_image.png')}
 			>
-				<AntDesign name="close" size={24} color="black" />
-			</TouchableOpacity>
-			<ScrollView
-				style={{ width: '100%' }}
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ flexGrow: 1, padding: 10 }}
-			>
-				<Text style={styles.title}>EMISSÃO DE CERTIDÃO NEGATIVA DE DÉBITOS MUNICIPAIS</Text>
-				<Divider style={{ marginTop: 5, marginBottom: 15 }} />
-
 				<View
-					style={{ width: '100%', flexDirection: 'row', marginBottom: 15 }}
+					style={globalStyles.backgroundImageTransparency}
 				>
-					<TouchableOpacity
-						onPress={() => { setPessoa('fisica') }}
-						style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-						<RadioButton
-							value="fisica"
-							color={colors.primary}
-							status={pessoa === 'fisica' ? 'checked' : 'unchecked'}
-							onPress={() => { setPessoa('fisica') }}
+					<View
+						style={{
+							width: '100%',
+							flexDirection: 'row',
+							alignItems: 'center',
+							justifyContent: 'space-between'
+						}}>
+						<CloseSubheader
+							onPress={() => {
+								navigation.goBack();
+							}}
 						/>
-						<Text
-							style={{ fontFamily: 'Montserrat_400Regular', fontSize: 16 }}
-						>PESSOA FÍSICA</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => {
-							setPessoa('juridica')
+						<TouchableOpacity
+							onPress={() => {
+								setVisible(true);
+							}}
+						>
+							<Entypo
+								style={{ padding: 15 }}
+								name="info-with-circle" size={30} color={colors.primary} />
+						</TouchableOpacity>
+					</View>
+					<ScrollView
+						style={{ width: '100%' }}
+						showsVerticalScrollIndicator={false}
+						contentContainerStyle={{ flexGrow: 1, padding: 20, paddingTop: 0 }}
+					>
+						<Text style={globalStyles.title}>EMISSÃO DE CERTIDÃO NEGATIVA DE DÉBITOS MUNICIPAIS</Text>
+						<Divider style={{ marginTop: 5, marginBottom: 15 }} />
+
+						<View
+							style={{ flex: 1, width: '100%', marginBottom: 15 }}
+						>
+							<TouchableOpacity
+								onPress={() => { setPessoa('fisica') }}
+								style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+								<RadioButton
+									value="fisica"
+									color={colors.primary}
+									status={pessoa === 'fisica' ? 'checked' : 'unchecked'}
+									onPress={() => { setPessoa('fisica') }}
+								/>
+								<Text
+									style={{ fontFamily: 'Montserrat_400Regular', fontSize: 16 }}
+								>PESSOA FÍSICA</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={() => {
+									setPessoa('juridica')
+								}}
+								style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+								<RadioButton
+									value="juridica"
+									color={colors.primary}
+									status={pessoa === 'juridica' ? 'checked' : 'unchecked'}
+									onPress={() => { setPessoa('juridica') }}
+								/>
+								<Text
+									style={{ fontFamily: 'Montserrat_400Regular', fontSize: 16 }}
+								>PESSOA JURÍDICA</Text>
+							</TouchableOpacity>
+						</View>
+
+
+						{pessoa === 'fisica' && <>
+							<TextInput
+								value={nome.value}
+								style={styles.input}
+								placeholder={'NOME'}
+								placeholderTextColor={'#CCC'}
+								maxLength={50}
+								autoCapitalize={'words'}
+								onEndEditing={validateNome}
+								onChangeText={(text) => { setNome({ ...nome, value: text }) }}
+							/>
+							<Text style={styles.errorMsg}>{nome.error}</Text>
+
+							<TextInputMask
+								type={'cpf'}
+								ref={CPFInput}
+								value={CPF.value}
+								style={styles.input}
+								placeholder={'CPF'}
+								placeholderTextColor={'#CCC'}
+								maxLength={14}
+								autoCapitalize={'none'}
+								onEndEditing={validateCPF}
+								onChangeText={(text) => { setCPF({ ...CPF, value: text }) }}
+							/>
+							<Text style={styles.errorMsg}>{CPF.error}</Text></>}
+
+						{pessoa === 'juridica' && <>
+							<TextInput
+								value={razaoSocial.value}
+								style={styles.input}
+								placeholder={'RAZÃO SOCIAL'}
+								placeholderTextColor={'#CCC'}
+								maxLength={50}
+								onEndEditing={validateRazaoSocial}
+								onChangeText={(text) => { setRazaoSocial({ ...razaoSocial, value: text }) }}
+							/>
+							<Text style={styles.errorMsg}>{razaoSocial.error}</Text>
+
+							<TextInputMask
+								type={'cnpj'}
+								ref={CNPJInput}
+								value={CNPJ.value}
+								style={styles.input}
+								placeholder={'CNPJ'}
+								placeholderTextColor={'#CCC'}
+								maxLength={18}
+								onEndEditing={validateCNPJ}
+								onChangeText={(text) => { setCNPJ({ ...CNPJ, value: text }) }}
+							/>
+							<Text style={styles.errorMsg}>{CNPJ.error}</Text>
+
+							<TextInputMask
+								type={'only-numbers'}
+								value={insc.value}
+								style={styles.input}
+								placeholder={'INSC. MUNICIPAL (SE POSSUIR)'}
+								placeholderTextColor={'#CCC'}
+								maxLength={30}
+								onChangeText={(text) => { setInsc({ ...insc, value: text }) }}
+							/>
+							<Text style={styles.errorMsg}>{insc.error}</Text>
+
+						</>}
+
+
+						<TextInput
+							value={email.value}
+							style={styles.input}
+							placeholder={'E-MAIL'}
+							placeholderTextColor={'#CCC'}
+							maxLength={50}
+							textContentType={"emailAddress"}
+							keyboardType={"email-address"}
+							autoCapitalize={'none'}
+							onEndEditing={validateEmail}
+							onChangeText={(text) => { setEmail({ ...email, value: text }) }}
+						/>
+						<Text style={styles.errorMsg}>{email.error}</Text>
+
+						<TextInput
+							value={endereco.value}
+							style={styles.input}
+							placeholder={'ENDEREÇO, NÚMERO'}
+							placeholderTextColor={'#CCC'}
+							maxLength={50}
+							autoCapitalize={'sentences'}
+							onEndEditing={validateEndereco}
+							onChangeText={(text) => { setEndereco({ ...endereco, value: text }) }}
+						/>
+						<Text style={styles.errorMsg}>{endereco.error}</Text>
+
+						<TextInput
+							value={bairro.value}
+							style={styles.input}
+							placeholder={'BAIRRO'}
+							placeholderTextColor={'#CCC'}
+							maxLength={50}
+							autoCapitalize={'sentences'}
+							onEndEditing={validateBairro}
+							onChangeText={(text) => { setBairro({ ...bairro, value: text }) }}
+						/>
+						<Text style={styles.errorMsg}>{bairro.error}</Text>
+
+						<TextInput
+							value={cidade.value}
+							style={styles.input}
+							placeholder={'CIDADE'}
+							placeholderTextColor={'#CCC'}
+							maxLength={50}
+							autoCapitalize={'sentences'}
+							onEndEditing={validateCidade}
+							onChangeText={(text) => { setCidade({ ...cidade, value: text }) }}
+						/>
+						<Text style={styles.errorMsg}>{cidade.error}</Text>
+
+					</ScrollView>
+					<View
+						style={{
+							width: '100%',
+							padding: 10,
+							backgroundColor: '#FFF'
 						}}
-						style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-						<RadioButton
-							value="juridica"
-							color={colors.primary}
-							status={pessoa === 'juridica' ? 'checked' : 'unchecked'}
-							onPress={() => { setPessoa('juridica') }}
-						/>
-						<Text
-							style={{ fontFamily: 'Montserrat_400Regular', fontSize: 16 }}
-						>PESSOA JURÍDICA</Text>
-					</TouchableOpacity>
+					>
+						<TouchableOpacity
+							onPress={() => {
+								handleSubmit();
+							}}
+							style={globalStyles.button}
+						>
+							{!isSubmitting ? <Text
+								style={globalStyles.buttonText}
+							>REQUISITAR CND</Text> : <ActivityIndicator />}
+						</TouchableOpacity>
+					</View>
 				</View>
-
-
-				{pessoa === 'fisica' && <>
-					<TextInput
-						value={nome.value}
-						style={styles.input}
-						placeholder={'NOME'}
-						placeholderTextColor={'#CCC'}
-						maxLength={50}
-						autoCapitalize={'words'}
-						onEndEditing={validateNome}
-						onChangeText={(text) => { setNome({ ...nome, value: text }) }}
-					/>
-					<Text style={styles.errorMsg}>{nome.error}</Text>
-
-					<TextInputMask
-						type={'cpf'}
-						ref={CPFInput}
-						value={CPF.value}
-						style={styles.input}
-						placeholder={'CPF'}
-						placeholderTextColor={'#CCC'}
-						maxLength={14}
-						autoCapitalize={'none'}
-						onEndEditing={validateCPF}
-						onChangeText={(text) => { setCPF({ ...CPF, value: text }) }}
-					/>
-					<Text style={styles.errorMsg}>{CPF.error}</Text></>}
-
-				{pessoa === 'juridica' && <>
-					<TextInput
-						value={razaoSocial.value}
-						style={styles.input}
-						placeholder={'RAZÃO SOCIAL'}
-						placeholderTextColor={'#CCC'}
-						maxLength={50}
-						onEndEditing={validateRazaoSocial}
-						onChangeText={(text) => { setRazaoSocial({ ...razaoSocial, value: text }) }}
-					/>
-					<Text style={styles.errorMsg}>{razaoSocial.error}</Text>
-
-					<TextInputMask
-						type={'cnpj'}
-						ref={CNPJInput}
-						value={CNPJ.value}
-						style={styles.input}
-						placeholder={'CNPJ'}
-						placeholderTextColor={'#CCC'}
-						maxLength={18}
-						onEndEditing={validateCNPJ}
-						onChangeText={(text) => { setCNPJ({ ...CNPJ, value: text }) }}
-					/>
-					<Text style={styles.errorMsg}>{CNPJ.error}</Text>
-
-					<TextInputMask
-						type={'only-numbers'}
-						value={insc.value}
-						style={styles.input}
-						placeholder={'INSC. MUNICIPAL (SE POSSUIR)'}
-						placeholderTextColor={'#CCC'}
-						maxLength={30}
-						onChangeText={(text) => { setInsc({ ...insc, value: text }) }}
-					/>
-					<Text style={styles.errorMsg}>{insc.error}</Text>
-
-				</>}
-
-
-				<TextInput
-					value={email.value}
-					style={styles.input}
-					placeholder={'E-MAIL'}
-					placeholderTextColor={'#CCC'}
-					maxLength={50}
-					textContentType={"emailAddress"}
-					keyboardType={"email-address"}
-					autoCapitalize={'none'}
-					onEndEditing={validateEmail}
-					onChangeText={(text) => { setEmail({ ...email, value: text }) }}
-				/>
-				<Text style={styles.errorMsg}>{email.error}</Text>
-
-				<TextInput
-					value={endereco.value}
-					style={styles.input}
-					placeholder={'ENDEREÇO, NÚMERO'}
-					placeholderTextColor={'#CCC'}
-					maxLength={50}
-					autoCapitalize={'sentences'}
-					onEndEditing={validateEndereco}
-					onChangeText={(text) => { setEndereco({ ...endereco, value: text }) }}
-				/>
-				<Text style={styles.errorMsg}>{endereco.error}</Text>
-
-				<TextInput
-					value={bairro.value}
-					style={styles.input}
-					placeholder={'BAIRRO'}
-					placeholderTextColor={'#CCC'}
-					maxLength={50}
-					autoCapitalize={'sentences'}
-					onEndEditing={validateBairro}
-					onChangeText={(text) => { setBairro({ ...bairro, value: text }) }}
-				/>
-				<Text style={styles.errorMsg}>{bairro.error}</Text>
-
-				<TextInput
-					value={cidade.value}
-					style={styles.input}
-					placeholder={'CIDADE'}
-					placeholderTextColor={'#CCC'}
-					maxLength={50}
-					autoCapitalize={'sentences'}
-					onEndEditing={validateCidade}
-					onChangeText={(text) => { setCidade({ ...cidade, value: text }) }}
-				/>
-				<Text style={styles.errorMsg}>{cidade.error}</Text>
-
-			</ScrollView>
-			<TouchableOpacity
-				onPress={() => {
-					handleSubmit();
-				}}
-				style={{
-					width: Dimensions.get('window').width - 20,
-					alignItems: 'center',
-					justifyContent: 'center',
-					borderWidth: 1.5,
-					height: 60,
-					borderColor: colors.primary,
-					margin: 10,
-				}}
-			>
-				{!isSubmitting ? <Text
-					style={{
-						color: colors.primary,
-						fontFamily: 'Montserrat_400Regular'
+			</ImageBackground>
+			<Portal>
+				<Modal
+					visible={visible}
+					contentContainerStyle={{ position: 'absolute', bottom: 0, width: '100%' }}
+					onDismiss={() => {
+						setVisible(false)
 					}}
-				>REQUISITAR CND</Text> : <ActivityIndicator />}
-			</TouchableOpacity>
+				>
+					<View
+						style={{
+							width: '100%',
+							backgroundColor: '#FFF',
+							marginBottom: -1,
+							alignItems: 'center',
+							padding: 20
+						}}>
+						<Entypo
+							style={{ padding: 10 }}
+							name="info-with-circle" size={30} color={colors.primary} />
+						<View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical: 20 }} />
+						<Text
+							style={{ ...globalStyles.title, color: colors.primary, marginBottom: 10 }}
+						>Informações exigidas para emissão da certidão</Text>
+						<Text
+							style={{ ...globalStyles.text, color: colors.primary, textAlign: 'justify', marginBottom: 5 }}
+						>Preencha o formulário exatamente como está em seu CNPJ ou CPF. </Text>
+						<Text
+							style={{ ...globalStyles.text, color: colors.primary, textAlign: 'justify', marginBottom: 5 }}
+						>Sua requisição será salva em "CERTIDÕES REQUISITADAS".</Text>
+
+						<Text
+							style={{ ...globalStyles.text, color: colors.primary, textAlign: 'justify' }}
+						>Será enviado o número de protocolo para o e-mail cadastrado, para que você possa acompanhar e gerar a certidão eletronicamente tanto no site quanto no aplicativo.</Text>
+						<View style={{ width: '100%', height: 2, backgroundColor: '#F5F5F5', marginVertical: 20 }} />
+					</View>
+				</Modal>
+			</Portal>
 		</View>
 	);
 }
@@ -422,7 +486,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: 60,
 		paddingLeft: 20,
-		borderWidth: 1,
+		borderLeftWidth: 1,
+		borderTopWidth: 1,
 		borderColor: '#DDD',
 		fontSize: 18,
 		backgroundColor: '#FFF',
