@@ -98,7 +98,7 @@ export default function MainMenuScreen({ navigation }) {
 				</View>
 				<Image
 					source={{
-						uri: prefeitura?.meta_box['logo-gestao']?.url
+						uri: prefeitura.meta_box ? prefeitura.meta_box['logo-gestao']?.url : 'fallback'
 					}}
 					resizeMode={'contain'}
 					style={{

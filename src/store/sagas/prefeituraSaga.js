@@ -5,7 +5,7 @@ import { Types } from '../ducks/prefeituraDuck';
 
 export function* fetchPrefeituraSaga(action) {
     try {
-        const response = yield call(api.get, '/wp-json/wp/v2/app-prefeitura?per_page=100');        
+        const response = yield call(api.get, '/wp-json/wp/v2/app-prefeitura');        
         const response2 = yield call(api.get, '/wp-json/wp/v2/app-prefeito-e-vice?per_page=100');
 
         let sexoPrefeito = 'Prefeito(a)';
