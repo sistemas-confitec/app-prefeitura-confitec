@@ -1,47 +1,66 @@
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
-import { useSelector, useDispatch } from 'react-redux';
 
+import store from '../store';
 import podcastsActions from '../store/ducks/podcastDuck';
 
-const soundObject = new Audio.Sound();
+const audioPlayer = {
+    id: null
+};
 
-
-
-    const dispatch = useDispatch();
-    const playingPodcast = useSelector(state=> state.podcasts.playingPodcast)
-    const title = route.params?.title;
-    const description = route.params?.description;
-    const id = route.params?.id;
-    const podcastUrl = route.params?.podcastUrl;
-
+export async function createPlayer() {
+    await Audio.setAudioModeAsync({ staysActiveInBackground: true })
+    const soundObject = new Audio.Sound();
 
     const _onPlaybackStatusUpdate = playbackStatus => {
-        dispatch(podcastsActions.setPlaybackStatus(id, playbackStatus));
+        store.dispatch(podcastsActions.setPlaybackStatus(audioPlayer.id, playbackStatus));
     };
     soundObject.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
 
-    const playAudio = async (id) => {
-        try {
-            const status = await soundObject.getStatusAsync();
+    audioPlayer.sound = soundObject;
+}
+
+
+
+export async function playAudio(id) {
+    try {
+        if (audioPlayer.sound) {
+            const status = await audioPlayer.sound.getStatusAsync();
             console.log('status', status);
-            if ((!status.isLoaded && !status.isBuffering) || playingPodcast !== id) {
+            if (audioPlayer.id !== id) {
                 console.log('aqui')
-                await soundObject.loadAsync({ uri: FileSystem.documentDirectory + `podcast-${id}.mp3` });
-                await soundObject.playAsync();
-                await soundObject.setProgressUpdateIntervalAsync(1000);
-            }
-            if (playingPodcast === id) {
+                await audioPlayer.sound.unloadAsync();
+                await audioPlayer.sound.loadAsync({ uri: FileSystem.documentDirectory + `podcast-${id}.mp3` });
+                await audioPlayer.sound.setProgressUpdateIntervalAsync(1000);
+                await audioPlayer.sound.playAsync();
+                audioPlayer.id = id;
+            } else {
                 if (!status.isPlaying) {
-                    await soundObject.playAsync();
+                    await audioPlayer.sound.playAsync();
                 } else {
-                    await soundObject.pauseAsync();
+                    await audioPlayer.sound.pauseAsync();
                 }
             }
-            // Your sound is playing!
-        } catch (error) {
-            // An error occurred!
         }
-    };
+    } catch (error) {
+        // An error occurred!
+    }
+};
+
+export async function stopAudio() {
+    try {
+        if (audioPlayer.sound) {
+            //const status = await audioPlayer.sound.getStatusAsync();
+            //console.log('status', status);
+
+            await audioPlayer.sound.stopAsync();
+            audioPlayer.id = null;
+        }
+    } catch (error) {
+        // An error occurred!
+    }
+};
+
+export default audioPlayer;
 
 

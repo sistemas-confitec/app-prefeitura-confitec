@@ -1,69 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import createSagaMiddleware from 'redux-saga';
 import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold_Italic, Montserrat_600SemiBold } from '@expo-google-fonts/montserrat';
 
-import rootSaga from './src/store/sagas';
-import { prefeituraReducer } from './src/store/ducks/prefeituraDuck';
-import { pontosTuristicosReducer } from './src/store/ducks/pontosTuristicosDuck';
-import { noticiasReducer } from './src/store/ducks/noticiasDuck';
-import { secretariasReducer } from './src/store/ducks/secretariasDuck';
-import { diarioOficialReducer } from './src/store/ducks/diarioOficialDuck';
-import { CNDsReducer } from './src/store/ducks/CNDsDuck';
-import { municipioReducer } from './src/store/ducks/municipioDuck';
-import { acoesReducer } from './src/store/ducks/acoesDuck';
-import { ouvidoriaReducer } from './src/store/ducks/ouvidoriaDuck';
-import { podcastsReducer } from './src/store/ducks/podcastDuck';
+import store from './src/store';
+import { createPlayer } from './src/services/audioPlayer';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import CustomActivityIndicator from './src/components/CustomActivityIndicator';
 import { colors } from './src/config/Constants';
 
+createPlayer();
 
-
-const sagaMiddleware = createSagaMiddleware();
-
-const rootReducer = combineReducers({
-    prefeitura: prefeituraReducer,
-    pontosTuristicos: pontosTuristicosReducer,
-    noticias: noticiasReducer,
-    secretarias: secretariasReducer,
-    diarioOficial: diarioOficialReducer,
-    CNDs: CNDsReducer,
-    municipio: municipioReducer,
-    acoes: acoesReducer,
-    ouvidoria: ouvidoriaReducer,
-    podcasts: podcastsReducer,
-});
-
-
-const store = createStore(rootReducer,
-    applyMiddleware(
-        sagaMiddleware
-    )
-);
-
-sagaMiddleware.run(rootSaga);
 
 export default function App() {
-    let [fontsLoaded] = useFonts({
+	let [fontsLoaded] = useFonts({
 		Montserrat_400Regular,
 		Montserrat_600SemiBold_Italic
-    });
+	});
 
-    if (!fontsLoaded) {
-        return <CustomActivityIndicator />;
+	if (!fontsLoaded) {
+		return <CustomActivityIndicator />;
 	}
-	
+
 	const theme = {
 		...DefaultTheme,
 		colors: {
-		  ...DefaultTheme.colors,
-		  primary: colors.primary,
-		  accent: colors.secondary,
+			...DefaultTheme.colors,
+			primary: colors.primary,
+			accent: colors.secondary,
 		},
 		/* fonts:{
 			regular: 'Montserrat_400Regular',
@@ -71,15 +36,15 @@ export default function App() {
 			light: 'Montserrat_400Regular',
 			thin: 'Montserrat_400Regular'
 		} */
-	  };
+	};
 
-    return (
-        <Provider store={store}>
-            <PaperProvider theme={theme}>
-                <NavigationContainer>
-                    <MainStackNavigator />
-                </NavigationContainer>
-            </PaperProvider>
-        </Provider>
-    );
+	return (
+		<Provider store={store}>
+			<PaperProvider theme={theme}>
+				<NavigationContainer>
+					<MainStackNavigator />
+				</NavigationContainer>
+			</PaperProvider>
+		</Provider>
+	);
 }

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, RefreshControl, ImageBackground } from 'react-native';
-import * as FileSystem from 'expo-file-system';
-import { Audio } from 'expo-av';
+//import * as FileSystem from 'expo-file-system';
+//import { Audio } from 'expo-av';
 import { useSelector, useDispatch } from 'react-redux';
 
 import podcastsActions from '../store/ducks/podcastDuck';
+import { playAudio } from '../services/audioPlayer';
 import { colors, strings } from '../config/Constants';
 import Header from '../components/Header';
 import CloseSubheader from '../components/CloseSubheader';
 import globalStyles from './globalStyles';
 import PodcastCard from '../components/PodcastCard';
-const soundObject = new Audio.Sound();
 
 
 export default function PodcastScreen({ navigation }) {
@@ -18,41 +18,10 @@ export default function PodcastScreen({ navigation }) {
 	const podcasts = useSelector(state => state.podcasts.data);
 	const loading = useSelector(state => state.podcasts.loading);
 	const downloadedPodcasts = useSelector(state => state.podcasts.downloadedPodcasts);
-	const [playingPodcastId, setPlayingPodcastId] = useState(null);
 
 	const fetchPodcasts = () => {
 		dispatch(podcastsActions.fetchPodcasts());
 	}
-
-	const _onPlaybackStatusUpdate = playbackStatus => {
-		dispatch(podcastsActions.setPlaybackStatus(playingPodcastId, playbackStatus));
-	};
-	soundObject.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
-
-	const playAudio = async (id) => {
-		try {
-			const status = await soundObject.getStatusAsync();
-			console.log('status', status);
-			if ((!status.isLoaded && !status.isBuffering) || playingPodcast !== id) {
-				console.log('aqui')
-				await soundObject.loadAsync({ uri: FileSystem.documentDirectory + `podcast-${id}.mp3` });
-				await soundObject.playAsync();
-				await soundObject.setProgressUpdateIntervalAsync(1000);
-				setPlayingPodcastId(id);
-			}
-			if (playingPodcast === id) {
-				if (!status.isPlaying) {
-					await soundObject.playAsync();
-				} else {
-					await soundObject.pauseAsync();
-				}
-			}
-			// Your sound is playing!
-		} catch (error) {
-			// An error occurred!
-		}
-	};
-
 
 	useEffect(() => { fetchPodcasts() }, []);
 	return (
@@ -84,7 +53,7 @@ export default function PodcastScreen({ navigation }) {
 								return <PodcastCard
 									key={podcast.id}
 									id={podcast.id}
-									onPress={()=>{
+									onPress={() => {
 										playAudio(podcast.id)
 									}}
 									navigation={navigation}
