@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, RefreshControl, ImageBackground } from 'react-native';
+import * as FileSystem from 'expo-file-system';
 import { Audio } from 'expo-av';
+import { useSelector, useDispatch } from 'react-redux';
 
-import api from '../services/api';
+import podcastsActions from '../store/ducks/podcastDuck';
 import { colors, strings } from '../config/Constants';
 import Header from '../components/Header';
 import CloseSubheader from '../components/CloseSubheader';
@@ -12,35 +14,33 @@ const soundObject = new Audio.Sound();
 
 
 export default function PodcastScreen({ navigation }) {
-	const [podcastData, setPodcastData] = useState([]);
-	const [loadingPodcastData, setLoadingPodcastData] = useState(false);
-	const [playBackStatus, setPlayBackStatus] = useState(null);
-	const [currentPodcast, setCurrentPodcast] = useState(null);
+	const dispatch = useDispatch();
+	const podcasts = useSelector(state => state.podcasts.data);
+	const loading = useSelector(state => state.podcasts.loading);
+	const downloadedPodcasts = useSelector(state => state.podcasts.downloadedPodcasts);
+	const [playingPodcastId, setPlayingPodcastId] = useState(null);
 
-	const fetchPodcasts = async () => {
-		setLoadingPodcastData(true);
-		const resp = await api.get('/wp-json/wp/v2/app-podcast');
-		setPodcastData(resp.data);
-		setLoadingPodcastData(false);
+	const fetchPodcasts = () => {
+		dispatch(podcastsActions.fetchPodcasts());
 	}
 
 	const _onPlaybackStatusUpdate = playbackStatus => {
-		setPlayBackStatus(playbackStatus);
+		dispatch(podcastsActions.setPlaybackStatus(playingPodcastId, playbackStatus));
 	};
 	soundObject.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
 
-	const playAudio = async (url, id) => {
+	const playAudio = async (id) => {
 		try {
 			const status = await soundObject.getStatusAsync();
 			console.log('status', status);
-			if ((!status.isLoaded && !status.isBuffering) || currentPodcast !== id) {
+			if ((!status.isLoaded && !status.isBuffering) || playingPodcast !== id) {
 				console.log('aqui')
-				await soundObject.loadAsync({ uri: url });
+				await soundObject.loadAsync({ uri: FileSystem.documentDirectory + `podcast-${id}.mp3` });
 				await soundObject.playAsync();
-				await soundObject.setProgressUpdateIntervalAsync(10000);
-				setCurrentPodcast(id);
+				await soundObject.setProgressUpdateIntervalAsync(1000);
+				setPlayingPodcastId(id);
 			}
-			if (currentPodcast === id) {
+			if (playingPodcast === id) {
 				if (!status.isPlaying) {
 					await soundObject.playAsync();
 				} else {
@@ -52,6 +52,7 @@ export default function PodcastScreen({ navigation }) {
 			// An error occurred!
 		}
 	};
+
 
 	useEffect(() => { fetchPodcasts() }, []);
 	return (
@@ -75,18 +76,20 @@ export default function PodcastScreen({ navigation }) {
 					/>
 					<ScrollView
 						showsVerticalScrollIndicator={false}
-						refreshControl={<RefreshControl refreshing={loadingPodcastData} onRefresh={fetchPodcasts} />}
+						refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchPodcasts} />}
 						contentContainerStyle={{ flexGrow: 1, padding: 10 }}
 					>
-						{podcastData?.map((podcast) => {
+						{podcasts?.map((podcast) => {
 							if (podcast.meta_box?.audio_podcast[0]?.url) {
 								return <PodcastCard
 									key={podcast.id}
-									playBackStatus={playBackStatus}
-									currentPodcast={currentPodcast}
 									id={podcast.id}
-									onPressPlay={() => { playAudio(podcast.meta_box?.audio_podcast[podcast.meta_box?.audio_podcast.length - 1]?.url, podcast.id) }}
-									url={podcast.meta_box?.audio_podcast[0]?.url}
+									onPress={()=>{
+										playAudio(podcast.id)
+									}}
+									navigation={navigation}
+									localUri={downloadedPodcasts && downloadedPodcasts[podcast.id]}
+									podcastUri={podcast.meta_box?.audio_podcast[podcast.meta_box?.audio_podcast.length - 1]?.url}
 									title={podcast.meta_box.titulo_podcast}
 									description={podcast.meta_box.descricao_podcast} />
 							}

@@ -3,13 +3,24 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { ProgressBar } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import * as FileSystem from 'expo-file-system';
 
 import { colors } from '../config/Constants';
 import { pad } from '../util/Functions';
 import globalStyles from '../screens/globalStyles';
 
-export default function PodcastCard({ title, description, onPress, id, currentPodcast, onPressPlay, playBackStatus }) {
+export default function PodcastCard({ title, description, onPress, id, navigation, currentPodcast, podcastUri, localUri }) {
 	const prefeitura = useSelector(state => state.prefeitura.data);
+	const playingPodcast = useSelector(state=> state.podcasts.playingPodcast);
+	const playingPodcastStatus = useSelector(state=> state.podcasts.playingPodcastStatus);
+	const [downloadProgress, setDownloadProgress] = useState(0);
+
+	const downloadCallback = downloadProgress => {
+		const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+		console.log(progress)
+		setDownloadProgress(progress);
+	};
+
 	return (
 		<TouchableOpacity
 			onPress={onPress}
@@ -58,39 +69,59 @@ export default function PodcastCard({ title, description, onPress, id, currentPo
 						marginTop: 10
 					}}
 				>
-					<TouchableOpacity
-						onPress={() => { onPressPlay() }}
+					{localUri ? <TouchableOpacity
+						onPress={onPress}
 					>
-						{id === currentPodcast && playBackStatus.isPlaying ?
+						{id === playingPodcast && playingPodcastStatus.isPlaying ?
 							<AntDesign name="pausecircle" size={35} color={colors.secondary} /> :
 							<AntDesign name="play" size={35} color={colors.secondary} />
 						}
-					</TouchableOpacity>
+					</TouchableOpacity> : < TouchableOpacity
+						onPress={async () => {
+							const downloadResumable = FileSystem.createDownloadResumable(
+								podcastUri,
+								FileSystem.documentDirectory + `podcast-${id}.mp3`,
+								{},
+								downloadCallback
+							);
+							try {
+								const { uri } = await downloadResumable.downloadAsync();
+								console.log('Finished downloading to ', uri);
+							} catch (e) {
+								console.error(e);
+							}
+						}}
+					>
+							{
+								<AntDesign name="download" size={35} color={colors.secondary} />
+							}
+						</TouchableOpacity>}
 					<Text
 						style={{ ...globalStyles.text, marginLeft: 10 }}
 					>15 Mai 2020</Text>
 					<View
 						style={{
-							flex:1,
+							flex: 1,
 							padding: 5,
-							alignItems:'flex-end'
+							alignItems: 'flex-end'
 						}}
 					>
-						{(!!playBackStatus && !!playBackStatus.positionMillis) ? <Text style={{ ...globalStyles.text, textAlign: 'left' }}>
-							{pad(Math.floor(playBackStatus.positionMillis / (1000 * 60)))}:{pad(Math.floor(playBackStatus.positionMillis / 1000 % 60))}/{pad(Math.floor(playBackStatus.durationMillis / (1000 * 60)))}:{pad(Math.floor(playBackStatus.durationMillis / (1000 * 60)))}</Text>
-							: <Text style={{ ...globalStyles.text, textAlign: 'left' }}>00:00/00:00</Text>}
+						{(playingPodcast===id && !!playingPodcastStatus.positionMillis) && <Text style={{ ...globalStyles.text, textAlign: 'left' }}>
+							{pad(Math.floor(playingPodcastStatus.positionMillis / (1000 * 60)))}:{pad(Math.floor(playingPodcastStatus.positionMillis / 1000 % 60))}/{pad(Math.floor(playingPodcastStatus.durationMillis / (1000 * 60)))}:{pad(Math.floor(playingPodcastStatus.durationMillis / (1000 * 60)))}</Text>
+							}
 					</View>
 				</View>
 			</View>
-			{!!playBackStatus && !!playBackStatus.positionMillis ?
+			{playingPodcast===id  && !!playingPodcastStatus.positionMillis &&
 				<ProgressBar
 					style={{ height: 8 }}
-					progress={playBackStatus.positionMillis / playBackStatus.durationMillis}
-					color={colors.secondary} /> :
-				<ProgressBar
-					style={{ height: 8 }}
-					progress={0} color={colors.secondary} />}
-		</TouchableOpacity>
+					progress={playingPodcastStatus.positionMillis / playingPodcastStatus.durationMillis}
+			color={colors.secondary} /> }
+			{/* <ProgressBar
+				style={{ height: 8 }}
+				progress={downloadProgress} color={colors.secondary} /> */}
+
+		</TouchableOpacity >
 	);
 }
 

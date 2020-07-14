@@ -17,6 +17,7 @@ import { CNDsReducer } from './src/store/ducks/CNDsDuck';
 import { municipioReducer } from './src/store/ducks/municipioDuck';
 import { acoesReducer } from './src/store/ducks/acoesDuck';
 import { ouvidoriaReducer } from './src/store/ducks/ouvidoriaDuck';
+import { podcastsReducer } from './src/store/ducks/podcastDuck';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import CustomActivityIndicator from './src/components/CustomActivityIndicator';
 import { colors } from './src/config/Constants';
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
     municipio: municipioReducer,
     acoes: acoesReducer,
     ouvidoria: ouvidoriaReducer,
+    podcasts: podcastsReducer,
 });
 
 
