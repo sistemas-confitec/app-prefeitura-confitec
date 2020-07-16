@@ -56,6 +56,7 @@ export default function PodcastScreen({ navigation }) {
 									onPress={() => {
 										playAudio(podcast.id)
 									}}
+									date={podcast.meta_box?.data_podcast}
 									navigation={navigation}
 									localUri={downloadedPodcasts && downloadedPodcasts[podcast.id]}
 									podcastUri={podcast.meta_box?.audio_podcast[podcast.meta_box?.audio_podcast.length - 1]?.url}

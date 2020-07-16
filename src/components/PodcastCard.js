@@ -12,7 +12,7 @@ import { colors } from '../config/Constants';
 import { pad } from '../util/Functions';
 import globalStyles from '../screens/globalStyles';
 
-export default function PodcastCard({ title, description, onPress, id, navigation, currentPodcast, podcastUri, localUri }) {
+export default function PodcastCard({ title, description, onPress, id, podcastUri, localUri, date }) {
 	const dispatch = useDispatch();
 	const prefeitura = useSelector(state => state.prefeitura.data);
 	const playingPodcast = useSelector(state => state.podcasts.playingPodcast);
@@ -70,14 +70,18 @@ export default function PodcastCard({ title, description, onPress, id, navigatio
 									<Entypo name="dots-three-vertical" size={18} color="black" />
 								</TouchableOpacity>
 							}>
-							<Menu.Item onPress={async () => {
-								if (id === playingPodcast) {
-									stopAudio();
-								}
-								await FileSystem.deleteAsync(FileSystem.documentDirectory + `podcast-${id}.mp3`)
-								dispatch(podcastsActions.fetchPodcasts());
-								setMenuVisible(false);
-							}} title="Excluir da memória" />
+							<Menu.Item
+								onPress={async () => {
+									if (id === playingPodcast) {
+										stopAudio();
+									}
+									await FileSystem.deleteAsync(FileSystem.documentDirectory + `podcast-${id}.mp3`)
+									dispatch(podcastsActions.fetchPodcasts());
+									setMenuVisible(false);
+								}}
+								disabled={!localUri}
+								title="Excluir da memória"
+							/>
 							{/* <Menu.Item onPress={async () => {
 								if (id === playingPodcast) {
 									stopAudio();
@@ -104,7 +108,8 @@ export default function PodcastCard({ title, description, onPress, id, navigatio
 					{localUri ? <TouchableOpacity
 						onPress={onPress}
 					>
-						{id === playingPodcast && playingPodcastStatus.isPlaying ?
+						{id === playingPodcast && !!playingPodcastStatus.positionMillis &&
+							playingPodcastStatus.isPlaying ?
 							<AntDesign name="pausecircle" size={35} color={colors.secondary} /> :
 							<AntDesign name="play" size={35} color={colors.secondary} />
 						}
@@ -145,7 +150,7 @@ export default function PodcastCard({ title, description, onPress, id, navigatio
 							</AnimatedCircularProgress>}
 					<Text
 						style={{ ...globalStyles.text, marginLeft: 10 }}
-					>15 Mai 2020</Text>
+					>{date}</Text>
 					<View
 						style={{
 							flex: 1,
@@ -153,8 +158,10 @@ export default function PodcastCard({ title, description, onPress, id, navigatio
 							alignItems: 'flex-end'
 						}}
 					>
-						{(playingPodcast === id && !!playingPodcastStatus.positionMillis) && <Text style={{ ...globalStyles.text, textAlign: 'left' }}>
-							{pad(Math.floor(playingPodcastStatus.positionMillis / (1000 * 60)))}:{pad(Math.floor(playingPodcastStatus.positionMillis / 1000 % 60))}/{pad(Math.floor(playingPodcastStatus.durationMillis / (1000 * 60)))}:{pad(Math.floor(playingPodcastStatus.durationMillis / (1000 * 60)))}</Text>
+						{(playingPodcast === id && !!playingPodcastStatus.positionMillis) &&
+							<Text style={{ ...globalStyles.text, textAlign: 'left' }}>
+								{pad(Math.floor(playingPodcastStatus.positionMillis / (1000 * 60)))}:{pad(Math.floor((playingPodcastStatus.positionMillis / 1000) % 60))}/{pad(Math.floor(playingPodcastStatus.durationMillis / (1000 * 60)))}:{pad(Math.floor((playingPodcastStatus.durationMillis / 1000) % 60))}
+							</Text>
 						}
 					</View>
 				</View>
@@ -164,9 +171,6 @@ export default function PodcastCard({ title, description, onPress, id, navigatio
 					style={{ height: 8 }}
 					progress={playingPodcastStatus.positionMillis / playingPodcastStatus.durationMillis}
 					color={colors.secondary} />}
-			{/* <ProgressBar
-				style={{ height: 8 }}
-				progress={downloadProgress} color={colors.secondary} /> */}
 
 		</TouchableOpacity >
 	);

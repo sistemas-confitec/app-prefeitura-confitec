@@ -6,6 +6,7 @@ import { AirbnbRating, Input } from 'react-native-elements';
 import Constants from 'expo-constants';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import Gallery from 'react-native-image-gallery';
 
 import { colors, strings, idContactForm7Acoes } from '../config/Constants';
 import { getAcaoIcon } from '../util/Functions';
@@ -108,26 +109,35 @@ export default function AcoesDetailsScreen(props) {
 									style={{
 										flexDirection: 'row',
 										height: 200,
-										//width: '100%'
 									}}
 									horizontal={true}
 									contentContainerStyle={{ flexGrow: 1 }}
 								>
-									{acao.meta_box.imagem.map((image, idx) => <Image
+									{acao.meta_box.imagem.map((image, idx) => <TouchableOpacity
 										key={idx}
-										source={{ uri: image.sizes.medium.url }}
-										resizeMode={'cover'}
-										style={{
-											height: 200,
-											aspectRatio: image.sizes.medium.width / image.sizes.medium.height,
-											//width:400,
-											marginRight: 10,
+										onPress={() => {
+											props.navigation.navigate("imageGalleryScreen", {
+												images: acao.meta_box.imagem.map((image, idx) => {
+													return {
+														source: { uri: image.sizes.medium.url },
+													}
+												}),
+												initialPage: idx
+											})
 										}}
-									/>)}
+									>
+										<Image
+											source={{ uri: image.sizes.medium.url }}
+											resizeMode={'cover'}
+											style={{
+												height: 200,
+												aspectRatio: image.sizes.medium.width / image.sizes.medium.height,
+												marginRight: 10,
+											}}
+										/>
+									</TouchableOpacity>
+									)}
 								</ScrollView>
-								{/* <Text
-									style={{ ...globalStyles.text, alignSelf: 'flex-end', marginTop: 10 }}									
-								>{acao.meta_box["data-acao"]}</Text> */}
 							</View>
 							<View
 								activeOpacity={0.8}
@@ -145,13 +155,6 @@ export default function AcoesDetailsScreen(props) {
 									style={{ ...globalStyles.text, flex: 1, textAlign: 'justify' }}
 								>{acao.meta_box["descricao"]}</Text>
 							</View>
-							{/* <TouchableOpacity
-								onPress={() => {
-									setAnimationDone(true);
-								}}
-							>
-								<Text>Funciona desgraça</Text>
-							</TouchableOpacity> */}
 						</View>
 					</ScrollView>
 				</View>

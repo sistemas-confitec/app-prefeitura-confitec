@@ -18,7 +18,12 @@
         "ios": {
             "bundleIdentifier": "com.confitec.appconfitecgov",
             "buildNumber": "1.0.0",
-            "supportsTablet": true
+            "supportsTablet": true,
+            "infoPlist": {
+                "UIBackgroundModes": [
+                  "audio"
+                ]
+            }
         },
         "android": {
             "package": "com.confitec.appconfitecgov",

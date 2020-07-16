@@ -28,6 +28,7 @@ import ServicosScreen from '../screens/ServicosScreen';
 import RequisitarCNDScreen from '../screens/RequisitarCNDScreen';
 import VerificarCNDScreen from '../screens/VerificarCNDScreen';
 import CNDsScreen from '../screens/CNDsScreen';
+import imageGalleryScreen from '../screens/imageGalleryScreen';
 import { colors } from '../config/Constants';
 
 const Stack = createStackNavigator();
@@ -294,6 +295,20 @@ export default function MainStackNavigator() {
 					})
 				}}
 				name="CNDsScreen" component={CNDsScreen} />
+			<Stack.Screen
+				options={({ route, navigation }) => {
+					return ({
+						headerTintColor: '#FFF',
+						headerTitle: 'Status da CND',
+						headerStyle: {
+							backgroundColor: colors.primary
+						},
+						headerLeft: null,
+						cardOverlayEnabled: true,
+						...TransitionPresets.ModalSlideFromBottomIOS
+					})
+				}}
+				name="imageGalleryScreen" component={imageGalleryScreen} />
 		</Stack.Navigator>
 	);
 }
