@@ -86,7 +86,6 @@ export default function VerificarCNDScreen({ route, navigation }) {
 					>
 						<TouchableOpacity
 							onPress={async () => {
-								//handleSubmit();
 								setIsSubmitting(true)
 								const resp = await api.get(`/wp-json/wp/v2/app-gerar-link-cnd?protocolo=${protocolo.value}`);
 								console.log(resp.data)
